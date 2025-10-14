@@ -88,6 +88,22 @@ Ini adalah siklus kerja untuk setiap tugas yang kamu kerjakan.
 2.  **Buat Pull Request (PR)**: Buka GitHub, dan buat Pull Request dari branch-mu **ke branch `develop`**.
 3.  **Tunggu Review**: Jangan merge PR-mu sendiri. Tunggu *maintainer* (lead tim) untuk mereview dan memberikan persetujuan.
 
+#### **D. Proses Merge & Clean Up (Langkah Terakhir)**
+
+1.  **Tugas Maintainer**: Setelah PR disetujui, *maintainer* (lead tim) akan menekan tombol **"Merge"**. Setelah itu, *maintainer* **wajib** menekan tombol **"Delete branch"** yang muncul untuk membersihkan repositori di server.
+
+2.  **Tugas Kontributor**: Setelah PR-mu di-merge, pekerjaanmu selesai! Adalah praktik yang baik untuk membersihkan branch di komputermu. Jalankan perintah ini:
+    ```bash
+    # Pindah kembali ke branch develop
+    git checkout develop
+
+    # Update develop lokalmu dengan versi terbaru dari server
+    git pull origin develop
+
+    # Hapus branch lokal yang sudah tidak terpakai
+    git branch -d <nama-branch-kamu-sebelumnya>
+    ```
+
 ---
 
 ## 2. "Kamus" Tim (Aturan Penamaan)
