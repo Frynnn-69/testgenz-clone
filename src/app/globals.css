@@ -1,8 +1,16 @@
+/* Import utama Tailwind v4 */
 @import "tailwindcss";
 
+/* Import tema dan komponen Flowbite */
+@import "flowbite/src/themes/default";
+@import "flowbite";
+
+@import 'flowbite/dist/flowbite.css'; */
+
+/* Warna dan font dasar proyek */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #050505;
 }
 
 @theme inline {
@@ -12,10 +20,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: "light") {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #090909;
   }
 }
 
@@ -23,4 +31,53 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* custom color */
+@theme {
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-nomadic_desert:#C7B198;
+    --color-doeskin: #FFF3E4;
+    --color-semi_sweet: #6B4F4F;
+    --color-cinnamon_brandy: #D18F6A;
+}
+
+/* set background color untuk section hero */
+section {
+  background-color: var(--color-doeskin);
+}
+
+/* set padding untuk navbar */
+nav > div {
+  padding: 0.75rem 0.75rem;
+}
+
+/* set untuk gap antar menu di navbar */
+nav ul {
+  display: flex;        
+  gap: 1rem;            
+}
+
+/* set padding untuk tombol "Mulai tes" */
+section a {
+  padding: 0.75rem;
+}
+
+/* gap menu di footer */
+footer ul {
+  gap: 1rem;
+  display: flex;
+}
+
+nav div button{
+  size: md;
 }
