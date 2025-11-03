@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPersonalityAnalysis } from "@/lib/ai";
+import { getPersonalityAnalysis } from "@/lib/aiResponseHandler";
 import type {
   Answer,
   UserData,
