@@ -5,7 +5,8 @@
 @import "flowbite/src/themes/default";
 @import "flowbite";
 
-@import 'flowbite/dist/flowbite.css'; */
+@import "flowbite/dist/flowbite.css";
+*/
 
 /* Warna dan font dasar proyek */
 :root {
@@ -35,20 +36,20 @@ body {
 
 /* custom color */
 @theme {
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-300: #93c5fd;
-    --color-primary-400: #60a5fa;
-    --color-primary-500: #3b82f6;
-    --color-primary-600: #2563eb;
-    --color-primary-700: #1d4ed8;
-    --color-primary-800: #1e40af;
-    --color-primary-900: #1e3a8a;
-    --color-nomadic_desert:#C7B198;
-    --color-doeskin: #FFF3E4;
-    --color-semi_sweet: #6B4F4F;
-    --color-cinnamon_brandy: #D18F6A;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-nomadic_desert: #c7b198;
+  --color-doeskin: #fff3e4;
+  --color-semi_sweet: #6b4f4f;
+  --color-cinnamon_brandy: #d18f6a;
 }
 
 /* set background color untuk section hero */
@@ -63,8 +64,8 @@ nav > div {
 
 /* set untuk gap antar menu di navbar */
 nav ul {
-  display: flex;        
-  gap: 1rem;            
+  display: flex;
+  gap: 1rem;
 }
 
 /* set padding untuk tombol "Mulai tes" */
@@ -78,6 +79,173 @@ footer ul {
   display: flex;
 }
 
-nav div button{
+nav div button {
   size: md;
+}
+
+.about-title {
+  font-size: 3.5rem; /* ukuran besar di layar kecil (56px) */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-semi_sweet);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+/* Tambahan styling khusus section ABOUT US */
+.about-item svg {
+  margin-top: 1.5rem; /* Jarak atas */
+  margin-bottom: 1.5rem; /* Jarak bawah */
+}
+
+.about-item .icon-container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .about-title {
+    font-size: 3.5rem; /* ukuran lebih besar di layar sedang-ke-atas */
+  }
+}
+
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* posisi ke kiri */
+  min-height: 100vh;
+  padding-left: 6rem;
+  padding-right: 2rem;
+  background-color: var(--color-doeskin); /* warna lembut */
+}
+
+.hero-title {
+  font-size: 3rem; /* headline besar */
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--color-semi_sweet);
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-cinnamon_brandy);
+  line-height: 1.3;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  color: #6b4e44;
+  max-width: 600px;
+  line-height: 1.7;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* ===================================== */
+/* ======== STYLING HERO BUTTON ========= */
+/* ===================================== */
+
+.hero-btn-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Tombol oval utama */
+.hero-btn {
+  background-color: var(--color-cinnamon_brandy);
+  color: #fff;
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(209, 143, 106, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.hero-btn:hover {
+  background-color: #c47d5a;
+  transform: translateY(-2px);
+}
+
+/* Lingkaran panah yang nempel ke tombol */
+.hero-btn-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-cinnamon_brandy);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-left: -3px; /* agar nempel ke tombol oval */
+  box-shadow: 0 4px 8px rgba(209, 143, 106, 0.3);
+  transition: all 0.3s ease;
+}
+
+.hero-btn-wrapper:hover .hero-btn-circle {
+  background-color: #b9714f;
+  transform: translateX(4px);
+}
+
+/* Tanda panah di dalam lingkaran */
+.hero-btn-arrow {
+  font-size: 1.4rem;
+  color: white;
+  line-height: 1;
+}
+
+/* --- Navbar Styling Final --- */
+nav {
+  background-color: var(--color-semi_sweet);
+  height: 85px; /* sedikit lebih tinggi */
+  display: flex;
+  align-items: center;
+}
+
+/* Container utama navbar */
+.navbar-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.navbar-logo span {
+  font-size: 2rem; /* perbesar tulisan GrowGenZ */
+  font-weight: 800; /* pertebal */
+  letter-spacing: 1px;
+  color: #ffffff;
+  margin-left: -65px;
+}
+
+/* Menu kanan (Home, About Us, Hasil Tes Kamu) */
+
+.navbar-menu ul li a {
+  font-weight: 700; /* tebal */
+  font-size: 1.2rem; /* sedikit lebih besar */
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  transition: color 0.25s ease-in-out, transform 0.25s ease-in-out;
+  margin: 20px;
+}
+
+.navbar-menu ul li a:hover {
+  color: var(--color-nomadic_desert);
+  transform: translateY(-1px);
+}
+
+/* Efek shadow saat scroll */
+nav.scrolled {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out;
 }
