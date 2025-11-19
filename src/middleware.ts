@@ -1,38 +1,52 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // Handle CORS
   const response = NextResponse.next();
 
-  // Set CORS headers
-  response.headers.set('Access-Control-Allow-Origin', '*');
+  // Konfigurasi CORS (Cross-Origin Resource Sharing)
+  // Di production, '*' diganti domain (ex: 'https://testgenz.vercel.app')
+  // Tapi untuk development dan fleksibilitas sekarang, '*' masih aman.
+  response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, OPTIONS'
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS",
   );
   response.headers.set(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization'
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With",
+  );
+  response.headers.set("Access-Control-Max-Age", "86400"); // Cache preflight selama 24 jam
+
+  // Security Headers (For Production)
+
+  // Anti-Clickjacking
+  response.headers.set("X-Frame-Options", "DENY");
+
+  // MIME-sniffing
+  response.headers.set("X-Content-Type-Options", "nosniff");
+
+  // Controlling referrer information
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  // HTTPS (Strict Transport Security)
+  // Max-age (1 tahun)
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains",
   );
 
-  // Handle preflight requests
-  if (request.method === 'OPTIONS') {
+  // Handle Preflight Request (OPTIONS)
+  if (request.method === "OPTIONS") {
     return new NextResponse(null, {
       status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: response.headers,
     });
   }
 
   return response;
 }
 
-// Configure which routes to apply middleware to
 export const config = {
-  matcher: '/api/:path*',
+  matcher: "/api/:path*",
 };
-
