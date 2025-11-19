@@ -1,162 +1,196 @@
-import { createSwaggerSpec } from 'next-swagger-doc';
+import { createSwaggerSpec } from "next-swagger-doc";
 
-/**
- * Konfigurasi Swagger Spec Generator
- * File ini menghasilkan spesifikasi OpenAPI untuk dokumentasi API
- */
 export const getApiDocs = () => {
   const spec = createSwaggerSpec({
-    apiFolder: 'src/app/api',
+    apiFolder: "src/app/api",
     definition: {
-      openapi: '3.0.0',
+      openapi: "3.0.0",
       info: {
-        title: 'TestGenz Clone API Documentation',
-        version: '1.0.0',
-        description: 'Dokumentasi API untuk aplikasi TestGenz Clone - Platform tes online interaktif',
-        contact: {
-          name: 'Tim TestGenz Clone',
-          url: 'https://github.com/Fyrnn-69/testgenz-clone',
-        },
+        title: "Internal API Documentation",
+        version: "1.0.0",
+        description:
+          "Core API for personality assessment and analysis services",
       },
       servers: [
         {
-          url: 'http://localhost:3000',
-          description: 'Development Server',
+          url: "http://localhost:3000",
+          description: "Development Server",
         },
         {
-          url: 'https://testgenz-clone.vercel.app',
-          description: 'Production Server',
+          url: "https://example-domain.vercel.app", // Ganti nanti pas deploy
+          description: "Production Server",
         },
       ],
-      tags: [],
+
+      // Endpoint API
+      paths: {
+        "/api/questions": {
+          get: {
+            summary: "Get list of questions",
+            tags: ["Assessment"],
+            responses: {
+              200: {
+                description: "List of questions loaded",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Question" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/api/analyze": {
+          post: {
+            summary: "Send answers to AI",
+            tags: ["Assessment"],
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/AnalyzeRequest" },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: "Analysis result",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/AnalysisResponse" },
+                    examples: {
+                      Sunny: {
+                        summary: "Sanguinis (Sunny)",
+                        value: {
+                          result: "Sunny",
+                          analysis:
+                            "You are the Radiant Sun, bringing energy...",
+                        },
+                      },
+                      Rainy: {
+                        summary: "Melankolis (Rainy)",
+                        value: {
+                          result: "Rainy",
+                          analysis:
+                            "You are the Gentle Rain, deep and thoughtful...",
+                        },
+                      },
+                      Stormy: {
+                        summary: "Koleris (Stormy)",
+                        value: {
+                          result: "Stormy",
+                          analysis:
+                            "You are the Powerful Storm, leading the way...",
+                        },
+                      },
+                      Cloudy: {
+                        summary: "Plegmatis (Cloudy)",
+                        value: {
+                          result: "Cloudy",
+                          analysis: "You are the Calm Cloud, creating peace...",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              400: {
+                description: "Bad Request",
+                content: {
+                  "application/json": {
+                    example: {
+                      error: "Invalid input: Missing answers or user data.",
+                    },
+                  },
+                },
+              },
+              500: {
+                description: "Server Error",
+                content: {
+                  "application/json": {
+                    example: {
+                      error: "Failed to generate analysis.",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+
+      // Schemas (Data Models)
       components: {
         schemas: {
           Question: {
-            type: 'object',
+            type: "object",
             properties: {
-              id: {
-                type: 'string',
-                description: 'ID unik pertanyaan',
-                example: 'q-001',
-              },
+              id: { type: "integer", example: 1 },
               text: {
-                type: 'string',
-                description: 'Teks pertanyaan',
-                example: 'Apa ibu kota Indonesia?',
+                type: "string",
+                example: "Apa yang kamu lakukan saat pesta?",
               },
               options: {
-                type: 'array',
-                description: 'Pilihan jawaban',
+                type: "array",
                 items: {
-                  type: 'string',
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "A" },
+                    text: {
+                      type: "string",
+                      example: "Menjadi pusat perhatian",
+                    },
+                  },
                 },
-                example: ['Jakarta', 'Bandung', 'Surabaya', 'Medan'],
-              },
-              correctAnswer: {
-                type: 'string',
-                description: 'Jawaban yang benar',
-                example: 'Jakarta',
               },
             },
           },
           UserData: {
-            type: 'object',
+            type: "object",
+            required: ["nama"],
             properties: {
-              userId: {
-                type: 'string',
-                description: 'ID pengguna',
-                example: 'user-123',
-              },
-              name: {
-                type: 'string',
-                description: 'Nama pengguna',
-                example: 'John Doe',
-              },
+              nama: { type: "string", example: "Tester Nuansa" },
               email: {
-                type: 'string',
-                format: 'email',
-                description: 'Email pengguna',
-                example: 'john.doe@example.com',
+                type: "string",
+                format: "email",
+                example: "nuansa@example.com",
               },
             },
           },
           Answer: {
-            type: 'object',
+            type: "object",
+            required: ["questionId", "value"],
             properties: {
-              questionId: {
-                type: 'string',
-                description: 'ID pertanyaan',
-                example: 'q-001',
-              },
-              answer: {
-                type: 'string',
-                description: 'Jawaban pengguna',
-                example: 'Jakarta',
+              questionId: { type: "integer", example: 1 },
+              value: {
+                type: "string",
+                enum: ["A", "B", "C", "D"],
+                description: "Option ID (A, B, C, or D)",
+                example: "A",
               },
             },
           },
           AnalyzeRequest: {
-            type: 'object',
-            required: ['userData', 'answers'],
+            type: "object",
+            required: ["userData", "answers"],
             properties: {
-              userData: {
-                $ref: '#/components/schemas/UserData',
-              },
+              userData: { $ref: "#/components/schemas/UserData" },
               answers: {
-                type: 'array',
-                description: 'Daftar jawaban pengguna',
-                items: {
-                  $ref: '#/components/schemas/Answer',
-                },
+                type: "array",
+                items: { $ref: "#/components/schemas/Answer" },
               },
             },
           },
-          AnalyzeResponse: {
-            type: 'object',
+          AnalysisResponse: {
+            type: "object",
             properties: {
-              success: {
-                type: 'boolean',
-                description: 'Status keberhasilan analisis',
-                example: true,
-              },
-              data: {
-                type: 'object',
-                properties: {
-                  score: {
-                    type: 'number',
-                    description: 'Skor total pengguna',
-                    example: 85.5,
-                  },
-                  totalQuestions: {
-                    type: 'number',
-                    description: 'Jumlah total pertanyaan',
-                    example: 10,
-                  },
-                  correctAnswers: {
-                    type: 'number',
-                    description: 'Jumlah jawaban benar',
-                    example: 8,
-                  },
-                  analysis: {
-                    type: 'string',
-                    description: 'Analisis hasil dari AI',
-                    example: 'Anda memiliki pemahaman yang baik tentang topik ini.',
-                  },
-                },
-              },
-            },
-          },
-          ErrorResponse: {
-            type: 'object',
-            properties: {
-              success: {
-                type: 'boolean',
-                example: false,
-              },
-              error: {
-                type: 'string',
-                description: 'Pesan error',
-                example: 'Terjadi kesalahan pada server',
+              result: { type: "string", example: "Sunny" },
+              analysis: {
+                type: "string",
+                example: "You are the Radiant Sun...",
               },
             },
           },
@@ -164,7 +198,5 @@ export const getApiDocs = () => {
       },
     },
   });
-
   return spec;
 };
-

@@ -1,72 +1,67 @@
-# Dokumentasi Swagger API
+# Dokumentasi API (Swagger)
 
-## URL Akses
+Dokumen ini menjelaskan struktur dan cara penggunaan dokumentasi API otomatis (Swagger UI) di dalam proyek ini.
 
-### Development
-```
-http://localhost:3000/api-docs
-```
+## 🔗 Akses Dokumentasi
 
-### Production
-```
-https://your-domain.com/api-docs
-```
+### Development (Lokal)
+Buka browser dan akses:
+`http://localhost:3000/api/docs`
 
-## Struktur File
-
-```
-src/
-├── app/
-│   ├── api/
-│   │   ├── analyze/route.ts      # POST - Analisis jawaban
-│   │   ├── questions/route.ts    # GET - Daftar pertanyaan
-│   │   └── docs/route.ts         # GET - Swagger JSON spec
-│   └── api-docs/
-│       ├── page.tsx              # Halaman Swagger UI
-│       └── swagger-custom.css    # Material Design theme
-└── lib/
-    └── swagger.ts                # OpenAPI specification
-```
-
-## API Endpoints
-
-### GET /api/questions
-Mendapatkan daftar pertanyaan tes
-
-**Query Parameters:**
-- `category` (optional): Filter berdasarkan kategori
-- `difficulty` (optional): easy | medium | hard
-
-### POST /api/analyze
-Menganalisis jawaban tes pengguna
-
-**Request Body:**
-```json
-{
-  "answers": [
-    {
-      "questionId": "string",
-      "answer": "string"
-    }
-  ]
-}
-```
-
-## Teknologi
-
-- swagger-ui-react: ^5.19.3
-- swagger-jsdoc: ^6.2.8
-- Material Design theme
-
-## Fitur UI
-
-- Clean & minimalist
-- Semua sections selalu terbuka
-- Tanpa search bar & topbar
-- Material Design colors
-
+### Production (Live)
+Nantinya akan tersedia di:
+`https://example-domain.vercel.app/api/docs`
 
 ---
 
-**Version:** 1.0.0
+## 📂 Struktur Kode
 
+Dokumentasi ini dibangun menggunakan arsitektur **Server Component** (untuk data) dan **Client Component** (untuk UI).
+
+```text
+src/
+├── app/
+│   └── api/
+│       └── docs/
+│           └── page.tsx           # [Entry Point] Halaman utama. Mengambil data JSON dan memanggil UI.
+│
+├── components/
+│   └── swagger/
+│       ├── SwaggerClient.tsx      # [UI] Komponen tampilan (Wrapper library Swagger UI React).
+│       └── swagger-custom.css     # [Style] Kustomisasi tema (CSS).
+│
+└── lib/
+    └── swagger.ts                 # [Logic/Data] Tempat mendefinisikan Endpoint, Schema, dan Info API.
+```
+
+---
+
+## 🛠️ Panduan Pengembangan
+
+### 1. Cara Menambah Endpoint Baru
+Edit file: **`src/lib/swagger.ts`**
+
+Tambahkan definisi path baru di dalam objek `paths`:
+
+```typescript
+paths: {
+  "/api/route-baru": {
+    get: {
+      summary: "Penjelasan singkat",
+      tags: ["NamaKategori"],
+      responses: { ... }
+    }
+  }
+}
+```
+
+### 2. Cara Mengubah Skema Data (Request/Response)
+Edit file: **`src/lib/swagger.ts`**
+
+Update bagian `components -> schemas`. Pastikan struktur JSON-nya sesuai dengan tipe data di `src/types/index.ts`.
+
+### 3. Cara Mengubah Tampilan (Warna/Header)
+* **Layout/Header:** Edit `src/components/swagger/SwaggerClient.tsx`.
+* **Warna/CSS:** Edit `src/components/swagger/swagger-custom.css`.
+
+---

@@ -1,13 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  
-  // Suppress React StrictMode warnings from third-party libraries
-  reactStrictMode: true,
-  
+  reactStrictMode: false,
+
   webpack: (config) => {
-    // Ignore warnings from swagger-ui-react about deprecated lifecycle methods
     config.ignoreWarnings = [
       {
         module: /node_modules\/swagger-ui-react/,
