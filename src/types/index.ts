@@ -17,3 +17,11 @@ export interface AnalysisResponse {
 export interface ErrorResponse {
   error: string;
 }
+
+// Interface for test result stored in localStorage
+export interface TestResult {
+  weatherType: string;      // "Sunny" | "Rainy" | "Stormy" | "Cloudy"
+  analysis: string;         // AI-generated summary
+  userData: UserData;       // User information
+  timestamp: string;        // ISO 8601 format
+}

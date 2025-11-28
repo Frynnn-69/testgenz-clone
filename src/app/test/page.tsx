@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Box, Container, Button, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { Box, Container, Button, Text, Alert } from "@chakra-ui/react";
 import { ProgressBar, QuestionCard, LoadingOverlay } from "@/components/test";
+import { saveTestResult } from "@/lib/localStorage";
 import type { Question } from "@/lib/questions";
+import type { TestResult, AnalysisResponse } from "@/types";
 
 // Helper function untuk menentukan section berdasarkan nomor soal
 const getSection = (questionNumber: number): string => {
@@ -13,6 +16,7 @@ const getSection = (questionNumber: number): string => {
 };
 
 export default function TestPage() {
+  const router = useRouter();
   const [questionsData, setQuestionsData] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
@@ -88,6 +92,7 @@ export default function TestPage() {
 
   const handleFinish = async () => {
     setIsLoading(true);
+    setError(null);
 
     const formattedAnswers = Object.entries(answers).map(([key, value]) => ({
       questionId: parseInt(key, 10),
@@ -108,19 +113,30 @@ export default function TestPage() {
         }),
       });
 
-      const result = await response.json();
-      setIsLoading(false);
-
       if (!response.ok) {
-        throw new Error(result.error || "Gagal menganalisis jawaban.");
+        const errorResult = await response.json();
+        throw new Error(errorResult.error || "Gagal menganalisis jawaban.");
       }
 
-      // Tampilkan hasil analisis (sementara pake alert)
-      alert("Test selesai! Hasil: " + result.analysis);
-      // TODO: Ganti alert dengan router.push('/result?data=' + JSON.stringify(result))
+      const result: AnalysisResponse = await response.json();
+
+      // Create TestResult object with all required fields
+      const testResult: TestResult = {
+        weatherType: result.result,
+        analysis: result.analysis,
+        userData: userData,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Save result to localStorage
+      saveTestResult(testResult);
+
+      // Navigate to result page
+      router.push("/result");
     } catch (err: any) {
       setIsLoading(false);
-      setError(err.message);
+      setError(err.message || "Terjadi kesalahan saat memproses hasil tes.");
+      console.error("Error analyzing test:", err);
     }
   };
 
@@ -133,6 +149,15 @@ export default function TestPage() {
 
       <Box minH="100vh" bg="gray.50" py={8}>
         <Container maxW="5xl">
+          {/* Error Alert */}
+          {error && (
+            <Alert.Root status="error" mb={6}>
+              <Alert.Indicator />
+              <Alert.Title>Error</Alert.Title>
+              <Alert.Description>{error}</Alert.Description>
+            </Alert.Root>
+          )}
+
           {/* Progress Bar */}
           <ProgressBar
             currentQuestion={currentQuestionIndex + 1}

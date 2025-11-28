@@ -1,0 +1,105 @@
+import { TestResult } from '@/types';
+
+const STORAGE_KEY = 'testgenz_result';
+
+/**
+ * Validates that a test result has all required fields
+ */
+function validateTestResult(data: any): data is TestResult {
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+
+  // Check required fields
+  if (typeof data.weatherType !== 'string' || !data.weatherType) {
+    return false;
+  }
+
+  if (typeof data.analysis !== 'string' || !data.analysis) {
+    return false;
+  }
+
+  if (typeof data.timestamp !== 'string' || !data.timestamp) {
+    return false;
+  }
+
+  // Check userData object
+  if (!data.userData || typeof data.userData !== 'object') {
+    return false;
+  }
+
+  if (typeof data.userData.nama !== 'string' || !data.userData.nama) {
+    return false;
+  }
+
+  // email is optional, but if present must be string
+  if (data.userData.email !== undefined && typeof data.userData.email !== 'string') {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Save test result to localStorage
+ * @param result - The test result to save
+ * @throws Error if localStorage is unavailable or data is invalid
+ */
+export function saveTestResult(result: TestResult): void {
+  try {
+    // Validate data structure before saving
+    if (!validateTestResult(result)) {
+      throw new Error('Invalid test result structure');
+    }
+
+    const jsonString = JSON.stringify(result);
+    localStorage.setItem(STORAGE_KEY, jsonString);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Invalid test result structure') {
+      throw error;
+    }
+    // Handle localStorage unavailable or quota exceeded
+    console.error('Failed to save test result to localStorage:', error);
+    throw new Error('Unable to save test result');
+  }
+}
+
+/**
+ * Get test result from localStorage
+ * @returns The test result or null if not found or invalid
+ */
+export function getTestResult(): TestResult | null {
+  try {
+    const jsonString = localStorage.getItem(STORAGE_KEY);
+    
+    if (!jsonString) {
+      return null;
+    }
+
+    const data = JSON.parse(jsonString);
+    
+    // Validate the parsed data
+    if (!validateTestResult(data)) {
+      console.warn('Invalid test result data in localStorage');
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    // Handle JSON parsing errors or localStorage access errors
+    console.error('Failed to get test result from localStorage:', error);
+    return null;
+  }
+}
+
+/**
+ * Clear test result from localStorage
+ */
+export function clearTestResult(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.error('Failed to clear test result from localStorage:', error);
+    // Don't throw - clearing is not critical
+  }
+}
