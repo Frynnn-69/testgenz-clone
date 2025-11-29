@@ -1,0 +1,3 @@
+{
+  "buildCommand": "npm run build && echo '{}' > .next/export-detail.json"
+}
