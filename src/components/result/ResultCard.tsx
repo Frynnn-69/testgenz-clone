@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Flex, Badge, Image } from "@chakra-ui/react";
+import { useState } from "react";
+import { Box, Flex, Badge, Image, Portal } from "@chakra-ui/react";
 
 export interface ResultCardProps {
   weatherType: string;
@@ -12,12 +13,15 @@ export interface ResultCardProps {
  * ResultCard component
  * Renders a visual card with the weather poster image and personality traits
  * - Shows poster image based on weather type
+ * - Click on poster to view fullscreen modal
  * - Displays traits as badges/labels
  * - Styled according to weather type
  * 
  * Requirements: 1.3
  */
 export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Map weather type to color scheme
   const getColorScheme = (type: string): string => {
     const colorMap: Record<string, string> = {
@@ -43,56 +47,110 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
   const colorScheme = getColorScheme(weatherType);
 
   return (
-    <Box
-      bg="white"
-      borderRadius="xl"
-      boxShadow="lg"
-      overflow="hidden"
-      mb={6}
-    >
-      {/* Poster Image Section */}
+    <>
       <Box
-        bgGradient={getBackgroundGradient(weatherType)}
-        p={{ base: 4, md: 6 }}
-        textAlign="center"
-        minH={{ base: "350px", md: "450px" }}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
+        bg="white"
+        borderRadius="xl"
+        boxShadow="lg"
+        overflow="hidden"
+        mb={6}
       >
-        <Image
-          src={imageSrc}
-          alt={`${weatherType} personality type`}
-          maxH={{ base: "320px", md: "420px" }}
-          width="auto"
-          objectFit="contain"
-        />
+        {/* Poster Image Section */}
+        <Box
+          bgGradient={getBackgroundGradient(weatherType)}
+          p={{ base: 4, md: 6 }}
+          textAlign="center"
+          minH={{ base: "350px", md: "450px" }}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          cursor="pointer"
+          onClick={() => setIsModalOpen(true)}
+          _hover={{ opacity: 0.9 }}
+          transition="opacity 0.2s"
+          title="Klik untuk memperbesar"
+        >
+          <Image
+            src={imageSrc}
+            alt={`${weatherType} personality type`}
+            maxH={{ base: "320px", md: "420px" }}
+            width="auto"
+            objectFit="contain"
+          />
+        </Box>
+
+        {/* Traits Section */}
+        <Box p={4} bg="white">
+          <Flex
+            gap={2}
+            flexWrap="wrap"
+            justifyContent="center"
+          >
+            {traits.map((trait, index) => (
+              <Badge
+                key={index}
+                colorScheme={colorScheme}
+                variant="subtle"
+                px={3}
+                py={1}
+                borderRadius="full"
+                fontSize="sm"
+                fontWeight="medium"
+              >
+                {trait}
+              </Badge>
+            ))}
+          </Flex>
+        </Box>
       </Box>
 
-      {/* Traits Section */}
-      <Box p={4} bg="white">
-        <Flex
-          gap={2}
-          flexWrap="wrap"
-          justifyContent="center"
-        >
-          {traits.map((trait, index) => (
-            <Badge
-              key={index}
-              colorScheme={colorScheme}
-              variant="subtle"
-              px={3}
-              py={1}
-              borderRadius="full"
-              fontSize="sm"
-              fontWeight="medium"
+      {/* Fullscreen Modal */}
+      {isModalOpen && (
+        <Portal>
+          <Box
+            position="fixed"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="blackAlpha.800"
+            zIndex={9999}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            onClick={() => setIsModalOpen(false)}
+            cursor="pointer"
+            p={4}
+          >
+            {/* Close button */}
+            <Box
+              position="absolute"
+              top={4}
+              right={4}
+              color="white"
+              fontSize="2xl"
+              fontWeight="bold"
+              cursor="pointer"
+              _hover={{ color: "gray.300" }}
+              onClick={() => setIsModalOpen(false)}
             >
-              {trait}
-            </Badge>
-          ))}
-        </Flex>
-      </Box>
-    </Box>
+              ✕
+            </Box>
+            
+            {/* Poster Image */}
+            <Image
+              src={imageSrc}
+              alt={`${weatherType} personality type`}
+              maxH="90vh"
+              maxW="90vw"
+              objectFit="contain"
+              borderRadius="lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Box>
+        </Portal>
+      )}
+    </>
   );
 };
