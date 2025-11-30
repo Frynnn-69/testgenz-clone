@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
 import { saveTestResult, getTestResult, clearTestResult } from './localStorage';
-import { TestResult } from '@/types';
+import { TestResult, ExtendedTestResult } from '@/types';
 
 describe('localStorage utilities - Property-Based Tests', () => {
   const STORAGE_KEY = 'testgenz_result';
@@ -42,7 +42,7 @@ describe('localStorage utilities - Property-Based Tests', () => {
     jest.clearAllMocks();
   });
 
-  // Arbitrary generator for valid TestResult
+  // Arbitrary generator for valid TestResult (base fields only)
   const testResultArbitrary = fc.record({
     weatherType: fc.constantFrom('Sunny', 'Rainy', 'Stormy', 'Cloudy'),
     analysis: fc.string({ minLength: 1, maxLength: 500 }),
@@ -58,7 +58,7 @@ describe('localStorage utilities - Property-Based Tests', () => {
    * 
    * For any successful API response with test result data, when saved to localStorage,
    * the stored data should contain all required fields (weatherType, analysis, userData, timestamp)
-   * and use the consistent key "testgenz_result".
+   * plus extended fields (temperaments, developmentAreas, careerRecommendations).
    * 
    * Validates: Requirements 2.1, 2.2
    */
@@ -81,7 +81,7 @@ describe('localStorage utilities - Property-Based Tests', () => {
         // Parse the saved data
         const parsedData = JSON.parse(savedData);
         
-        // Verify all required fields are present and match
+        // Verify all base fields are present and match
         expect(parsedData).toHaveProperty('weatherType', testResult.weatherType);
         expect(parsedData).toHaveProperty('analysis', testResult.analysis);
         expect(parsedData).toHaveProperty('timestamp', testResult.timestamp);
@@ -93,9 +93,29 @@ describe('localStorage utilities - Property-Based Tests', () => {
           expect(parsedData.userData).toHaveProperty('email', testResult.userData.email);
         }
         
-        // Verify the data can be retrieved correctly
+        // Verify extended fields are present (with defaults applied)
+        expect(parsedData).toHaveProperty('temperaments');
+        expect(Array.isArray(parsedData.temperaments)).toBe(true);
+        expect(parsedData.temperaments.length).toBe(4);
+        
+        expect(parsedData).toHaveProperty('developmentAreas');
+        expect(Array.isArray(parsedData.developmentAreas)).toBe(true);
+        expect(parsedData.developmentAreas.length).toBeGreaterThanOrEqual(3);
+        
+        expect(parsedData).toHaveProperty('careerRecommendations');
+        expect(Array.isArray(parsedData.careerRecommendations)).toBe(true);
+        expect(parsedData.careerRecommendations.length).toBeGreaterThanOrEqual(4);
+        
+        // Verify the data can be retrieved correctly with extended fields
         const retrievedResult = getTestResult();
-        expect(retrievedResult).toEqual(testResult);
+        expect(retrievedResult).not.toBeNull();
+        expect(retrievedResult!.weatherType).toBe(testResult.weatherType);
+        expect(retrievedResult!.analysis).toBe(testResult.analysis);
+        expect(retrievedResult!.timestamp).toBe(testResult.timestamp);
+        expect(retrievedResult!.userData.nama).toBe(testResult.userData.nama);
+        expect(retrievedResult!.temperaments).toBeDefined();
+        expect(retrievedResult!.developmentAreas).toBeDefined();
+        expect(retrievedResult!.careerRecommendations).toBeDefined();
       }),
       { numRuns: 100 }
     );

@@ -5,7 +5,16 @@ import type {
   UserData,
   AnalysisResponse,
   ErrorResponse,
+  TemperamentScore,
 } from "@/types/index";
+
+// Weather type colors for UI display
+const WEATHER_COLORS: { [key: string]: string } = {
+  Sunny: "orange.400",
+  Stormy: "red.500",
+  Rainy: "blue.500",
+  Cloudy: "green.400",
+};
 
 interface RequestBody {
   answers: Answer[];
@@ -38,14 +47,28 @@ export async function POST(
       );
     }
 
-    const { weatherType, uniqueSummary } = await getPersonalityAnalysis(
-      answers,
-      userData,
-    );
+    const { 
+      weatherType, 
+      uniqueSummary, 
+      temperamentScores,
+      developmentAreas,
+      careerRecommendations 
+    } = await getPersonalityAnalysis(answers, userData);
+
+    // Convert weather scores to array format with colors
+    const temperaments: TemperamentScore[] = [
+      { name: "Sunny", percentage: temperamentScores.Sunny, color: WEATHER_COLORS.Sunny },
+      { name: "Stormy", percentage: temperamentScores.Stormy, color: WEATHER_COLORS.Stormy },
+      { name: "Rainy", percentage: temperamentScores.Rainy, color: WEATHER_COLORS.Rainy },
+      { name: "Cloudy", percentage: temperamentScores.Cloudy, color: WEATHER_COLORS.Cloudy },
+    ];
 
     const responseData: AnalysisResponse = {
       result: weatherType,
       analysis: uniqueSummary,
+      temperaments,
+      developmentAreas,
+      careerRecommendations,
     };
     return NextResponse.json(responseData);
   } catch (error) {

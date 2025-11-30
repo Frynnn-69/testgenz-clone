@@ -1,8 +1,17 @@
 import { saveTestResult, getTestResult, clearTestResult } from './localStorage';
-import { TestResult } from '@/types';
+import { TestResult, ExtendedTestResult } from '@/types';
+import { TEMPERAMENT_COLORS } from '@/components/result/weatherMetadata';
 
 describe('localStorage utilities', () => {
   const STORAGE_KEY = 'testgenz_result';
+  
+  // Default temperaments that are applied when saving
+  const DEFAULT_TEMPERAMENTS = [
+    { name: 'Sanguinis', percentage: 25, color: TEMPERAMENT_COLORS.Sanguinis },
+    { name: 'Koleris', percentage: 25, color: TEMPERAMENT_COLORS.Koleris },
+    { name: 'Melankolis', percentage: 25, color: TEMPERAMENT_COLORS.Melankolis },
+    { name: 'Plegmatis', percentage: 25, color: TEMPERAMENT_COLORS.Plegmatis },
+  ];
   
   // Mock localStorage
   let localStorageMock: { [key: string]: string };
@@ -42,7 +51,7 @@ describe('localStorage utilities', () => {
   });
 
   describe('saveTestResult', () => {
-    it('should save valid test result to localStorage', () => {
+    it('should save valid test result with extended defaults to localStorage', () => {
       const testResult: TestResult = {
         weatherType: 'Sunny',
         analysis: 'You are a bright and optimistic person',
@@ -55,14 +64,19 @@ describe('localStorage utilities', () => {
 
       saveTestResult(testResult);
 
-      expect(setItemSpy).toHaveBeenCalledWith(
-        STORAGE_KEY,
-        JSON.stringify(testResult)
-      );
-      expect(localStorageMock[STORAGE_KEY]).toBe(JSON.stringify(testResult));
+      expect(setItemSpy).toHaveBeenCalled();
+      
+      // Verify the saved data includes extended defaults
+      const savedData = JSON.parse(localStorageMock[STORAGE_KEY]);
+      expect(savedData.weatherType).toBe(testResult.weatherType);
+      expect(savedData.analysis).toBe(testResult.analysis);
+      expect(savedData.userData).toEqual(testResult.userData);
+      expect(savedData.temperaments).toEqual(DEFAULT_TEMPERAMENTS);
+      expect(savedData.developmentAreas).toEqual(['Fokus', 'Konsistensi', 'Detail']); // Sunny defaults
+      expect(savedData.careerRecommendations).toEqual(['Marketing', 'Sales', 'Entertainment', 'Public Relations']); // Sunny defaults
     });
 
-    it('should save test result without email', () => {
+    it('should save test result without email and apply weather-specific defaults', () => {
       const testResult: TestResult = {
         weatherType: 'Rainy',
         analysis: 'You are introspective',
@@ -75,7 +89,36 @@ describe('localStorage utilities', () => {
       saveTestResult(testResult);
 
       expect(setItemSpy).toHaveBeenCalled();
-      expect(localStorageMock[STORAGE_KEY]).toBe(JSON.stringify(testResult));
+      
+      // Verify the saved data includes Rainy-specific defaults
+      const savedData = JSON.parse(localStorageMock[STORAGE_KEY]);
+      expect(savedData.weatherType).toBe('Rainy');
+      expect(savedData.developmentAreas).toEqual(['Overthinking', 'Perfeksionis', 'Sensitif']); // Rainy defaults
+      expect(savedData.careerRecommendations).toEqual(['Research', 'Accounting', 'Engineering', 'Writing']); // Rainy defaults
+    });
+
+    it('should preserve existing extended fields when provided', () => {
+      const extendedResult: ExtendedTestResult = {
+        weatherType: 'Sunny',
+        analysis: 'You are bright',
+        userData: { nama: 'Test User' },
+        timestamp: '2025-01-15T10:30:00.000Z',
+        temperaments: [
+          { name: 'Sanguinis', percentage: 60, color: 'orange.400' },
+          { name: 'Koleris', percentage: 20, color: 'red.500' },
+          { name: 'Melankolis', percentage: 10, color: 'blue.500' },
+          { name: 'Plegmatis', percentage: 10, color: 'green.400' },
+        ],
+        developmentAreas: ['Custom Area 1', 'Custom Area 2', 'Custom Area 3'],
+        careerRecommendations: ['Custom Career 1', 'Custom Career 2', 'Custom Career 3', 'Custom Career 4'],
+      };
+
+      saveTestResult(extendedResult);
+
+      const savedData = JSON.parse(localStorageMock[STORAGE_KEY]);
+      expect(savedData.temperaments).toEqual(extendedResult.temperaments);
+      expect(savedData.developmentAreas).toEqual(extendedResult.developmentAreas);
+      expect(savedData.careerRecommendations).toEqual(extendedResult.careerRecommendations);
     });
 
     it('should throw error for invalid test result structure', () => {
@@ -91,7 +134,7 @@ describe('localStorage utilities', () => {
   });
 
   describe('getTestResult', () => {
-    it('should retrieve existing test result from localStorage', () => {
+    it('should retrieve existing test result with extended defaults from localStorage', () => {
       const testResult: TestResult = {
         weatherType: 'Cloudy',
         analysis: 'You are calm and balanced',
@@ -107,7 +150,14 @@ describe('localStorage utilities', () => {
       const result = getTestResult();
 
       expect(getItemSpy).toHaveBeenCalledWith(STORAGE_KEY);
-      expect(result).toEqual(testResult);
+      expect(result).not.toBeNull();
+      expect(result!.weatherType).toBe(testResult.weatherType);
+      expect(result!.analysis).toBe(testResult.analysis);
+      expect(result!.userData).toEqual(testResult.userData);
+      // Should have extended defaults applied
+      expect(result!.temperaments).toEqual(DEFAULT_TEMPERAMENTS);
+      expect(result!.developmentAreas).toEqual(['Inisiatif', 'Asertivitas', 'Motivasi']); // Cloudy defaults
+      expect(result!.careerRecommendations).toEqual(['Counseling', 'HR', 'Teaching', 'Healthcare']); // Cloudy defaults
     });
 
     it('should return null when no data exists', () => {

@@ -114,7 +114,24 @@ const answerMappings: {
   },
 };
 
-export function determineWeatherType(answers: Answer[]): string {
+
+
+export interface TemperamentScores {
+  Sunny: number;
+  Stormy: number;
+  Rainy: number;
+  Cloudy: number;
+}
+
+export interface AnalysisResult {
+  weatherType: string;
+  temperamentScores: TemperamentScores;
+}
+
+/**
+ * Calculate raw scores for each weather type from answers
+ */
+function calculateRawScores(answers: Answer[]): { [key: string]: number } {
   const scores: { [key: string]: number } = {
     Sunny: 0,
     Rainy: 0,
@@ -137,6 +154,36 @@ export function determineWeatherType(answers: Answer[]): string {
     }
   });
 
+  return scores;
+}
+
+/**
+ * Convert raw weather scores to weather percentages
+ */
+function convertToWeatherPercentages(rawScores: { [key: string]: number }): TemperamentScores {
+  const total = Object.values(rawScores).reduce((sum, score) => sum + score, 0);
+  
+  // Avoid division by zero
+  if (total === 0) {
+    return {
+      Sunny: 25,
+      Stormy: 25,
+      Rainy: 25,
+      Cloudy: 25,
+    };
+  }
+
+  return {
+    Sunny: Math.round((rawScores.Sunny / total) * 100),
+    Stormy: Math.round((rawScores.Stormy / total) * 100),
+    Rainy: Math.round((rawScores.Rainy / total) * 100),
+    Cloudy: Math.round((rawScores.Cloudy / total) * 100),
+  };
+}
+
+export function determineWeatherType(answers: Answer[]): string {
+  const scores = calculateRawScores(answers);
+
   let highestScore = -1;
   let determinedType = "Cloudy"; // Default jika semua 0
   for (const type in scores) {
@@ -148,4 +195,30 @@ export function determineWeatherType(answers: Answer[]): string {
   }
   console.log("Final Scores:", scores);
   return determinedType;
+}
+
+/**
+ * Analyze answers and return both weather type and temperament percentages
+ */
+export function analyzePersonality(answers: Answer[]): AnalysisResult {
+  const rawScores = calculateRawScores(answers);
+  
+  let highestScore = -1;
+  let weatherType = "Cloudy";
+  for (const type in rawScores) {
+    if (rawScores[type] > highestScore) {
+      highestScore = rawScores[type];
+      weatherType = type;
+    }
+  }
+
+  const temperamentScores = convertToWeatherPercentages(rawScores);
+  
+  console.log("Final Scores:", rawScores);
+  console.log("Weather Percentages:", temperamentScores);
+  
+  return {
+    weatherType,
+    temperamentScores,
+  };
 }

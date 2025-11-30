@@ -1,347 +1,362 @@
-# Design Document - Result Page
+# Design Document - Result Page Redesign
 
 ## Overview
 
-Fitur Result Page adalah halaman terpisah yang menampilkan hasil analisis tes kepribadian berdasarkan weather type. Halaman ini akan menggantikan penggunaan alert yang ada saat ini dengan tampilan yang lebih profesional dan informatif. Data hasil tes akan disimpan di localStorage untuk memungkinkan akses dari halaman manapun dan tetap persisten meskipun user melakukan refresh.
-
-Desain ini menggunakan arsitektur component-based dengan parent-child pattern, di mana setiap weather type memiliki komponen visual yang unik namun dengan layout yang konsisten.
+Redesign total halaman hasil tes kepribadian (`/result`) dengan tampilan modern menggunakan layout dua kolom. Kolom kiri menampilkan hasil utama (weather type, result card, deskripsi), sedangkan kolom kanan menampilkan detail breakdown (komposisi temperamen, area pengembangan, karir yang cocok). Desain menggunakan warna cream/beige sebagai background dengan aksen oranye/coklat.
 
 ## Architecture
 
-### High-Level Architecture
+### High-Level Layout
 
 ```
-┌─────────────────┐
-│   Test Page     │
-│   (/test)       │
-└────────┬────────┘
-         │
-         │ 1. Submit answers
-         ▼
-┌─────────────────┐
-│  API /analyze   │
-│                 │
-└────────┬────────┘
-         │
-         │ 2. Return result
-         ▼
-┌─────────────────┐
-│  localStorage   │◄──────┐
-│  (save result)  │       │
-└────────┬────────┘       │
-         │                │
-         │ 3. Navigate    │ 4. Read on mount
-         ▼                │
-┌─────────────────┐       │
-│  Result Page    │───────┘
-│   (/result)     │
-└─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    Result Page (cream background)                │
+├─────────────────────────────┬───────────────────────────────────┤
+│      LEFT COLUMN            │         RIGHT COLUMN              │
+│  ┌───────────────────────┐  │  ┌─────────────────────────────┐  │
+│  │ "Kamu adalah"         │  │  │ Komposisi Temperamen Kamu   │  │
+│  │ SUNNY (orange text)   │  │  │ ┌─────────────────────────┐ │  │
+│  │ "Si Pemikir yg Detail"│  │  │ │ Sanguinis    ████████ 80%│ │  │
+│  │                       │  │  │ │ Koleris      ██       20%│ │  │
+│  │ ┌─────────────────┐   │  │  │ │ Melankolis            0% │ │  │
+│  │ │  Result Card    │   │  │  │ │ Plegmatis             0% │ │  │
+│  │ │  (you got...)   │   │  │  │ └─────────────────────────┘ │  │
+│  │ │  SUNNY          │   │  │  └─────────────────────────────┘  │
+│  │ │  [traits]       │   │  │                                   │
+│  │ └─────────────────┘   │  │  ┌─────────────────────────────┐  │
+│  │                       │  │  │ 🌱 Area Pengembangan        │  │
+│  │ "Melankolis adalah..."│  │  │ • Overthinking              │  │
+│  │                       │  │  │ • Perfeksionis              │  │
+│  │ [Bagikan] [Unduh PDF] │  │  │ • Sensitif                  │  │
+│  └───────────────────────┘  │  └─────────────────────────────┘  │
+│                             │                                   │
+│                             │  ┌─────────────────────────────┐  │
+│                             │  │ 💼 Karir yang Cocok         │  │
+│                             │  │ [Research] [Accounting]     │  │
+│                             │  │ [Engineering] [Writing]     │  │
+│                             │  └─────────────────────────────┘  │
+├─────────────────────────────┴───────────────────────────────────┤
+│              [🏠 Kembali ke Beranda]  [🔄 Ulangi Tes]           │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Hierarchy
 
 ```
 ResultPage
-├── WeatherResultContainer (parent)
-│   ├── SunnyResult (conditional)
-│   │   ├── BackgroundPlaceholder
-│   │   ├── ResultContent
-│   │   └── ActionButtons
-│   ├── RainyResult (conditional)
-│   │   ├── BackgroundPlaceholder
-│   │   ├── ResultContent
-│   │   └── ActionButtons
-│   ├── StormyResult (conditional)
-│   │   ├── BackgroundPlaceholder
-│   │   ├── ResultContent
-│   │   └── ActionButtons
-│   └── CloudyResult (conditional)
-│       ├── BackgroundPlaceholder
-│       ├── ResultContent
-│       └── ActionButtons
-└── ErrorState (conditional)
+├── ResultPageLayout (2-column grid)
+│   ├── LeftColumn
+│   │   ├── ResultHeader ("Kamu adalah", weather type, subtitle)
+│   │   ├── ResultCard (visual card with traits)
+│   │   ├── ResultDescription (short description)
+│   │   └── ShareButtons (Bagikan Hasil, Unduh PDF)
+│   └── RightColumn
+│       ├── TemperamentSection
+│       │   └── TemperamentBar (x4)
+│       ├── DevelopmentSection
+│       │   └── DevelopmentItem (x3+)
+│       └── CareerSection
+│           └── CareerTag (x4+)
+└── FooterNavigation
+    ├── BackToHomeButton
+    └── RetakeTestButton
 ```
 
 ## Components and Interfaces
 
-### 1. Result Page (`/src/app/result/page.tsx`)
+### 1. ResultPageLayout (`/src/components/result/ResultPageLayout.tsx`)
 
-Main page component yang bertanggung jawab untuk:
-- Membaca data dari localStorage saat mount
-- Menentukan weather component mana yang akan di-render
-- Handle error state jika data tidak tersedia
+Container utama dengan layout 2 kolom responsif.
 
-**Props**: None (menggunakan localStorage)
-
-**State**:
 ```typescript
-{
-  testResult: TestResult | null;
-  isLoading: boolean;
-  error: string | null;
+interface ResultPageLayoutProps {
+  testResult: ExtendedTestResult;
 }
 ```
 
-### 2. Weather Result Container (`/src/components/result/WeatherResultContainer.tsx`)
+### 2. ResultHeader (`/src/components/result/ResultHeader.tsx`)
 
-Container component yang menerima test result dan merender weather component yang sesuai.
+Menampilkan header "Kamu adalah", nama weather type, dan subtitle.
 
-**Props**:
 ```typescript
-interface WeatherResultContainerProps {
-  testResult: TestResult;
-}
-```
-
-**Responsibilities**:
-- Conditional rendering berdasarkan weather type
-- Pass data ke child components
-
-### 3. Weather-Specific Components
-
-Setiap weather type memiliki komponen sendiri:
-- `SunnyResult.tsx`
-- `RainyResult.tsx`
-- `StormyResult.tsx`
-- `CloudyResult.tsx`
-
-**Props** (sama untuk semua):
-```typescript
-interface WeatherResultProps {
+interface ResultHeaderProps {
   weatherType: string;
-  analysis: string;
-  userData: UserData;
-  timestamp: string;
+  subtitle: string;
+  colorScheme: string; // "orange" | "blue" | "purple" | "gray"
 }
 ```
 
-**Structure** (sama untuk semua):
-- Background placeholder (untuk gambar di masa depan)
-- Result content (weather type, analysis summary)
-- Action buttons (kembali ke home, ulang tes)
+### 3. ResultCard (`/src/components/result/ResultCard.tsx`)
 
-### 4. Shared Components
+Card visual dengan gambar hasil dan traits.
 
-#### ResultContent (`/src/components/result/ResultContent.tsx`)
-Menampilkan konten hasil analisis.
-
-**Props**:
 ```typescript
-interface ResultContentProps {
+interface ResultCardProps {
   weatherType: string;
-  analysis: string;
-  userName: string;
+  traits: string[];
+  imageSrc?: string;
 }
 ```
 
-#### ActionButtons (`/src/components/result/ActionButtons.tsx`)
-Tombol navigasi untuk user.
+### 4. TemperamentSection (`/src/components/result/TemperamentSection.tsx`)
 
-**Props**:
+Section untuk komposisi temperamen dengan progress bars.
+
 ```typescript
-interface ActionButtonsProps {
+interface TemperamentSectionProps {
+  temperaments: TemperamentScore[];
+}
+
+interface TemperamentScore {
+  name: string;      // "Sanguinis" | "Koleris" | "Melankolis" | "Plegmatis"
+  percentage: number; // 0-100
+  color: string;     // Chakra color token
+}
+```
+
+### 5. TemperamentBar (`/src/components/result/TemperamentBar.tsx`)
+
+Single progress bar untuk satu temperamen.
+
+```typescript
+interface TemperamentBarProps {
+  name: string;
+  percentage: number;
+  color: string;
+}
+```
+
+### 6. DevelopmentSection (`/src/components/result/DevelopmentSection.tsx`)
+
+Section untuk area pengembangan.
+
+```typescript
+interface DevelopmentSectionProps {
+  areas: string[];
+}
+```
+
+### 7. CareerSection (`/src/components/result/CareerSection.tsx`)
+
+Section untuk rekomendasi karir.
+
+```typescript
+interface CareerSectionProps {
+  careers: string[];
+}
+```
+
+### 8. FooterNavigation (`/src/components/result/FooterNavigation.tsx`)
+
+Footer dengan tombol navigasi.
+
+```typescript
+interface FooterNavigationProps {
   onBackToHome: () => void;
   onRetakeTest: () => void;
 }
 ```
 
+### 9. ShareButtons (`/src/components/result/ShareButtons.tsx`)
+
+Tombol untuk share dan download.
+
+```typescript
+interface ShareButtonsProps {
+  onShare: () => void;
+  onDownloadPDF: () => void;
+}
+```
+
 ## Data Models
 
-### TestResult Interface
+### Extended TestResult Interface
 
 ```typescript
-interface TestResult {
-  weatherType: string;      // "Sunny" | "Rainy" | "Stormy" | "Cloudy"
-  analysis: string;         // AI-generated summary
-  userData: UserData;       // User information
-  timestamp: string;        // ISO 8601 format
+interface ExtendedTestResult {
+  weatherType: string;           // "Sunny" | "Rainy" | "Stormy" | "Cloudy"
+  analysis: string;              // AI-generated summary
+  userData: UserData;            // User information
+  timestamp: string;             // ISO 8601 format
+  temperaments: TemperamentScore[]; // NEW: temperament breakdown
+  developmentAreas: string[];    // NEW: areas to improve
+  careerRecommendations: string[]; // NEW: suitable careers
+}
+
+interface TemperamentScore {
+  name: string;      // "Sanguinis" | "Koleris" | "Melankolis" | "Plegmatis"
+  percentage: number; // 0-100
+  color: string;     // Chakra color token
 }
 ```
 
-### UserData Interface (existing)
+### Weather Type Metadata
 
 ```typescript
-interface UserData {
-  nama: string;
-  email?: string;
+interface WeatherTypeMetadata {
+  name: string;
+  subtitle: string;
+  description: string;
+  colorScheme: string;
+  traits: string[];
+  defaultDevelopmentAreas: string[];
+  defaultCareers: string[];
 }
-```
 
-### LocalStorage Structure
-
-**Key**: `testgenz_result`
-
-**Value** (JSON string):
-```json
-{
-  "weatherType": "Rainy",
-  "analysis": "You are the Intense Spring Tempest...",
-  "userData": {
-    "nama": "John Doe",
-    "email": "john@example.com"
+const WEATHER_METADATA: Record<string, WeatherTypeMetadata> = {
+  sunny: {
+    name: "Sunny",
+    subtitle: "Si Optimis yang Ceria",
+    description: "Sanguinis adalah pribadi yang ceria, optimis, dan mudah bergaul...",
+    colorScheme: "orange",
+    traits: ["Optimistic", "Adaptable", "Creative"],
+    defaultDevelopmentAreas: ["Fokus", "Konsistensi", "Detail"],
+    defaultCareers: ["Marketing", "Sales", "Entertainment", "Public Relations"]
   },
-  "timestamp": "2025-01-15T10:30:00.000Z"
-}
+  rainy: {
+    name: "Rainy",
+    subtitle: "Si Pemikir yang Detail",
+    description: "Melankolis adalah pribadi analitis yang menghargai detail...",
+    colorScheme: "blue",
+    traits: ["Analytical", "Detail-oriented", "Thoughtful"],
+    defaultDevelopmentAreas: ["Overthinking", "Perfeksionis", "Sensitif"],
+    defaultCareers: ["Research", "Accounting", "Engineering", "Writing"]
+  },
+  stormy: {
+    name: "Stormy",
+    subtitle: "Si Pemimpin yang Tegas",
+    description: "Koleris adalah pribadi yang tegas, ambisius, dan berorientasi hasil...",
+    colorScheme: "purple",
+    traits: ["Decisive", "Ambitious", "Goal-oriented"],
+    defaultDevelopmentAreas: ["Kesabaran", "Empati", "Fleksibilitas"],
+    defaultCareers: ["Management", "Entrepreneurship", "Law", "Politics"]
+  },
+  cloudy: {
+    name: "Cloudy",
+    subtitle: "Si Pendamai yang Tenang",
+    description: "Plegmatis adalah pribadi yang tenang, sabar, dan mudah beradaptasi...",
+    colorScheme: "gray",
+    traits: ["Calm", "Patient", "Diplomatic"],
+    defaultDevelopmentAreas: ["Inisiatif", "Asertivitas", "Motivasi"],
+    defaultCareers: ["Counseling", "HR", "Teaching", "Healthcare"]
+  }
+};
 ```
 
-## Utility Functions
-
-### localStorage Utilities (`/src/lib/localStorage.ts`)
+### Temperament Colors
 
 ```typescript
-// Save test result to localStorage
-export function saveTestResult(result: TestResult): void
-
-// Get test result from localStorage
-export function getTestResult(): TestResult | null
-
-// Clear test result from localStorage
-export function clearTestResult(): void
-
-// Validate test result structure
-function validateTestResult(data: any): boolean
+const TEMPERAMENT_COLORS: Record<string, string> = {
+  Sanguinis: "orange.400",
+  Koleris: "red.500",
+  Melankolis: "blue.500",
+  Plegmatis: "green.400"
+};
 ```
-
-**Error Handling**:
-- Try-catch untuk localStorage access (bisa disabled di browser)
-- Validasi struktur data sebelum return
-- Return null jika data invalid atau tidak ada
 
 ## Correctness Properties
 
-
 *A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-### Property 1: localStorage Save Completeness
-*For any* successful API response with test result data, when saved to localStorage, the stored data should contain all required fields (weatherType, analysis, userData, timestamp) and use the consistent key "testgenz_result".
-**Validates: Requirements 2.1, 2.2**
+### Property 1: Weather Type to Subtitle Mapping
+*For any* valid weather type (Sunny, Rainy, Stormy, Cloudy), the Result Page should display the corresponding subtitle from the metadata mapping.
+**Validates: Requirements 1.2**
 
-### Property 2: Error State Handling
-*For any* invalid or missing data in localStorage (malformed JSON, missing fields, null value), the Result Page should display an error state with informative message and navigation options.
-**Validates: Requirements 2.4**
+### Property 2: Temperament Progress Bars Rendering
+*For any* test result with temperament scores, the Result Page should render exactly 4 progress bars with correct labels (Sanguinis, Koleris, Melankolis, Plegmatis) and percentages matching the input data.
+**Validates: Requirements 2.2, 2.3**
 
-### Property 3: Utility Function Error Resilience
-*For any* invalid input to localStorage utility functions (invalid JSON, malformed data structure, missing required fields), the functions should handle errors gracefully without throwing exceptions and return appropriate error indicators.
-**Validates: Requirements 3.3, 3.4**
+### Property 3: Development Areas Minimum Count
+*For any* test result, the Result Page should display at least 3 development areas, using defaults from weather metadata if not provided in the data.
+**Validates: Requirements 3.3**
 
-### Property 4: Weather Component Rendering
-*For any* valid weather type (Sunny, Rainy, Stormy, Cloudy), the Result Page should render the corresponding parent component with consistent layout structure and all required child components.
-**Validates: Requirements 5.1, 5.5**
+### Property 4: Career Recommendations Minimum Count
+*For any* test result, the Result Page should display at least 4 career recommendations, using defaults from weather metadata if not provided in the data.
+**Validates: Requirements 4.3**
+
+### Property 5: Navigation Button Functionality
+*For any* user interaction with navigation buttons, clicking "Kembali ke Beranda" should navigate to "/" and clicking "Ulangi Tes" should navigate to "/test".
+**Validates: Requirements 5.4, 5.5**
+
+### Property 6: LocalStorage Round Trip
+*For any* valid ExtendedTestResult, saving to localStorage and then reading should return an equivalent object with all fields preserved.
+**Validates: Requirements 7.2**
+
+### Property 7: Data Validation Completeness
+*For any* data read from localStorage, the validation function should verify the presence of all required fields (weatherType, analysis, userData, temperaments, developmentAreas, careerRecommendations).
+**Validates: Requirements 7.3**
 
 ## Error Handling
 
-### localStorage Access Errors
+### Missing Data Fields
+- Jika `temperaments` tidak ada, gunakan default `[{name: "Sanguinis", percentage: 25}, ...]`
+- Jika `developmentAreas` tidak ada, gunakan default dari weather metadata
+- Jika `careerRecommendations` tidak ada, gunakan default dari weather metadata
 
-**Scenario**: localStorage is disabled or unavailable
-**Handling**:
-- Wrap all localStorage operations in try-catch
-- Show user-friendly error message
-- Provide fallback: display data from memory if available
-- Log error to console for debugging
+### Invalid Weather Type
+- Tampilkan error state dengan opsi retake test
+- Log error untuk debugging
 
-### Data Validation Errors
-
-**Scenario**: Data in localStorage is corrupted or invalid
-**Handling**:
-- Validate data structure before using
-- Check for required fields (weatherType, analysis, userData)
-- Show error state with "Retake Test" button
-- Clear invalid data from localStorage
-
-### Navigation Errors
-
-**Scenario**: User navigates to /result without completing test
-**Handling**:
-- Check for data in localStorage on mount
-- If no data, show error state
-- Provide "Start Test" button to redirect to /test
-
-### API Errors (from Test Page)
-
-**Scenario**: API /analyze fails or returns error
-**Handling**:
-- Don't navigate to Result Page
-- Show error message in Test Page using Chakra UI Toast or Alert
-- Allow user to retry submission
-- Don't save invalid data to localStorage
+### LocalStorage Errors
+- Wrap semua operasi dalam try-catch
+- Return null jika data tidak valid
+- Tampilkan error state dengan navigasi ke test page
 
 ## Testing Strategy
 
 ### Unit Tests
 
-**Test Coverage**:
-1. localStorage utility functions
-   - `saveTestResult()` with valid data
-   - `getTestResult()` with existing data
-   - `getTestResult()` with no data
-   - `getTestResult()` with invalid JSON
-   - `clearTestResult()` functionality
-   - Data validation logic
+1. **Component Rendering Tests**
+   - ResultHeader renders dengan weather type dan subtitle yang benar
+   - TemperamentBar renders dengan label dan persentase yang benar
+   - DevelopmentSection renders dengan bullet points
+   - CareerSection renders dengan tags
+   - FooterNavigation renders dengan 2 tombol
 
-2. Component rendering
-   - Result Page with valid data
-   - Result Page with no data (error state)
-   - Each weather component (Sunny, Rainy, Stormy, Cloudy)
-   - ResultContent component
-   - ActionButtons component
-
-3. Navigation logic
-   - Button click handlers
-   - Router navigation calls
-
-**Testing Tools**:
-- Jest for unit tests
-- React Testing Library for component tests
-- Mock localStorage for testing
+2. **Data Transformation Tests**
+   - Weather metadata lookup
+   - Default values fallback
+   - Temperament color mapping
 
 ### Property-Based Tests
 
-Property-based tests will use **fast-check** library for JavaScript/TypeScript. Each test should run minimum 100 iterations.
+Library: **fast-check** (minimum 100 iterations per test)
 
-**Test Coverage**:
+1. **Property 1: Weather Type to Subtitle Mapping**
+   - Generate random weather types
+   - Verify subtitle matches metadata
+   - **Feature: result-page, Property 1: Weather Type to Subtitle Mapping**
 
-1. **Property 1: localStorage Save Completeness**
-   - Generate random test results with all required fields
-   - Save each to localStorage
-   - Verify all fields are present and correct in stored data
-   - **Feature: result-page, Property 1: localStorage Save Completeness**
+2. **Property 2: Temperament Progress Bars Rendering**
+   - Generate random temperament scores (0-100)
+   - Verify 4 bars rendered with correct values
+   - **Feature: result-page, Property 2: Temperament Progress Bars Rendering**
 
-2. **Property 2: Error State Handling**
-   - Generate various invalid data scenarios (null, undefined, malformed JSON, missing fields)
-   - Load Result Page with each invalid data
-   - Verify error state is always displayed
-   - **Feature: result-page, Property 2: Error State Handling**
+3. **Property 3: Development Areas Minimum Count**
+   - Generate test results with varying development areas (0-10)
+   - Verify at least 3 are displayed
+   - **Feature: result-page, Property 3: Development Areas Minimum Count**
 
-3. **Property 3: Utility Function Error Resilience**
-   - Generate random invalid inputs (invalid JSON strings, objects with missing fields)
-   - Call utility functions with each invalid input
-   - Verify no exceptions are thrown and appropriate error values are returned
-   - **Feature: result-page, Property 3: Utility Function Error Resilience**
+4. **Property 4: Career Recommendations Minimum Count**
+   - Generate test results with varying careers (0-10)
+   - Verify at least 4 are displayed
+   - **Feature: result-page, Property 4: Career Recommendations Minimum Count**
 
-4. **Property 4: Weather Component Rendering**
-   - Generate test results with each weather type
-   - Render Result Page with each
-   - Verify correct component is rendered and has consistent structure
-   - **Feature: result-page, Property 4: Weather Component Rendering**
+5. **Property 5: Navigation Button Functionality**
+   - Simulate button clicks
+   - Verify navigation calls
+   - **Feature: result-page, Property 5: Navigation Button Functionality**
 
-### Integration Tests
+6. **Property 6: LocalStorage Round Trip**
+   - Generate random ExtendedTestResult objects
+   - Save and load from localStorage
+   - Verify equality
+   - **Feature: result-page, Property 6: LocalStorage Round Trip**
 
-**Test Scenarios**:
-1. Complete flow: Test Page → API → localStorage → Result Page
-2. Refresh behavior: Result Page maintains data after refresh
-3. Multiple test completions: New results overwrite old ones
-4. Cross-component data access: Other pages can read test results
-
-### Manual Testing Checklist
-
-- [ ] Visual appearance of each weather type component
-- [ ] Responsive design on mobile, tablet, desktop
-- [ ] Background placeholder positioning
-- [ ] Text readability and formatting
-- [ ] Button interactions and hover states
-- [ ] Navigation flow from Test Page to Result Page
-- [ ] Error states display correctly
-- [ ] localStorage persistence across page refreshes
+7. **Property 7: Data Validation Completeness**
+   - Generate objects with missing fields
+   - Verify validation catches all missing required fields
+   - **Feature: result-page, Property 7: Data Validation Completeness**
 
 ## Implementation Notes
 
@@ -349,99 +364,39 @@ Property-based tests will use **fast-check** library for JavaScript/TypeScript. 
 
 ```
 src/
-├── app/
-│   ├── result/
-│   │   └── page.tsx                 # Main Result Page
-│   └── test/
-│       └── page.tsx                 # Updated Test Page (remove alert)
 ├── components/
 │   └── result/
-│       ├── WeatherResultContainer.tsx
-│       ├── SunnyResult.tsx
-│       ├── RainyResult.tsx
-│       ├── StormyResult.tsx
-│       ├── CloudyResult.tsx
-│       ├── ResultContent.tsx
-│       ├── ActionButtons.tsx
-│       └── index.ts                 # Barrel export
+│       ├── index.ts
+│       ├── ResultPageLayout.tsx      # NEW
+│       ├── ResultHeader.tsx          # NEW
+│       ├── ResultCard.tsx            # NEW
+│       ├── TemperamentSection.tsx    # NEW
+│       ├── TemperamentBar.tsx        # NEW
+│       ├── DevelopmentSection.tsx    # NEW
+│       ├── CareerSection.tsx         # NEW
+│       ├── FooterNavigation.tsx      # NEW
+│       ├── ShareButtons.tsx          # NEW
+│       └── weatherMetadata.ts        # NEW
 ├── lib/
-│   └── localStorage.ts              # Utility functions
+│   └── localStorage.ts               # UPDATE: add ExtendedTestResult support
 └── types/
-    └── index.ts                     # Add TestResult interface
+    └── index.ts                      # UPDATE: add new interfaces
 ```
 
-### Styling Approach
+### Styling
 
-**Weather Type Colors** (Chakra UI color palette):
-- **Sunny**: yellow/orange tones (`yellow.400`, `orange.300`)
-- **Rainy**: blue/gray tones (`blue.500`, `gray.600`)
-- **Stormy**: dark purple/gray tones (`purple.700`, `gray.700`)
-- **Cloudy**: light gray/blue tones (`gray.400`, `blue.200`)
+**Color Palette:**
+- Background: `#FDF8F3` (cream/beige)
+- Card background: `white`
+- Primary accent: `orange.500` / `#ED8936`
+- Secondary accent: `brown.600` / `#744210`
+- Text: `gray.700`
 
-**Layout Consistency**:
-- All weather components use same Box structure
-- Same spacing and padding values
-- Same typography hierarchy
-- Same button placement and sizing
+**Responsive Breakpoints:**
+- Desktop (>= 768px): 2 columns
+- Mobile (< 768px): 1 column, stacked
 
-**Background Placeholder**:
-- Use Chakra UI `Box` with background color
-- Add text overlay: "Background image coming soon"
-- Position: absolute, full width/height
-- z-index: -1 (behind content)
-
-### Performance Considerations
-
-1. **localStorage Access**: Minimize reads/writes
-   - Read once on mount
-   - Write only after successful API response
-   - Use state management for in-memory data
-
-2. **Component Rendering**: Lazy load weather components if needed
-   - Currently not necessary (small components)
-   - Consider if components become heavy with images
-
-3. **Data Size**: Keep localStorage data minimal
-   - Only store essential fields
-   - Don't store full answer array (already processed)
-
-### Security Considerations
-
-1. **Data Validation**: Always validate data from localStorage
-   - User can manipulate localStorage via DevTools
-   - Don't trust data blindly
-
-2. **XSS Prevention**: Sanitize analysis text from AI
-   - Use React's built-in XSS protection
-   - Don't use `dangerouslySetInnerHTML` unless necessary
-
-3. **Sensitive Data**: Don't store sensitive information
-   - Email is optional and not critical
-   - No passwords or tokens in localStorage
-
-## Future Enhancements
-
-1. **Background Images**:
-   - Add image upload/selection for each weather type
-   - Implement image optimization
-   - Add loading states for images
-
-2. **Share Functionality**:
-   - Generate shareable link with result ID
-   - Social media sharing buttons
-   - Download result as image
-
-3. **Result History**:
-   - Store multiple test results
-   - Show history page with all past results
-   - Compare results over time
-
-4. **Animations**:
-   - Add weather-themed animations (rain drops, sun rays, clouds moving)
-   - Smooth transitions between states
-   - Loading animations
-
-5. **Personalization**:
-   - Allow users to customize result page theme
-   - Save preferences in localStorage
-   - Custom background selection
+**Card Styling:**
+- Border radius: `xl` (16px)
+- Shadow: `lg`
+- Padding: `6` (24px)

@@ -7,7 +7,7 @@ import { ProgressBar, QuestionCard, LoadingOverlay } from "@/components/test";
 import { saveTestResult, saveTestResultToHistory } from "@/lib/localStorage";
 import { isUserAuthenticated, getCurrentUser } from "@/lib/userAuth";
 import type { Question } from "@/lib/questions";
-import type { TestResult, AnalysisResponse } from "@/types";
+import type { ExtendedTestResult, AnalysisResponse } from "@/types";
 
 // Helper function untuk menentukan section berdasarkan nomor soal
 const getSection = (questionNumber: number): string => {
@@ -148,12 +148,15 @@ export default function TestPage() {
 
       const result: AnalysisResponse = await response.json();
 
-      // Create TestResult object with all required fields
-      const testResult: TestResult = {
+      // Create ExtendedTestResult object with all required fields including AI analysis data
+      const testResult: ExtendedTestResult = {
         weatherType: result.result,
         analysis: result.analysis,
         userData: userData,
         timestamp: new Date().toISOString(),
+        temperaments: result.temperaments,
+        developmentAreas: result.developmentAreas,
+        careerRecommendations: result.careerRecommendations,
       };
 
       // Save result to localStorage (current result)

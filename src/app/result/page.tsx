@@ -3,13 +3,59 @@
 import { useState, useEffect } from "react";
 import { Box, Container, VStack, Text, Button, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { TestResult } from "@/types";
+import { ExtendedTestResult } from "@/types";
 import { getTestResult } from "@/lib/localStorage";
-import { WeatherResultContainer } from "@/components/result";
+import { ResultPageLayout } from "@/components/result/ResultPageLayout";
+import { getWeatherMetadata, TEMPERAMENT_COLORS } from "@/components/result/weatherMetadata";
+
+/**
+ * Apply fallback values for missing fields using weather metadata
+ * Ensures all required fields are present for ResultPageLayout
+ * Requirements: 1.1, 1.3, 1.4, 2.1, 3.1, 4.1, 6.1
+ */
+function applyFallbacks(result: ExtendedTestResult): ExtendedTestResult {
+  const metadata = getWeatherMetadata(result.weatherType);
+  
+  // Ensure weather types have valid data
+  let temperaments = result.temperaments;
+  if (!Array.isArray(temperaments) || temperaments.length === 0) {
+    temperaments = [
+      { name: "Sunny", percentage: 25, color: TEMPERAMENT_COLORS.Sunny },
+      { name: "Stormy", percentage: 25, color: TEMPERAMENT_COLORS.Stormy },
+      { name: "Rainy", percentage: 25, color: TEMPERAMENT_COLORS.Rainy },
+      { name: "Cloudy", percentage: 25, color: TEMPERAMENT_COLORS.Cloudy },
+    ];
+  } else {
+    // Ensure each weather type has a color
+    temperaments = temperaments.map(t => ({
+      ...t,
+      color: t.color || TEMPERAMENT_COLORS[t.name] || "gray.400"
+    }));
+  }
+  
+  // Ensure developmentAreas has at least 3 items (Requirement 3.3)
+  let developmentAreas = result.developmentAreas;
+  if (!Array.isArray(developmentAreas) || developmentAreas.length < 3) {
+    developmentAreas = metadata?.defaultDevelopmentAreas || ["Fokus", "Konsistensi", "Detail"];
+  }
+  
+  // Ensure careerRecommendations has at least 4 items (Requirement 4.3)
+  let careerRecommendations = result.careerRecommendations;
+  if (!Array.isArray(careerRecommendations) || careerRecommendations.length < 4) {
+    careerRecommendations = metadata?.defaultCareers || ["Marketing", "Sales", "Entertainment", "Public Relations"];
+  }
+  
+  return {
+    ...result,
+    temperaments,
+    developmentAreas,
+    careerRecommendations,
+  };
+}
 
 export default function ResultPage() {
   const router = useRouter();
-  const [testResult, setTestResult] = useState<TestResult | null>(null);
+  const [testResult, setTestResult] = useState<ExtendedTestResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +67,9 @@ export default function ResultPage() {
       if (!result) {
         setError("No test result found. Please complete the test first.");
       } else {
-        setTestResult(result);
+        // Apply fallbacks for missing fields using weather metadata
+        const resultWithFallbacks = applyFallbacks(result);
+        setTestResult(resultWithFallbacks);
       }
     } catch (err) {
       console.error("Error loading test result:", err);
@@ -39,10 +87,10 @@ export default function ResultPage() {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        bg="gray.50"
+        bg="#FDF8F3"
       >
         <VStack gap={4}>
-          <Spinner size="xl" color="blue.500" />
+          <Spinner size="xl" color="orange.500" />
           <Text fontSize="lg" color="gray.600">
             Loading your results...
           </Text>
@@ -59,7 +107,7 @@ export default function ResultPage() {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        bg="gray.50"
+        bg="#FDF8F3"
         px={4}
       >
         <Container maxW="container.md">
@@ -89,7 +137,7 @@ export default function ResultPage() {
               </Text>
               <VStack gap={3} width="100%">
                 <Button
-                  colorScheme="blue"
+                  colorScheme="orange"
                   size="lg"
                   width={{ base: "100%", md: "auto" }}
                   onClick={() => router.push("/test")}
@@ -113,10 +161,7 @@ export default function ResultPage() {
     );
   }
 
-  // Valid data - render weather result container
-  return (
-    <Box minHeight="100vh" bg="gray.50">
-      <WeatherResultContainer testResult={testResult} />
-    </Box>
-  );
+  // Valid data - render new ResultPageLayout with 2-column design
+  // Requirements: 1.1, 1.3, 1.4, 2.1, 3.1, 4.1, 6.1
+  return <ResultPageLayout testResult={testResult} />;
 }
