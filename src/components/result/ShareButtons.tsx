@@ -12,7 +12,7 @@ export interface ShareButtonsProps {
  * Renders share and download PDF buttons with outline variant
  * - "Bagikan Hasil" button with share icon
  * - "Unduh PDF" button with download icon
- * 
+ *
  * Requirements: 1.5
  */
 export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {

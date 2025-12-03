@@ -22,32 +22,20 @@ export default function PreTestForm() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load existing user data from localStorage on mount
   useEffect(() => {
-    try {
-      const savedUserData = localStorage.getItem("testgenz_user");
-      if (savedUserData) {
-        const userData = JSON.parse(savedUserData);
-        if (userData.nama) {
-          setNama(userData.nama);
-        }
-        if (userData.email) {
-          setEmail(userData.email);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to load user data:", err);
+    const user = getCurrentUser();
+    if (user) {
+      setNama(user.nama);
+      if (user.email) setEmail(user.email);
     }
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate nama
+
     if (!nama || nama.trim() === "") {
       toaster.create({
         title: "Nama wajib diisi",
-        description: "Silakan masukkan nama Anda untuk melanjutkan",
         type: "error",
         duration: 3000,
       });
@@ -56,109 +44,151 @@ export default function PreTestForm() {
 
     setIsLoading(true);
 
-    // Simpan data user ke localStorage untuk digunakan saat submit tes
     const userData = {
       nama: nama.trim(),
       email: email && email.trim() !== "" ? email.trim() : undefined,
     };
-    
+
     try {
-      // Check if name has changed
       const currentUser = getCurrentUser();
       const nameChanged = currentUser && currentUser.nama !== userData.nama;
-      
-      // Save new user data
+
       saveUserData(userData);
-      
-      // If name changed, update all history entries with new name
+
       if (nameChanged) {
         updateHistoryUserName(userData.nama);
       }
-      
+
       setTimeout(() => {
         setIsLoading(false);
-        toaster.create({
-          title: "Satu langkah lagi!",
-          description: "Data diri diterima. Memuat tes kepribadian...",
-          type: "success",
-          duration: 3000,
-        });
-        
-        // Navigate ke halaman tes
         router.push("/test");
-      }, 1500);
+      }, 1000);
     } catch (err) {
       setIsLoading(false);
-      toaster.create({
-        title: "Gagal menyimpan data",
-        description: "Terjadi kesalahan. Silakan coba lagi",
-        type: "error",
-        duration: 3000,
-      });
+      toaster.create({ title: "Gagal menyimpan data", type: "error" });
     }
+  };
+
+  // --- PALET WARNA (Earth Tone) ---
+  const colors = {
+    primary: "#8F6E56", // Coklat Utama
+    hover: "#755943", // Coklat Gelap (Hover)
+    bg: "white", // Card Background
+    textMain: "#171717",
+    textMuted: "#737373",
+    border: "#E5E5E5",
   };
 
   return (
     <Box
       as="form"
       onSubmit={handleSubmit}
-      p={8}
-      bg="whiteAlpha.100"
-      backdropFilter="blur(10px)"
-      border="1px solid"
-      borderColor="whiteAlpha.200"
+      width="100%"
+      maxW="450px"
+      bg={colors.bg}
       borderRadius="2xl"
-      boxShadow="xl"
-      width="full"
-      maxWidth="450px"
+      p={{ base: 6, md: 8 }}
+      shadow="2xl"
+      border="1px solid"
+      borderColor={colors.border}
+      position="relative"
+      zIndex={10}
     >
-      <VStack gap={6}>
-        <Heading as="h1" size="lg" fontWeight="bold">
-          Tes Tipe Cuaca
-        </Heading>
-        <Text fontSize="md" color="gray.300" textAlign="center">
-          Kamu tipe yang cerah seperti matahari, atau tenang seperti hujan?
-          <br />
-          Mulai tes untuk cari tahu.
-        </Text>
+      <VStack gap={6} align="stretch">
+        <Box textAlign="center">
+          <Heading
+            as="h1"
+            size="lg"
+            fontWeight="bold"
+            color={colors.primary}
+            mb={2}
+          >
+            Tes Tipe Cuaca
+          </Heading>
+          <Text fontSize="md" color={colors.textMuted} lineHeight="tall">
+            Kamu tipe yang cerah seperti matahari, atau tenang seperti hujan?
+          </Text>
+        </Box>
 
-        {/* Input untuk Nama */}
-        <Field.Root required width="full">
-          <Field.Label color="white">Nama</Field.Label>
-          <Input
-            variant="subtle"
-            placeholder="Nama kamu"
-            value={nama}
-            onChange={(e) => setNama(e.target.value)}
-            bg="whiteAlpha.300"
-            color="white"
-            _placeholder={{ color: "gray.400" }}
-          />
-        </Field.Root>
+        <Stack gap={5}>
+          {/* Input Nama */}
+          <Field.Root required width="full">
+            <Field.Label color={colors.textMain} fontWeight="medium" mb={1.5}>
+              Nama Panggilan
+            </Field.Label>
+            <Input
+              variant="subtle" // Style lebih soft/transparan
+              size="lg"
+              placeholder="Contoh: Budi"
+              value={nama}
+              onChange={(e) => setNama(e.target.value)}
+              // BACKGROUND TRANSPARAN (Abu tipis)
+              bg="whiteAlpha.300"
+              color={colors.textMain}
+              borderRadius="lg"
+              _placeholder={{ color: "gray.400" }}
+              // Focus state tetap Coklat
+              _focus={{
+                bg: "white",
+                borderColor: colors.primary,
+                boxShadow: `0 0 0 1px ${colors.primary}`,
+                outline: "none",
+              }}
+              transition="all 0.2s"
+            />
+          </Field.Root>
 
-        {/* Input untuk Email (Optional) */}
-        <Field.Root width="full">
-          <Field.Label color="white">Email (Opsional)</Field.Label>
-          <Input
-            type="email"
-            variant="subtle"
-            placeholder="email@kamu.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            bg="whiteAlpha.300"
-            color="white"
-            _placeholder={{ color: "gray.400" }}
-          />
-        </Field.Root>
+          {/* Input Email */}
+          <Field.Root width="full">
+            <Field.Label color={colors.textMain} fontWeight="medium" mb={1.5}>
+              Email{" "}
+              <Text as="span" color="gray.400" fontWeight="normal">
+                (Opsional)
+              </Text>
+            </Field.Label>
+            <Input
+              type="email"
+              variant="subtle"
+              size="lg"
+              placeholder="email@kamu.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              // BACKGROUND TRANSPARAN
+              bg="blackAlpha.50"
+              color={colors.textMain}
+              borderRadius="lg"
+              _placeholder={{ color: "gray.400" }}
+              _focus={{
+                bg: "white",
+                borderColor: colors.primary,
+                boxShadow: `0 0 0 1px ${colors.primary}`,
+                outline: "none",
+              }}
+              transition="all 0.2s"
+            />
+          </Field.Root>
+        </Stack>
 
-        {/* Tombol Submit */}
         <Button
           type="submit"
-          colorPalette="teal"
           size="lg"
           width="full"
           loading={isLoading}
           loadingText="Menganalisa..."
+          bg={colors.primary}
+          color="white"
+          fontWeight="bold"
+          borderRadius="full"
+          mt={2}
+          _hover={{
+            bg: colors.hover,
+            transform: "translateY(-2px)",
+            shadow: "md",
+          }}
+          _active={{
+            transform: "translateY(0)",
+          }}
+          transition="all 0.2s"
         >
           Mulai Tes
         </Button>

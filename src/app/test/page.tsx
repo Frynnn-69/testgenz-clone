@@ -29,7 +29,7 @@ export default function TestPage() {
   useEffect(() => {
     const authenticated = isUserAuthenticated();
     setIsAuthenticated(authenticated);
-    
+
     if (!authenticated) {
       // Immediately redirect without showing the page
       router.replace("/?error=auth_required");
@@ -152,6 +152,9 @@ export default function TestPage() {
       const testResult: ExtendedTestResult = {
         weatherType: result.result,
         analysis: result.analysis,
+        analysisTitle: result.analysisTitle,
+        analysisShortTitle: result.analysisShortTitle,
+        analysisBody: result.analysisBody,
         userData: userData,
         timestamp: new Date().toISOString(),
         temperaments: result.temperaments,
@@ -161,7 +164,7 @@ export default function TestPage() {
 
       // Save result to localStorage (current result)
       saveTestResult(testResult);
-      
+
       // Also save to history
       saveTestResultToHistory(testResult);
 
@@ -169,7 +172,10 @@ export default function TestPage() {
       router.push("/result");
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : "Terjadi kesalahan saat memproses hasil tes.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Terjadi kesalahan saat memproses hasil tes.";
       setError(errorMessage);
       console.error("Error analyzing test:", err);
     }

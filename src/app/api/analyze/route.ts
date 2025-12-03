@@ -47,25 +47,53 @@ export async function POST(
       );
     }
 
-    const { 
-      weatherType, 
-      uniqueSummary, 
+    const {
+      weatherType,
+      uniqueSummary,
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
       temperamentScores,
       developmentAreas,
-      careerRecommendations 
+      careerRecommendations,
     } = await getPersonalityAnalysis(answers, userData);
+
+    console.log("AI analysis parsed (server):", {
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
+    });
 
     // Convert weather scores to array format with colors
     const temperaments: TemperamentScore[] = [
-      { name: "Sunny", percentage: temperamentScores.Sunny, color: WEATHER_COLORS.Sunny },
-      { name: "Stormy", percentage: temperamentScores.Stormy, color: WEATHER_COLORS.Stormy },
-      { name: "Rainy", percentage: temperamentScores.Rainy, color: WEATHER_COLORS.Rainy },
-      { name: "Cloudy", percentage: temperamentScores.Cloudy, color: WEATHER_COLORS.Cloudy },
+      {
+        name: "Sunny",
+        percentage: temperamentScores.Sunny,
+        color: WEATHER_COLORS.Sunny,
+      },
+      {
+        name: "Stormy",
+        percentage: temperamentScores.Stormy,
+        color: WEATHER_COLORS.Stormy,
+      },
+      {
+        name: "Rainy",
+        percentage: temperamentScores.Rainy,
+        color: WEATHER_COLORS.Rainy,
+      },
+      {
+        name: "Cloudy",
+        percentage: temperamentScores.Cloudy,
+        color: WEATHER_COLORS.Cloudy,
+      },
     ];
 
     const responseData: AnalysisResponse = {
       result: weatherType,
       analysis: uniqueSummary,
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
       temperaments,
       developmentAreas,
       careerRecommendations,

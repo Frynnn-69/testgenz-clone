@@ -7,7 +7,12 @@ export interface CareerSectionProps {
 }
 
 // Default career recommendations as fallback
-const DEFAULT_CAREERS = ["Marketing", "Sales", "Entertainment", "Public Relations"];
+const DEFAULT_CAREERS = [
+  "Marketing",
+  "Sales",
+  "Entertainment",
+  "Public Relations",
+];
 
 /**
  * CareerSection component
@@ -15,25 +20,20 @@ const DEFAULT_CAREERS = ["Marketing", "Sales", "Entertainment", "Public Relation
  * - Header with briefcase icon (💼)
  * - Tags/badges with orange border
  * - Ensures minimum 4 items with fallback to defaults
- * 
+ *
  * Requirements: 4.1, 4.2, 4.3
  */
 export const CareerSection = ({ careers }: CareerSectionProps) => {
   // Ensure minimum 4 items - use provided careers or fallback to defaults
-  const displayCareers = careers && careers.length >= 4 
-    ? careers 
-    : careers && careers.length > 0
-      ? [...careers, ...DEFAULT_CAREERS.slice(0, 4 - careers.length)]
-      : DEFAULT_CAREERS;
+  const displayCareers =
+    careers && careers.length >= 4
+      ? careers
+      : careers && careers.length > 0
+        ? [...careers, ...DEFAULT_CAREERS.slice(0, 4 - careers.length)]
+        : DEFAULT_CAREERS;
 
   return (
-    <Box
-      bg="white"
-      borderRadius="xl"
-      boxShadow="lg"
-      p={6}
-      width="100%"
-    >
+    <Box bg="white" borderRadius="xl" boxShadow="lg" p={6} width="100%">
       <Heading
         as="h3"
         fontSize="lg"
@@ -44,26 +44,24 @@ export const CareerSection = ({ careers }: CareerSectionProps) => {
         alignItems="center"
         gap={2}
       >
-        <Box as="span" role="img" aria-label="briefcase">💼</Box>
+        <Box as="span" role="img" aria-label="briefcase">
+          💼
+        </Box>
         Karir yang Cocok
       </Heading>
-      
+
       <Flex flexWrap="wrap" gap={2}>
         {displayCareers.map((career, index) => (
           <Box
             key={`${career}-${index}`}
             px={3}
-            py={1.5}
+            py={2.5}
             borderRadius="full"
             border="2px solid"
-            borderColor="orange.500"
+            borderColor="orange.800"
             bg="white"
           >
-            <Text
-              fontSize="sm"
-              fontWeight="medium"
-              color="gray.700"
-            >
+            <Text fontSize="sm" fontWeight="medium" color="gray.700">
               {career}
             </Text>
           </Box>

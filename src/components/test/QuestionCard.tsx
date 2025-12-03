@@ -29,9 +29,10 @@ export const QuestionCard = ({
       borderColor="gray.100"
     >
       <Stack align="stretch" gap={6}>
-        {/* Badge Section */}
+        {/* Badge Section: Ubah Blue jadi Coklat */}
         <Badge
-          colorPalette="blue"
+          bg="#8F6E56"
+          color="white"
           fontSize="xs"
           fontWeight="semibold"
           textTransform="uppercase"

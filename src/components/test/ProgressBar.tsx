@@ -13,7 +13,12 @@ export const ProgressBar = ({
 
   return (
     <Box width="100%" mb={8}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Text fontSize="sm" color="gray.600">
           Pertanyaan {currentQuestion} dari {totalQuestions}
         </Text>
@@ -21,12 +26,14 @@ export const ProgressBar = ({
           {Math.round(percentage)}%
         </Text>
       </Box>
-      <Progress.Root value={percentage} size="sm" colorPalette="blue">
+
+      {/* size="sm" TETAP (tidak diperbesar) */}
+      <Progress.Root value={percentage} size="sm">
         <Progress.Track bg="gray.200" borderRadius="full">
-          <Progress.Range />
+          {/* Ubah warna fill menjadi Coklat */}
+          <Progress.Range bg="#8F6E56" borderRadius="full" />
         </Progress.Track>
       </Progress.Root>
     </Box>
   );
 };
-

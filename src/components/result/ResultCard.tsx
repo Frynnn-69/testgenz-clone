@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { Box, Flex, Badge, Image, Portal } from "@chakra-ui/react";
+import { ShareButtons } from "./ShareButtons";
 
 export interface ResultCardProps {
   weatherType: string;
   traits: string[];
   imageSrc: string;
+  onShare?: () => void;
+  onDownloadPDF?: () => void;
 }
 
 /**
@@ -16,10 +19,16 @@ export interface ResultCardProps {
  * - Click on poster to view fullscreen modal
  * - Displays traits as badges/labels
  * - Styled according to weather type
- * 
+ *
  * Requirements: 1.3
  */
-export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) => {
+export const ResultCard = ({
+  weatherType,
+  traits,
+  imageSrc,
+  onShare,
+  onDownloadPDF,
+}: ResultCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Map weather type to color scheme
@@ -28,7 +37,7 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
       sunny: "orange",
       rainy: "blue",
       stormy: "purple",
-      cloudy: "gray"
+      cloudy: "gray",
     };
     return colorMap[type.toLowerCase()] || "orange";
   };
@@ -39,9 +48,11 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
       sunny: "linear(to-br, orange.100, yellow.50)",
       rainy: "linear(to-br, blue.100, cyan.50)",
       stormy: "linear(to-br, purple.100, pink.50)",
-      cloudy: "linear(to-br, gray.100, gray.50)"
+      cloudy: "linear(to-br, gray.100, gray.50)",
     };
-    return gradientMap[type.toLowerCase()] || "linear(to-br, orange.100, yellow.50)";
+    return (
+      gradientMap[type.toLowerCase()] || "linear(to-br, orange.100, yellow.50)"
+    );
   };
 
   const colorScheme = getColorScheme(weatherType);
@@ -53,40 +64,42 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
         borderRadius="xl"
         boxShadow="lg"
         overflow="hidden"
-        mb={6}
+        mb={0}
+        w="100%"
+        display="flex"
+        flexDirection="column"
+        height="100%"
       >
         {/* Poster Image Section */}
         <Box
           bgGradient={getBackgroundGradient(weatherType)}
-          p={{ base: 4, md: 6 }}
+          p={{ base: 2, md: 3 }}
           textAlign="center"
-          minH={{ base: "350px", md: "450px" }}
+          flex="1"
           display="flex"
-          flexDirection="column"
           alignItems="center"
           justifyContent="center"
           cursor="pointer"
           onClick={() => setIsModalOpen(true)}
-          _hover={{ opacity: 0.9 }}
-          transition="opacity 0.2s"
+          _hover={{ opacity: 0.95 }}
+          transition="opacity 0.15s"
           title="Klik untuk memperbesar"
         >
           <Image
             src={imageSrc}
             alt={`${weatherType} personality type`}
-            maxH={{ base: "320px", md: "420px" }}
+            maxW="100%"
+            maxH="100%"
             width="auto"
+            height="auto"
             objectFit="contain"
+            borderRadius="md"
           />
         </Box>
 
         {/* Traits Section */}
         <Box p={4} bg="white">
-          <Flex
-            gap={2}
-            flexWrap="wrap"
-            justifyContent="center"
-          >
+          <Flex gap={2} flexWrap="wrap" justifyContent="center">
             {traits.map((trait, index) => (
               <Badge
                 key={index}
@@ -102,6 +115,21 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
               </Badge>
             ))}
           </Flex>
+        </Box>
+
+        {/* Action Buttons (moved inside card to keep spacing consistent) */}
+        <Box
+          p={4}
+          bg="white"
+          borderTopWidth={1}
+          borderColor="gray.50"
+          display="flex"
+          justifyContent="center"
+        >
+          <ShareButtons
+            onShare={onShare ?? (() => {})}
+            onDownloadPDF={onDownloadPDF ?? (() => {})}
+          />
         </Box>
       </Box>
 
@@ -137,7 +165,7 @@ export const ResultCard = ({ weatherType, traits, imageSrc }: ResultCardProps) =
             >
               ✕
             </Box>
-            
+
             {/* Poster Image */}
             <Image
               src={imageSrc}

@@ -1,5 +1,6 @@
 import groq from "./groqClient";
 import { analyzePersonality, TemperamentScores } from "./temperamentLogic";
+import { getWeatherMetadata } from "@/components/result/weatherMetadata";
 import type { Answer, UserData } from "@/types/index";
 
 const MODEL_NAME = "llama-3.1-8b-instant";
@@ -7,6 +8,10 @@ const MODEL_NAME = "llama-3.1-8b-instant";
 export interface ExtendedAnalysisResult {
   weatherType: string;
   uniqueSummary: string;
+  // Optional structured fields derived from the AI summary
+  analysisTitle?: string;
+  analysisShortTitle?: string;
+  analysisBody?: string;
   temperamentScores: TemperamentScores;
   developmentAreas: string[];
   careerRecommendations: string[];
@@ -20,12 +25,11 @@ function createSummaryPrompt(
   return `You are a creative psychologist analyzing a personality test based on the Four Temperaments (Sanguine=Sunny, Choleric=Stormy, Melancholic=Rainy, Phlegmatic=Cloudy).
 The user, ${userData.nama}, has been determined to have the primary weather type: ${weatherType}.
 
-Based on their specific answers below, generate a creative and insightful 2-sentence personality summary (around 30-50 words).
+Generate EXACTLY two sentences with the following strict rules:
 
-IMPORTANT:
-1.  Start with a unique "Weather Title" based on their type (e.g., "You are the Soothing Afternoon Rain..." or "You are the Unpredictable Summer Storm...").
-2.  The second sentence MUST be a personalized description that creatively explains WHY, connecting their metaphor to their personality traits (e.g., "...bringing quiet reflection and deep analysis to everything you touch." or "...full of passionate energy that can change the mood in an instant.").
-3.  Do NOT add any extra text, greetings, or explanations. Only provide the 2-sentence summary.
+1) First sentence (SHORT TITLE, in English): Provide a concise "Weather Title" phrase (preferably 3-6 words) that starts like "You are ..." or a short imaginative phrase in English. Keep it short and punchy — think headline/label, not a long sentence.
+2) Second sentence (BODY, in Bahasa Indonesia): Provide a friendly, simple narrative in Indonesian (around 15-35 words) that explains WHY that title fits the user. Avoid heavy technical terms; use conversational, easy-to-read language.
+3) Return only the two sentences. Do NOT add any extra text, lists, or commentary.
 
 User's key answers:
 ${answerSummary}
@@ -58,23 +62,68 @@ Generate JSON now:`;
 }
 
 // Fallback data based on weather type
-const FALLBACK_DATA: { [key: string]: { developmentAreas: string[]; careerRecommendations: string[] } } = {
+const FALLBACK_DATA: {
+  [key: string]: {
+    developmentAreas: string[];
+    careerRecommendations: string[];
+  };
+} = {
   Sunny: {
-    developmentAreas: ["Fokus dan konsentrasi", "Konsistensi dalam pekerjaan", "Manajemen waktu"],
-    careerRecommendations: ["Marketing", "Sales", "Public Relations", "Entertainment", "Event Organizer"]
+    developmentAreas: [
+      "Fokus dan konsentrasi",
+      "Konsistensi dalam pekerjaan",
+      "Manajemen waktu",
+    ],
+    careerRecommendations: [
+      "Marketing",
+      "Sales",
+      "Public Relations",
+      "Entertainment",
+      "Event Organizer",
+    ],
   },
   Rainy: {
-    developmentAreas: ["Mengurangi overthinking", "Menerima ketidaksempurnaan", "Mengelola sensitivitas"],
-    careerRecommendations: ["Research", "Accounting", "Engineering", "Writing", "Data Analysis"]
+    developmentAreas: [
+      "Mengurangi overthinking",
+      "Menerima ketidaksempurnaan",
+      "Mengelola sensitivitas",
+    ],
+    careerRecommendations: [
+      "Research",
+      "Accounting",
+      "Engineering",
+      "Writing",
+      "Data Analysis",
+    ],
   },
   Stormy: {
-    developmentAreas: ["Kesabaran dengan orang lain", "Empati dan mendengarkan", "Fleksibilitas"],
-    careerRecommendations: ["Management", "Entrepreneurship", "Law", "Politics", "Business Development"]
+    developmentAreas: [
+      "Kesabaran dengan orang lain",
+      "Empati dan mendengarkan",
+      "Fleksibilitas",
+    ],
+    careerRecommendations: [
+      "Management",
+      "Entrepreneurship",
+      "Law",
+      "Politics",
+      "Business Development",
+    ],
   },
   Cloudy: {
-    developmentAreas: ["Mengambil inisiatif", "Asertivitas dalam komunikasi", "Motivasi diri"],
-    careerRecommendations: ["Counseling", "Human Resources", "Teaching", "Healthcare", "Customer Service"]
-  }
+    developmentAreas: [
+      "Mengambil inisiatif",
+      "Asertivitas dalam komunikasi",
+      "Motivasi diri",
+    ],
+    careerRecommendations: [
+      "Counseling",
+      "Human Resources",
+      "Teaching",
+      "Healthcare",
+      "Customer Service",
+    ],
+  },
 };
 
 export async function getPersonalityAnalysis(
@@ -90,12 +139,24 @@ export async function getPersonalityAnalysis(
     .join("\n");
 
   // Create prompts
-  const summaryPrompt = createSummaryPrompt(weatherType, userData, answerSummary);
+  const summaryPrompt = createSummaryPrompt(
+    weatherType,
+    userData,
+    answerSummary,
+  );
   const extendedPrompt = createExtendedPrompt(weatherType, temperamentScores);
 
   let uniqueSummary = "";
-  let developmentAreas = FALLBACK_DATA[weatherType]?.developmentAreas || FALLBACK_DATA.Cloudy.developmentAreas;
-  let careerRecommendations = FALLBACK_DATA[weatherType]?.careerRecommendations || FALLBACK_DATA.Cloudy.careerRecommendations;
+  // Parsed fields for structured summary (title, short title, and body)
+  let analysisTitle = "";
+  let analysisShortTitle = "";
+  let analysisBody = "";
+  let developmentAreas =
+    FALLBACK_DATA[weatherType]?.developmentAreas ||
+    FALLBACK_DATA.Cloudy.developmentAreas;
+  let careerRecommendations =
+    FALLBACK_DATA[weatherType]?.careerRecommendations ||
+    FALLBACK_DATA.Cloudy.careerRecommendations;
 
   try {
     console.log(`Attempting to call Groq model: ${MODEL_NAME}...`);
@@ -109,11 +170,105 @@ export async function getPersonalityAnalysis(
       top_p: 1,
     });
 
-    uniqueSummary = summaryCompletion.choices[0]?.message?.content?.trim() || "";
+    uniqueSummary =
+      summaryCompletion.choices[0]?.message?.content?.trim() || "";
 
     if (!uniqueSummary) {
       console.warn("Groq returned an empty summary.");
       throw new Error("AI did not return a summary.");
+    }
+
+    // Server-side parsing: extract first sentence as title, remainder as body.
+    const cleanedSummary = uniqueSummary
+      .replace(/^["“”']+|["“”']+$/g, "")
+      .trim();
+    let title = "";
+    let body = "";
+
+    // Try to split by first sentence terminator (., !, ?)
+    const sentenceMatch = cleanedSummary.match(/^(.+?[.!?])\s*([\s\S]*)$/);
+    if (sentenceMatch) {
+      title = sentenceMatch[1].trim();
+      body = (sentenceMatch[2] || "").trim();
+      console.log("Parsed AI summary into title/body (server):", {
+        title,
+        body,
+      });
+    } else {
+      // Fallbacks: newline, comma, or metadata
+      const parts = cleanedSummary
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (parts.length >= 2) {
+        title = parts[0];
+        body = parts.slice(1).join(" ");
+        console.log("Parsed AI summary by newline into title/body (server):", {
+          title,
+          body,
+        });
+      } else if (cleanedSummary.includes(",")) {
+        const idx = cleanedSummary.indexOf(",");
+        title = cleanedSummary.slice(0, idx + 1).trim();
+        body = cleanedSummary.slice(idx + 1).trim();
+        console.log("Parsed AI summary by comma into title/body (server):", {
+          title,
+          body,
+        });
+      } else {
+        const metadata = getWeatherMetadata(weatherType);
+        title =
+          metadata?.subtitle ||
+          metadata?.name ||
+          `Tipe Kepribadian: ${weatherType}`;
+        body = cleanedSummary;
+        console.warn(
+          "AI summary parsing fallback used (server): using metadata title",
+          { fallbackTitle: title },
+        );
+      }
+    }
+
+    analysisTitle = title;
+    analysisBody = body;
+
+    // Derive a compact short title for UI (safety net)
+    try {
+      const derive = (fullTitle: string) => {
+        if (!fullTitle || typeof fullTitle !== "string") return "";
+        const cleaned = fullTitle
+          .trim()
+          .replace(/^["“”']+|["“”']+$/g, "")
+          .trim();
+        // Remove common leading phrases like "You are" or "You're"
+        const withoutPrefix = cleaned
+          .replace(/^(You\s+are|You're|You\'re)\s+/i, "")
+          .trim();
+        // Take first up to 5 words
+        const words = withoutPrefix.split(/\s+/).filter(Boolean);
+        const MAX_WORDS = 5;
+        const short = words.slice(0, MAX_WORDS).join(" ");
+        // Append ellipsis if original is longer than our short
+        return short.length < withoutPrefix.length ? `${short}…` : short;
+      };
+
+      analysisShortTitle = derive(analysisTitle);
+      if (!analysisShortTitle) {
+        // As final fallback, use a metadata name or the first few words of body
+        const metadata = getWeatherMetadata(weatherType);
+        analysisShortTitle =
+          metadata?.name ||
+          (analysisBody
+            ? analysisBody.split(/\s+/).slice(0, 4).join(" ") + "…"
+            : `Tipe ${weatherType}`);
+      }
+
+      console.log("Derived short title (server):", analysisShortTitle);
+    } catch (err) {
+      console.warn("Failed to derive short title, ignoring:", err);
+      analysisShortTitle =
+        analysisTitle ||
+        (getWeatherMetadata(weatherType)?.name ?? `Tipe ${weatherType}`);
     }
 
     console.log("Groq call successful. Summary obtained.");
@@ -128,7 +283,8 @@ export async function getPersonalityAnalysis(
         top_p: 1,
       });
 
-      const extendedResponse = extendedCompletion.choices[0]?.message?.content?.trim() || "";
+      const extendedResponse =
+        extendedCompletion.choices[0]?.message?.content?.trim() || "";
 
       if (extendedResponse) {
         // Clean up response - remove markdown code blocks if present
@@ -146,29 +302,42 @@ export async function getPersonalityAnalysis(
 
         const parsed = JSON.parse(cleanedResponse);
 
-        if (Array.isArray(parsed.developmentAreas) && parsed.developmentAreas.length >= 3) {
+        if (
+          Array.isArray(parsed.developmentAreas) &&
+          parsed.developmentAreas.length >= 3
+        ) {
           developmentAreas = parsed.developmentAreas;
         }
-        if (Array.isArray(parsed.careerRecommendations) && parsed.careerRecommendations.length >= 4) {
+        if (
+          Array.isArray(parsed.careerRecommendations) &&
+          parsed.careerRecommendations.length >= 4
+        ) {
           careerRecommendations = parsed.careerRecommendations;
         }
 
         console.log("Extended analysis obtained.");
       }
     } catch (extendedError) {
-      console.warn("Failed to get extended analysis, using fallback data:", extendedError);
+      console.warn(
+        "Failed to get extended analysis, using fallback data:",
+        extendedError,
+      );
       // Use fallback data (already set above)
     }
 
     return {
       weatherType,
       uniqueSummary,
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
       temperamentScores,
       developmentAreas,
       careerRecommendations,
     };
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     console.error(`Error calling Groq AI (${MODEL_NAME}):`, errorMessage);
     throw new Error(`Failed to generate AI analysis using ${MODEL_NAME}.`);
   }

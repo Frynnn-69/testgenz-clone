@@ -14,18 +14,14 @@ export interface TemperamentSectionProps {
  * - Header with section title
  * - 4 TemperamentBar components for Sanguinis, Koleris, Melankolis, Plegmatis
  * - Card styling with background and shadow
- * 
+ *
  * Requirements: 2.1, 2.2
  */
-export const TemperamentSection = ({ temperaments }: TemperamentSectionProps) => {
+export const TemperamentSection = ({
+  temperaments,
+}: TemperamentSectionProps) => {
   return (
-    <Box
-      bg="white"
-      borderRadius="xl"
-      boxShadow="lg"
-      p={6}
-      width="100%"
-    >
+    <Box bg="white" borderRadius="xl" boxShadow="lg" p={6} width="100%">
       <Heading
         as="h3"
         fontSize="lg"
@@ -35,7 +31,7 @@ export const TemperamentSection = ({ temperaments }: TemperamentSectionProps) =>
       >
         Komposisi Cuaca Kamu
       </Heading>
-      
+
       <Box>
         {temperaments.map((temperament) => (
           <TemperamentBar

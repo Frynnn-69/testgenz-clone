@@ -13,6 +13,12 @@ export const ChoiceButton = ({
   isSelected = false,
   onClick,
 }: ChoiceButtonProps) => {
+  // Warna Design System (Earth Tone)
+  const colors = {
+    primary: "#8F6E56", // Coklat (Border/Text)
+    bgSelected: "#EDE2D4", // Krem (Background saat dipilih/hover)
+  };
+
   return (
     <Box
       as="button"
@@ -23,13 +29,15 @@ export const ChoiceButton = ({
       p={4}
       borderRadius="lg"
       border="1px solid"
-      borderColor={isSelected ? "blue.400" : "gray.200"}
-      bg={isSelected ? "blue.50" : "white"}
+      // UBAH: Logic warna border (Blue -> Coklat)
+      borderColor={isSelected ? colors.primary : "gray.200"}
+      // UBAH: Logic warna background (Blue.50 -> Krem)
+      bg={isSelected ? colors.bgSelected : "white"}
       textAlign="left"
       transition="all 0.2s"
       _hover={{
-        borderColor: "blue.300",
-        bg: "blue.50",
+        borderColor: colors.primary, // Hover border jadi Coklat
+        bg: colors.bgSelected, // Hover bg jadi Krem
         transform: "translateY(-2px)",
         shadow: "sm",
       }}
@@ -39,10 +47,11 @@ export const ChoiceButton = ({
       onClick={onClick}
       cursor="pointer"
     >
+      {/* UBAH: Warna Label (A, B, C...) jadi Coklat */}
       <Text
         fontSize="md"
         fontWeight="semibold"
-        color="blue.500"
+        color={colors.primary}
         flexShrink={0}
       >
         {label}.
@@ -53,4 +62,3 @@ export const ChoiceButton = ({
     </Box>
   );
 };
-

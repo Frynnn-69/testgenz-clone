@@ -26,7 +26,8 @@ function HomeContent() {
         startTransition(() => {
           toaster.create({
             title: "Akses Ditolak",
-            description: "Silakan isi data diri terlebih dahulu untuk memulai tes",
+            description:
+              "Silakan isi data diri terlebih dahulu untuk memulai tes",
             type: "error",
             duration: 4000,
           });
@@ -92,7 +93,8 @@ function HomeContent() {
               maxW="600px"
             >
               Apakah kamu cerah seperti matahari, tenang seperti hujan, atau
-              penuh energi seperti badai? Ikuti tes singkat ini untuk mengetahui!
+              penuh energi seperti badai? Ikuti tes singkat ini untuk
+              mengetahui!
             </Text>
           </VStack>
 
