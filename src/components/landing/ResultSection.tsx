@@ -58,9 +58,7 @@ const ResultSection = ({ results, onRetake }: ResultSectionProps) => {
           </p>
         </div>
 
-        <Card
-          className={`p-8 mb-8 border-4 border-${info.color} animate-scale-in`}
-        >
+        <Card>
           <div className="text-center mb-6">
             <h3 className={`text-5xl font-bold mb-4 text-${info.color}`}>
               {info.name}

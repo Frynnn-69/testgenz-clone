@@ -6,6 +6,10 @@
 All colors MUST be HSL.
 */
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer utilities {
   @keyframes float {
     0%, 100% {
