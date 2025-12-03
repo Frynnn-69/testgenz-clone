@@ -1,8 +1,14 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";  // Menggunakan import
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -34,10 +40,10 @@ export default {
           accent: "hsl(var(--earth-accent))",
         },
         temperament: {
-          sanguinis: "hsl(var(--temperament-sanguinis))",
-          koleris: "hsl(var(--temperament-koleris))",
-          melankolis: "hsl(var(--temperament-melankolis))",
-          plegmatis: "hsl(var(--temperament-plegmatis))",
+          sunny: "hsl(var(--temperament-sunny))",
+          stormy: "hsl(var(--temperament-stormy))",
+          rainy: "hsl(var(--temperament-rainy))",
+          cloudy: "hsl(var(--temperament-cloudy))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -111,5 +117,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],  // Menggunakan import pada plugins
 } satisfies Config;

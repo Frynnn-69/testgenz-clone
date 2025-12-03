@@ -20,15 +20,19 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight">
               Discover Your True Self dengan{" "}
-              <span className="text-earth-dark bg-gradient-to-r from-earth-dark to-earth-accent bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-earth-dark to-earth-accent bg-clip-text text-transparent">
                 Tes Temperamen
               </span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed">
-              Cuma butuh <span className="font-bold text-earth-dark">5 menit</span> untuk mengetahui 
-              kepribadian dominanmu: <span className="font-semibold">Sanguinis</span>, <span className="font-semibold">Koleris</span>, 
-              <span className="font-semibold"> Melankolis</span>, atau <span className="font-semibold">Plegmatis</span>. 
-              Hasil yang akurat dan berguna untuk self-development! 🚀
+              Cuma butuh{" "}
+              <span className="font-bold text-earth-dark">5 menit</span> untuk
+              mengetahui kepribadian dominanmu:{" "}
+              <span className="font-semibold">Sunny</span>,{" "}
+              <span className="font-semibold">Stormy</span>,
+              <span className="font-semibold"> Rainy</span>, atau{" "}
+              <span className="font-semibold">Cloudy</span>. Hasil yang akurat
+              dan berguna untuk self-development! 🚀
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
@@ -57,10 +61,13 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
           </div>
 
           {/* Right Column - Visual Illustrations */}
-          <div className="relative animate-fade-in h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] mt-8 lg:mt-0" style={{ animationDelay: "300ms" }}>
+          <div
+            className="relative animate-fade-in h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] mt-8 lg:mt-0"
+            style={{ animationDelay: "300ms" }}
+          >
             {/* Background Gradient Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-earth-light/30 via-earth-accent/20 to-primary/30 rounded-full blur-3xl animate-pulse" />
-            
+
             {/* Speech Bubble - Above middle character */}
             <div className="absolute top-4 sm:top-8 md:top-12 left-1/2 -translate-x-1/2 z-30 animate-float">
               <div className="relative bg-white rounded-xl md:rounded-2xl px-4 py-3 md:px-6 md:py-4 shadow-2xl border-2 border-earth-light max-w-[240px] sm:max-w-[280px] md:max-w-sm">
@@ -74,35 +81,46 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
             </div>
 
             {/* Sparkle Effects */}
-            <div className="absolute top-16 sm:top-20 right-4 sm:right-8 md:right-12 w-3 h-3 md:w-4 md:h-4 bg-yellow-400 rounded-full animate-ping opacity-75" 
-                 style={{ animationDelay: "0s", animationDuration: "2s" }} />
-            <div className="absolute top-24 sm:top-32 right-12 sm:right-20 md:right-32 w-2 h-2 md:w-3 md:h-3 bg-yellow-300 rounded-full animate-ping opacity-75" 
-                 style={{ animationDelay: "1s", animationDuration: "3s" }} />
-            <div className="absolute top-12 sm:top-16 left-4 sm:left-8 md:left-12 w-2 h-2 bg-yellow-500 rounded-full animate-ping opacity-75" 
-                 style={{ animationDelay: "0.5s", animationDuration: "2.5s" }} />
+            <div
+              className="absolute top-16 sm:top-20 right-4 sm:right-8 md:right-12 w-3 h-3 md:w-4 md:h-4 bg-yellow-400 rounded-full animate-ping opacity-75"
+              style={{ animationDelay: "0s", animationDuration: "2s" }}
+            />
+            <div
+              className="absolute top-24 sm:top-32 right-12 sm:right-20 md:right-32 w-2 h-2 md:w-3 md:h-3 bg-yellow-300 rounded-full animate-ping opacity-75"
+              style={{ animationDelay: "1s", animationDuration: "3s" }}
+            />
+            <div
+              className="absolute top-12 sm:top-16 left-4 sm:left-8 md:left-12 w-2 h-2 bg-yellow-500 rounded-full animate-ping opacity-75"
+              style={{ animationDelay: "0.5s", animationDuration: "2.5s" }}
+            />
 
             {/* Main Characters - Bottom Center (Smaller) */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] z-20">
-              <img 
-                src={genZCharacters} 
-                alt="Gen Z Characters" 
+              <img
+                src={genZCharacters}
+                alt="Gen Z Characters"
                 className="w-full h-auto drop-shadow-2xl"
-                style={{ 
-                  animation: "gentleBounce 3s ease-in-out infinite"
+                style={{
+                  animation: "gentleBounce 3s ease-in-out infinite",
                 }}
               />
             </div>
 
             {/* Decorative Circles */}
-            <div className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 md:left-8 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-earth-light/20 rounded-full blur-xl animate-pulse" 
-                 style={{ animationDelay: "0s", animationDuration: "4s" }} />
-            <div className="absolute bottom-16 sm:bottom-24 right-4 sm:right-8 md:right-16 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-earth-accent/20 rounded-full blur-2xl animate-pulse" 
-                 style={{ animationDelay: "1s", animationDuration: "5s" }} />
+            <div
+              className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 md:left-8 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-earth-light/20 rounded-full blur-xl animate-pulse"
+              style={{ animationDelay: "0s", animationDuration: "4s" }}
+            />
+            <div
+              className="absolute bottom-16 sm:bottom-24 right-4 sm:right-8 md:right-16 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-earth-accent/20 rounded-full blur-2xl animate-pulse"
+              style={{ animationDelay: "1s", animationDuration: "5s" }}
+            />
 
             {/* Stats Badge */}
             <div className="absolute -bottom-6 sm:-bottom-8 left-1/2 -translate-x-1/2 bg-background/95 backdrop-blur-md border-2 border-earth-light rounded-xl md:rounded-2xl px-3 sm:px-4 md:px-6 py-2 md:py-3 shadow-xl z-30 hover:scale-105 transition-transform">
-              <p className="text-[10px] sm:text-xs md:text-sm font-semibold text-center">
-                <span className="text-earth-dark">10,000+</span> orang telah menemukan diri mereka
+              <p className="text-[10px] sm:text-xs md:text-sm font-semibold text-center whitespace-nowrap">
+                <span className="text-earth-dark">10,000+</span> orang telah
+                menemukan diri mereka
               </p>
             </div>
           </div>

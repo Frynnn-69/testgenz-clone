@@ -58,10 +58,10 @@ All colors MUST be HSL.
     --earth-dark: 25 25% 45%;
     --earth-accent: 35 35% 65%;
 
-    --temperament-sanguinis: 45 95% 65%;
-    --temperament-koleris: 0 70% 60%;
-    --temperament-melankolis: 220 60% 60%;
-    --temperament-plegmatis: 140 50% 55%;
+    --temperament-sunny: 45 95% 65%;
+    --temperament-stormy: 0 70% 60%;
+    --temperament-rainy: 220 60% 60%;
+    --temperament-cloudy: 140 50% 55%;
 
     --muted: 30 25% 95%;
     --muted-foreground: 30 8% 45%;
