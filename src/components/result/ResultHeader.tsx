@@ -11,14 +11,6 @@ export interface ResultHeaderProps {
   fullTitle?: string; // Full AI-provided title for tooltip (if different)
 }
 
-/**
- * ResultHeader component
- * Improved visual styling:
- * - Use solid color headline for reliable contrast (gradient can sometimes be invisible)
- * - Add subtle text shadow as fallback to improve legibility on light backgrounds
- * - Decorative underline under subtitle
- * - Tooltip shows full title on hover
- */
 export const ResultHeader = ({
   weatherType,
   subtitle,
@@ -47,26 +39,24 @@ export const ResultHeader = ({
     ? titleOverride
     : weatherType.toUpperCase();
   const tooltipLabel = fullTitle || headingContent;
-  // keep gradientMap for potential future use but prefer a solid color for visibility
+
   const gradient = gradientMap[colorScheme] || gradientMap.orange;
   const colorToken = colorMap[colorScheme] || colorMap.orange;
-  // Project brown accent used for subtitle and small accents
-  const brownAccent = "#6B3A2A";
-  const tesAksen = "#008000";
+
+  const primaryColor = "#8F6E56";
 
   return (
-    <Box textAlign="center" mb={6} px={{ base: 4, md: 0 }}>
+    <Box textAlign="center" mb={8} px={{ base: 4, md: 0 }} pt={2}>
       <Heading
         as="h1"
-        fontSize={{ base: "2xl", md: "5xl" }}
-        fontWeight="extrabold"
-        mb={2}
-        whiteSpace="normal"
-        lineHeight={1.02}
-        color={colorToken}
-        // subtle shadow improves contrast in case the background is very light or gradient fails
-        textShadow="0 1px 0 rgba(255,255,255,0.6), 0 6px 18px rgba(0,0,0,0.06)"
+        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+        fontWeight="800"
+        mb={4}
+        lineHeight={1.2}
+        color={primaryColor} // Override warna jadi Coklat
         title={tooltipLabel}
+        letterSpacing="tight"
+        fontStyle="italic"
       >
         {headingContent}
       </Heading>
@@ -78,26 +68,24 @@ export const ResultHeader = ({
         flexDirection="column"
       >
         <Text
-          fontSize="md"
-          color={brownAccent}
-          fontStyle="italic"
-          fontWeight="semibold"
-          mb={2}
+          fontSize={{ base: "lg", md: "xl" }} // Diperbesar sedikit (sebelumnya md)
+          color="gray.600"
+          fontWeight="bold" // Font ganti jadi Bold (sebelumnya Italic Semibold)
+          mb={1} // Jarak ke garis bawah
           px={3}
-          py={0.5}
-          borderRadius="md"
+          letterSpacing="wide" // Sedikit renggang biar elegan
         >
           {subtitle}
         </Text>
 
-        {/* Decorative underline to give more visual weight to the header (project brown) */}
+        {/* Decorative Underline (Style Lama yang dikembalikan) */}
         <Box
-          width={{ base: "100px", md: "160px" }}
-          height="8px"
+          width={{ base: "120px", md: "180px" }} // Lebar disesuaikan text yang membesar
+          height="6px" // Sedikit lebih tipis biar manis
           borderRadius="full"
-          bg="orange.800"
-          opacity={0.12}
-          boxShadow={`0 6px 20px orange.800`}
+          bg={primaryColor} // Warna Coklat
+          opacity={0.3} // Transparansi agar tidak terlalu harsh
+          boxShadow={`0 4px 12px ${primaryColor}`} // Glow efek coklat
         />
       </Box>
     </Box>

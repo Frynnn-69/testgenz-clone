@@ -32,6 +32,8 @@ export const CareerSection = ({ careers }: CareerSectionProps) => {
         ? [...careers, ...DEFAULT_CAREERS.slice(0, 4 - careers.length)]
         : DEFAULT_CAREERS;
 
+  const primaryColor = "#8F6E56"; // Earth Tone Brown
+
   return (
     <Box bg="white" borderRadius="xl" boxShadow="lg" p={6} width="100%">
       <Heading
@@ -50,21 +52,33 @@ export const CareerSection = ({ careers }: CareerSectionProps) => {
         Karir yang Cocok
       </Heading>
 
-      <Flex flexWrap="wrap" gap={2}>
+      <Flex flexWrap="wrap" gap={3}>
         {displayCareers.map((career, index) => (
-          <Box
+          <Flex
             key={`${career}-${index}`}
-            px={3}
-            py={2.5}
-            borderRadius="full"
-            border="2px solid"
-            borderColor="orange.800"
+            align="center"
             bg="white"
+            border="1px solid"
+            borderColor={primaryColor}
+            color={primaryColor}
+            px={5}
+            py={2.5}
+            rounded="full" // Bentuk Bulat (Pill)
+            cursor="default"
+            transition="all 0.2s ease"
+            fontWeight="bold"
+            fontSize="sm"
+            shadow="sm"
+            // Efek Hover: Warna Terbalik (Background Coklat)
+            _hover={{
+              bg: primaryColor,
+              color: "white",
+              transform: "translateY(-2px)",
+              shadow: "md",
+            }}
           >
-            <Text fontSize="sm" fontWeight="medium" color="gray.700">
-              {career}
-            </Text>
-          </Box>
+            <Text>{career}</Text>
+          </Flex>
         ))}
       </Flex>
     </Box>

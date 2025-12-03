@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Flex, Badge, Image, Portal } from "@chakra-ui/react";
+import { Box, Flex, Badge, Image, Portal, HStack } from "@chakra-ui/react";
 import { ShareButtons } from "./ShareButtons";
 
 export interface ResultCardProps {
@@ -30,6 +30,7 @@ export const ResultCard = ({
   onDownloadPDF,
 }: ResultCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const primaryColor = "#8F6E56"; // Coklat Utama
 
   // Map weather type to color scheme
   const getColorScheme = (type: string): string => {
@@ -98,24 +99,35 @@ export const ResultCard = ({
         </Box>
 
         {/* Traits Section */}
-        <Box p={4} bg="white">
-          <Flex gap={2} flexWrap="wrap" justifyContent="center">
-            {traits.map((trait, index) => (
-              <Badge
-                key={index}
-                colorScheme={colorScheme}
-                variant="subtle"
-                px={3}
-                py={1}
-                borderRadius="full"
-                fontSize="sm"
-                fontWeight="medium"
-              >
-                {trait}
-              </Badge>
-            ))}
-          </Flex>
-        </Box>
+        <HStack justify="center" gap={3} wrap="wrap">
+          {traits.map((trait, index) => (
+            <Badge
+              key={index}
+              px={4}
+              py={1.5}
+              rounded="full"
+              bg="#FAFAFA"
+              color={primaryColor}
+              border="1px solid"
+              borderColor={primaryColor}
+              fontSize="xs"
+              fontWeight="bold"
+              letterSpacing="wide"
+              textTransform="uppercase"
+              shadow="sm"
+              transition="all 0.2s ease"
+              // Efek Hover: Warna Terbalik (Background Coklat)
+              _hover={{
+                bg: primaryColor,
+                color: "white",
+                transform: "translateY(-2px)",
+                shadow: "md",
+              }}
+            >
+              {trait}
+            </Badge>
+          ))}
+        </HStack>
 
         {/* Action Buttons (moved inside card to keep spacing consistent) */}
         <Box
