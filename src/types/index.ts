@@ -8,16 +8,16 @@ export interface UserData {
   email?: string;
 }
 
-// Tipe untuk respons dari endpoint /api/analyze
+// response endpoint /api/analyze
 export interface AnalysisResponse {
-  result: string; // Nama tipe cuaca (e.g., "Sunny", "Rainy")
-  analysis: string; // Kalimat unique summary dari AI
+  result: string; 
+  analysis: string; 
   analysisTitle?: string; // First-sentence title parsed from AI summary
-  analysisShortTitle?: string; // Compact short title (derived) for UI
+  analysisShortTitle?: string; 
   analysisBody?: string; // Remaining narrative parsed from AI summary
-  temperaments: TemperamentScore[]; // Temperament composition breakdown
-  developmentAreas: string[]; // Areas to improve
-  careerRecommendations: string[]; // Suitable career recommendations
+  temperaments: TemperamentScore[]; 
+  developmentAreas: string[]; 
+  careerRecommendations: string[]; 
 }
 
 export interface ErrorResponse {
@@ -28,23 +28,21 @@ export interface ErrorResponse {
 export interface TestResult {
   weatherType: string; // "Sunny" | "Rainy" | "Stormy" | "Cloudy"
   analysis: string; // AI-generated summary
-  analysisTitle?: string; // Parsed first-sentence title from AI summary
-  analysisShortTitle?: string; // Compact short title (derived) for UI
-  analysisBody?: string; // Remaining narrative parsed from AI summary
-  userData: UserData; // User information
-  timestamp: string; // ISO 8601 format
+  analysisTitle?: string;
+  analysisShortTitle?: string; 
+  analysisBody?: string; 
+  userData: UserData;
+  timestamp: string; 
 }
 
-// Interface for temperament score breakdown
-export interface TemperamentScore {
-  name: string; // "Sanguinis" | "Koleris" | "Melankolis" | "Plegmatis"
-  percentage: number; // 0-100
-  color: string; // Chakra color token (e.g., "orange.400")
-}
-
-// Extended test result with temperament breakdown and recommendations
 export interface ExtendedTestResult extends TestResult {
-  temperaments: TemperamentScore[]; // Temperament composition breakdown
-  developmentAreas: string[]; // Areas to improve
-  careerRecommendations: string[]; // Suitable career recommendations
+  temperaments: TemperamentScore[]; 
+  developmentAreas: string[]; 
+  careerRecommendations: string[]; 
+}
+
+export interface TemperamentScore {
+  name: string;
+  percentage: number;
+  color?: string; 
 }

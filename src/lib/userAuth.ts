@@ -1,7 +1,3 @@
-/**
- * User authentication and session management utilities
- */
-
 const USER_DATA_KEY = 'testgenz_user';
 
 export interface UserData {
@@ -9,9 +5,6 @@ export interface UserData {
   email?: string;
 }
 
-/**
- * Check if user has valid session (has filled the form)
- */
 export function isUserAuthenticated(): boolean {
   try {
     const savedUserData = localStorage.getItem(USER_DATA_KEY);
@@ -27,9 +20,6 @@ export function isUserAuthenticated(): boolean {
   }
 }
 
-/**
- * Get current user data
- */
 export function getCurrentUser(): UserData | null {
   try {
     const savedUserData = localStorage.getItem(USER_DATA_KEY);
@@ -49,9 +39,6 @@ export function getCurrentUser(): UserData | null {
   }
 }
 
-/**
- * Save user data (login)
- */
 export function saveUserData(userData: UserData): void {
   try {
     if (!userData.nama || userData.nama.trim() === "") {
@@ -65,9 +52,6 @@ export function saveUserData(userData: UserData): void {
   }
 }
 
-/**
- * Clear user data (logout)
- */
 export function clearUserData(): void {
   try {
     localStorage.removeItem(USER_DATA_KEY);
