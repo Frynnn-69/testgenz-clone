@@ -8,14 +8,6 @@ import type {
   TemperamentScore,
 } from "@/types/index";
 
-// Weather type colors for UI display
-const WEATHER_COLORS: { [key: string]: string } = {
-  Sunny: "orange.400",
-  Stormy: "red.500",
-  Rainy: "blue.500",
-  Cloudy: "green.400",
-};
-
 interface RequestBody {
   answers: Answer[];
   userData: UserData;
@@ -28,7 +20,6 @@ export async function POST(
     const body: RequestBody = await request.json();
     const { answers, userData } = body;
 
-    // Validation
     if (
       !answers ||
       !Array.isArray(answers) ||
@@ -64,28 +55,11 @@ export async function POST(
       analysisBody,
     });
 
-    // Convert weather scores to array format with colors
     const temperaments: TemperamentScore[] = [
-      {
-        name: "Sunny",
-        percentage: temperamentScores.Sunny,
-        color: WEATHER_COLORS.Sunny,
-      },
-      {
-        name: "Stormy",
-        percentage: temperamentScores.Stormy,
-        color: WEATHER_COLORS.Stormy,
-      },
-      {
-        name: "Rainy",
-        percentage: temperamentScores.Rainy,
-        color: WEATHER_COLORS.Rainy,
-      },
-      {
-        name: "Cloudy",
-        percentage: temperamentScores.Cloudy,
-        color: WEATHER_COLORS.Cloudy,
-      },
+      { name: "Sunny", percentage: temperamentScores.Sunny },
+      { name: "Stormy", percentage: temperamentScores.Stormy },
+      { name: "Rainy", percentage: temperamentScores.Rainy },
+      { name: "Cloudy", percentage: temperamentScores.Cloudy },
     ];
 
     const responseData: AnalysisResponse = {

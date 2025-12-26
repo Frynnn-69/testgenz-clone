@@ -12,7 +12,7 @@ import {
   Stack,
   Badge,
   Flex,
-  IconButton,
+  // IconButton,
 } from "@chakra-ui/react";
 import { getTestResultHistory, deleteTestResultFromHistory } from "@/lib/localStorage";
 import type { TestResult } from "@/types";
@@ -91,7 +91,7 @@ export default function HistoryPage() {
           <Heading as="h1" size="2xl">
             Riwayat Tes
           </Heading>
-          <Button colorPalette="blue" onClick={() => router.push("/")}>
+          <Button colorPalette="blue" onClick={() => router.push("/result")}>
             Kembali ke Home
           </Button>
         </Flex>

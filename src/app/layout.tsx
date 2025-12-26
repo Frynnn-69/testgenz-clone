@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-// 1. IMPORT FONT (INI SUDAH BENAR)
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
-
-// 2. HAPUS SEMUA BLOK "const geistSans = ..." DAN "const geistMono = ..."
-//    YANG SEBELUMNYA ADA DI SINI.
 
 export const metadata: Metadata = {
   title: "Create Next App",
