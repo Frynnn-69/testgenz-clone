@@ -7,6 +7,7 @@ Project ini menggunakan Next.js 15 dan membutuhkan environment variables untuk A
 ### Environment Variables yang Dibutuhkan
 
 Berdasarkan `.env.example`, project ini membutuhkan:
+
 - `GEMINI_API_KEY` - API key untuk Gemini AI
 - `DATABASE_URL` - URL koneksi database (opsional, jika menggunakan database)
 
@@ -15,6 +16,7 @@ Berdasarkan `.env.example`, project ini membutuhkan:
 ### Opsi 1: Deploy via Vercel Dashboard (Recommended)
 
 1. **Push code ke Git repository**
+
    ```bash
    git add .
    git commit -m "Setup Vercel deployment"
@@ -22,12 +24,14 @@ Berdasarkan `.env.example`, project ini membutuhkan:
    ```
 
 2. **Import project ke Vercel**
+
    - Buka [vercel.com](https://vercel.com)
    - Login dengan akun GitHub/GitLab/Bitbucket
    - Klik "Add New Project"
    - Import repository project ini
 
 3. **Configure Environment Variables**
+
    - Di halaman import project, scroll ke bagian "Environment Variables"
    - Tambahkan variable berikut:
      ```
@@ -44,28 +48,34 @@ Berdasarkan `.env.example`, project ini membutuhkan:
 ### Opsi 2: Deploy via Vercel CLI
 
 1. **Install Vercel CLI**
+
    ```bash
    npm install -g vercel
    ```
 
 2. **Login ke Vercel**
+
    ```bash
    vercel login
    ```
 
 3. **Deploy project**
+
    ```bash
    vercel
    ```
+
    - Ikuti prompt untuk setup project
    - Pilih scope/team
    - Konfirmasi settings
 
 4. **Set Environment Variables via CLI**
+
    ```bash
    vercel env add GEMINI_API_KEY
    vercel env add DATABASE_URL
    ```
+
    - Pilih environment (production/preview/development)
    - Masukkan value untuk setiap variable
 
@@ -79,6 +89,7 @@ Berdasarkan `.env.example`, project ini membutuhkan:
 ### Menambah/Edit Environment Variables
 
 **Via Dashboard:**
+
 1. Buka project di [vercel.com/dashboard](https://vercel.com/dashboard)
 2. Pilih project
 3. Klik tab "Settings"
@@ -87,6 +98,7 @@ Berdasarkan `.env.example`, project ini membutuhkan:
 6. Redeploy project untuk apply perubahan
 
 **Via CLI:**
+
 ```bash
 # Tambah variable baru
 vercel env add VARIABLE_NAME
@@ -103,6 +115,7 @@ vercel env rm VARIABLE_NAME
 Untuk development lokal, gunakan file `.env.local`:
 
 1. Copy `.env.example` ke `.env.local`:
+
    ```bash
    copy .env.example .env.local
    ```
@@ -118,6 +131,7 @@ Untuk development lokal, gunakan file `.env.local`:
 ## Auto-Deploy
 
 Setelah setup awal, Vercel akan otomatis deploy setiap kali:
+
 - Push ke branch `main` → Deploy ke Production
 - Push ke branch lain → Deploy ke Preview environment
 - Pull Request dibuat → Deploy preview untuk testing
@@ -133,15 +147,18 @@ Setelah setup awal, Vercel akan otomatis deploy setiap kali:
 ## Troubleshooting
 
 ### Build Error: Missing Environment Variables
+
 - Pastikan semua environment variables sudah ditambahkan di Vercel Dashboard
 - Check typo pada nama variable
 - Redeploy setelah menambahkan variables
 
 ### API Routes Tidak Berfungsi
+
 - Pastikan API routes ada di folder `src/app/api/`
 - Check logs di Vercel Dashboard → Functions tab
 
 ### Database Connection Error
+
 - Pastikan `DATABASE_URL` sudah diset dengan benar
 - Untuk production, gunakan database yang accessible dari internet
 - Pertimbangkan menggunakan Vercel Postgres atau Supabase
@@ -155,11 +172,13 @@ Setelah setup awal, Vercel akan otomatis deploy setiap kali:
 ## Keamanan Environment Variables
 
 ✅ **DO:**
+
 - Simpan API keys di Vercel Environment Variables
 - Gunakan `.env.local` untuk development
 - Tambahkan `.env.local` ke `.gitignore`
 
 ❌ **DON'T:**
+
 - Commit API keys ke Git repository
 - Share `.env.local` file
 - Hardcode API keys di source code
