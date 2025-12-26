@@ -1,4 +1,5 @@
 import { Box, Progress, Text } from "@chakra-ui/react";
+import { COLORS } from "@/lib/constants/theme";
 
 interface ProgressBarProps {
   currentQuestion: number;
@@ -27,11 +28,9 @@ export const ProgressBar = ({
         </Text>
       </Box>
 
-      {/* size="sm" TETAP (tidak diperbesar) */}
       <Progress.Root value={percentage} size="sm">
         <Progress.Track bg="gray.200" borderRadius="full">
-          {/* Ubah warna fill menjadi Coklat */}
-          <Progress.Range bg="#8F6E56" borderRadius="full" />
+          <Progress.Range bg={COLORS.primary} borderRadius="full" />
         </Progress.Track>
       </Progress.Root>
     </Box>

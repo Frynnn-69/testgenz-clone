@@ -1,9 +1,8 @@
-import { Box, Text, Stack, Badge } from "@chakra-ui/react";
+import { Box, Text, Stack } from "@chakra-ui/react";
 import { ChoiceButton } from "./ChoiceButton";
-import type { Question, Option } from "@/lib/questions";
+import type {Option } from "@/lib/questions";
 
 interface QuestionCardProps {
-  section: string;
   question: string;
   choices: Option[];
   selectedChoice?: string;
@@ -11,7 +10,6 @@ interface QuestionCardProps {
 }
 
 export const QuestionCard = ({
-  section,
   question,
   choices,
   selectedChoice,
@@ -29,23 +27,6 @@ export const QuestionCard = ({
       borderColor="gray.100"
     >
       <Stack align="stretch" gap={6}>
-        {/* Badge Section: Ubah Blue jadi Coklat */}
-        <Badge
-          bg="#8F6E56"
-          color="white"
-          fontSize="xs"
-          fontWeight="semibold"
-          textTransform="uppercase"
-          px={3}
-          py={1}
-          borderRadius="md"
-          width="fit-content"
-          letterSpacing="wide"
-        >
-          {section}
-        </Badge>
-
-        {/* Question */}
         <Text
           fontSize={{ base: "2xl", md: "3xl" }}
           fontWeight="bold"
@@ -68,7 +49,6 @@ export const QuestionCard = ({
           ))}
         </Stack>
 
-        {/* Helper Text */}
         <Text fontSize="sm" color="gray.500" textAlign="center" mt={4}>
           Pilih jawaban yang paling kamu banget!
         </Text>

@@ -14,7 +14,7 @@ import {
 import { Field } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import { saveUserData, getCurrentUser } from "@/lib/userAuth";
-import { updateHistoryUserName } from "@/lib/localStorage";
+import { COLORS } from "@/lib/constants/theme";
 
 export default function PreTestForm() {
   const router = useRouter();
@@ -50,33 +50,16 @@ export default function PreTestForm() {
     };
 
     try {
-      const currentUser = getCurrentUser();
-      const nameChanged = currentUser && currentUser.nama !== userData.nama;
-
       saveUserData(userData);
-
-      if (nameChanged) {
-        updateHistoryUserName(userData.nama);
-      }
 
       setTimeout(() => {
         setIsLoading(false);
         router.push("/test");
       }, 1000);
-    } catch (err) {
+    } catch {
       setIsLoading(false);
       toaster.create({ title: "Gagal menyimpan data", type: "error" });
     }
-  };
-
-  // --- PALET WARNA (Earth Tone) ---
-  const colors = {
-    primary: "#8F6E56", // Coklat Utama
-    hover: "#755943", // Coklat Gelap (Hover)
-    bg: "white", // Card Background
-    textMain: "#171717",
-    textMuted: "#737373",
-    border: "#E5E5E5",
   };
 
   return (
@@ -85,12 +68,12 @@ export default function PreTestForm() {
       onSubmit={handleSubmit}
       width="100%"
       maxW="450px"
-      bg={colors.bg}
+      bg="white"
       borderRadius="2xl"
       p={{ base: 6, md: 8 }}
       shadow="2xl"
       border="1px solid"
-      borderColor={colors.border}
+      borderColor="#E5E5E5"
       position="relative"
       zIndex={10}
     >
@@ -100,47 +83,43 @@ export default function PreTestForm() {
             as="h1"
             size="lg"
             fontWeight="bold"
-            color={colors.primary}
+            color={COLORS.primary}
             mb={2}
           >
             Tes Tipe Cuaca
           </Heading>
-          <Text fontSize="md" color={colors.textMuted} lineHeight="tall">
+          <Text fontSize="md" color="#737373" lineHeight="tall">
             Kamu tipe yang cerah seperti matahari, atau tenang seperti hujan?
           </Text>
         </Box>
 
         <Stack gap={5}>
-          {/* Input Nama */}
           <Field.Root required width="full">
-            <Field.Label color={colors.textMain} fontWeight="medium" mb={1.5}>
+            <Field.Label color="#171717" fontWeight="medium" mb={1.5}>
               Nama Panggilan
             </Field.Label>
             <Input
-              variant="subtle" // Style lebih soft/transparan
+              variant="subtle"
               size="lg"
               placeholder="Contoh: Budi"
               value={nama}
               onChange={(e) => setNama(e.target.value)}
-              // BACKGROUND TRANSPARAN (Abu tipis)
               bg="whiteAlpha.300"
-              color={colors.textMain}
+              color="#171717"
               borderRadius="lg"
               _placeholder={{ color: "gray.400" }}
-              // Focus state tetap Coklat
               _focus={{
                 bg: "white",
-                borderColor: colors.primary,
-                boxShadow: `0 0 0 1px ${colors.primary}`,
+                borderColor: COLORS.primary,
+                boxShadow: `0 0 0 1px ${COLORS.primary}`,
                 outline: "none",
               }}
               transition="all 0.2s"
             />
           </Field.Root>
 
-          {/* Input Email */}
           <Field.Root width="full">
-            <Field.Label color={colors.textMain} fontWeight="medium" mb={1.5}>
+            <Field.Label color="#171717" fontWeight="medium" mb={1.5}>
               Email{" "}
               <Text as="span" color="gray.400" fontWeight="normal">
                 (Opsional)
@@ -153,15 +132,14 @@ export default function PreTestForm() {
               placeholder="email@kamu.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              // BACKGROUND TRANSPARAN
               bg="blackAlpha.50"
-              color={colors.textMain}
+              color="#171717"
               borderRadius="lg"
               _placeholder={{ color: "gray.400" }}
               _focus={{
                 bg: "white",
-                borderColor: colors.primary,
-                boxShadow: `0 0 0 1px ${colors.primary}`,
+                borderColor: COLORS.primary,
+                boxShadow: `0 0 0 1px ${COLORS.primary}`,
                 outline: "none",
               }}
               transition="all 0.2s"
@@ -175,13 +153,13 @@ export default function PreTestForm() {
           width="full"
           loading={isLoading}
           loadingText="Menganalisa..."
-          bg={colors.primary}
+          bg={COLORS.primary}
           color="white"
           fontWeight="bold"
           borderRadius="full"
           mt={2}
           _hover={{
-            bg: colors.hover,
+            bg: COLORS.primaryHover,
             transform: "translateY(-2px)",
             shadow: "md",
           }}

@@ -1,4 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
+import { COLORS } from "@/lib/constants/theme";
 
 interface ChoiceButtonProps {
   label: string;
@@ -13,12 +14,6 @@ export const ChoiceButton = ({
   isSelected = false,
   onClick,
 }: ChoiceButtonProps) => {
-  // Warna Design System (Earth Tone)
-  const colors = {
-    primary: "#8F6E56", // Coklat (Border/Text)
-    bgSelected: "#EDE2D4", // Krem (Background saat dipilih/hover)
-  };
-
   return (
     <Box
       as="button"
@@ -29,15 +24,13 @@ export const ChoiceButton = ({
       p={4}
       borderRadius="lg"
       border="1px solid"
-      // UBAH: Logic warna border (Blue -> Coklat)
-      borderColor={isSelected ? colors.primary : "gray.200"}
-      // UBAH: Logic warna background (Blue.50 -> Krem)
-      bg={isSelected ? colors.bgSelected : "white"}
+      borderColor={isSelected ? COLORS.primary : "gray.200"}
+      bg={isSelected ? "#EDE2D4" : "white"}
       textAlign="left"
       transition="all 0.2s"
       _hover={{
-        borderColor: colors.primary, // Hover border jadi Coklat
-        bg: colors.bgSelected, // Hover bg jadi Krem
+        borderColor: COLORS.primary,
+        bg: "#EDE2D4",
         transform: "translateY(-2px)",
         shadow: "sm",
       }}
@@ -47,11 +40,10 @@ export const ChoiceButton = ({
       onClick={onClick}
       cursor="pointer"
     >
-      {/* UBAH: Warna Label (A, B, C...) jadi Coklat */}
       <Text
         fontSize="md"
         fontWeight="semibold"
-        color={colors.primary}
+        color={COLORS.primary}
         flexShrink={0}
       >
         {label}.
