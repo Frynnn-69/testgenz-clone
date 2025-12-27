@@ -7,14 +7,6 @@ export interface ShareButtonsProps {
   onDownloadPDF: () => void;
 }
 
-/**
- * ShareButtons component
- * Renders share and download PDF buttons with outline variant
- * - "Bagikan Hasil" button with share icon
- * - "Unduh PDF" button with download icon
- *
- * Requirements: 1.5
- */
 export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
   return (
     <HStack gap={4} width="100%" justify="center" flexWrap="wrap">
@@ -27,7 +19,6 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
         borderRadius="xl"
       >
         <Box as="span" mr={2}>
-          {/* Share Icon (SVG) */}
           <svg
             width="18"
             height="18"
@@ -56,7 +47,6 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
         borderRadius="xl"
       >
         <Box as="span" mr={2}>
-          {/* Download Icon (SVG) */}
           <svg
             width="18"
             height="18"

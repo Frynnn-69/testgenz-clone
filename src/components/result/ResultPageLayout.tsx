@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect } from "react";
 import { Box, Grid, GridItem, Text } from "@chakra-ui/react";
 import { ExtendedTestResult } from "@/types";
+import { useResultData } from "@/hooks/useResultData";
+import { useResultActions } from "@/hooks/useResultActions";
 import { ResultHeader } from "./ResultHeader";
 import { ResultCard } from "./ResultCard";
 import { TemperamentSection } from "./TemperamentSection";
@@ -10,49 +12,28 @@ import { DevelopmentSection } from "./DevelopmentSection";
 import { CareerSection } from "./CareerSection";
 import { FooterNavigation } from "./FooterNavigation";
 import { getWeatherMetadata } from "./weatherMetadata";
+import { COLORS } from "@/lib/constants/theme";
 
 export interface ResultPageLayoutProps {
   testResult: ExtendedTestResult;
 }
 
 export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
-  // Metadata untuk fallback
-  const metadata = getWeatherMetadata(testResult.weatherType);
-  const subtitle = metadata?.subtitle || "Tipe Kepribadian";
-  const colorScheme = metadata?.colorScheme || "orange";
-  const traits = metadata?.traits || [];
+  const {
+    subtitle,
+    traits,
+    description,
+    temperamentsWithColors,
+    developmentAreas,
+    careerRecommendations,
+  } = useResultData(testResult);
 
-  // Ambil deskripsi dari AI (priority) atau fallback ke metadata
-  const description =
-    testResult.analysisBody || metadata?.description || testResult.analysis;
+  const { handleShare, handleDownloadPDF } = useResultActions();
 
-  // --- LOGIC WARNA CHART ---
-  const maxPercentage = Math.max(
-    ...(testResult.temperaments?.map((t) => t.percentage) || [0]),
-  );
-
-  const temperamentsWithColors =
-    testResult.temperaments?.map((t) => ({
-      ...t,
-      // UBAH DISINI: Ganti #E2E8F0 jadi #CBD5E0 agar lebih kontras
-      color: t.percentage === maxPercentage ? "#8F6E56" : "#CBD5E0",
-    })) || [];
-
-  // Fallback data (Development & Career)
-  const developmentAreas =
-    testResult.developmentAreas?.length > 0
-      ? testResult.developmentAreas
-      : metadata?.defaultDevelopmentAreas || [];
-
-  const careerRecommendations =
-    testResult.careerRecommendations?.length > 0
-      ? testResult.careerRecommendations
-      : metadata?.defaultCareers || [];
-
-  // Refs untuk layout kolom (Logic Layout Teman Anda - Tetap)
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const rightColRef = useRef<HTMLDivElement | null>(null);
 
+  // Sync column heights di desktop
   useLayoutEffect(() => {
     const syncHeights = () => {
       const left = leftColRef.current;
@@ -83,26 +64,12 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
     };
   }, []);
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `Hasil Tes: ${testResult.weatherType}`,
-          text: `Saya adalah ${testResult.weatherType}!`,
-          url: window.location.href,
-        })
-        .catch(() => {});
-    }
-  };
-
-  const handleDownloadPDF = () => {
-    console.log("Download PDF clicked");
-  };
+  const metadata = getWeatherMetadata(testResult.weatherType);
 
   return (
     <Box
       minH="100vh"
-      bg="#FDF8F3"
+      bg={COLORS.background}
       py={{ base: 6, md: 10 }}
       px={{ base: 4, md: 8 }}
     >
@@ -111,10 +78,9 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
           <ResultHeader
             weatherType={testResult.weatherType}
             subtitle={subtitle}
-            colorScheme={colorScheme}
-            userName={testResult.userData?.nama}
             titleOverride={testResult.analysisTitle}
             fullTitle={testResult.analysisTitle}
+            userName={testResult.userData?.nama}
           />
         </Box>
 
@@ -133,8 +99,8 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
                   metadata?.imageSrc ||
                   `/weather/${testResult.weatherType.toLowerCase()}.png`
                 }
-                onShare={handleShare}
-                onDownloadPDF={handleDownloadPDF}
+                onShare={() => handleShare(testResult.weatherType)}
+                onDownloadPDF={() => handleDownloadPDF(testResult.weatherType)}
               />
             </Box>
           </GridItem>
@@ -156,10 +122,19 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
               <Box
                 bg="white"
                 borderRadius="xl"
-                boxShadow="lg"
-                p={{ base: 4, md: 6 }}
+                boxShadow="md"
+                p={6}
                 position="relative"
                 overflow="hidden"
+                border="2px solid"
+                borderColor="transparent"
+                transition="all 0.3s ease"
+                cursor="default"
+                _hover={{
+                  borderColor: COLORS.primary,
+                  boxShadow: `0 0 24px ${COLORS.primary}40, 0 4px 12px rgba(0,0,0,0.1)`,
+                  transform: "scale(1.01)",
+                }}
               >
                 <Box
                   position="absolute"
@@ -172,7 +147,7 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
                   fontWeight="bold"
                   lineHeight={1}
                 >
-                  “
+                  &ldquo;
                 </Box>
 
                 <Box pl={{ base: 8, md: 10 }} pr={4}>

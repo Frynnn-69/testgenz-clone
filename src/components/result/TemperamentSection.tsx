@@ -8,15 +8,6 @@ export interface TemperamentSectionProps {
   temperaments: TemperamentScore[];
 }
 
-/**
- * TemperamentSection component
- * Renders the "Komposisi Temperamen Kamu" section with 4 progress bars
- * - Header with section title
- * - 4 TemperamentBar components for Sanguinis, Koleris, Melankolis, Plegmatis
- * - Card styling with background and shadow
- *
- * Requirements: 2.1, 2.2
- */
 export const TemperamentSection = ({
   temperaments,
 }: TemperamentSectionProps) => {
@@ -33,12 +24,13 @@ export const TemperamentSection = ({
       </Heading>
 
       <Box>
-        {temperaments.map((temperament) => (
+        {temperaments.map((temperament, index) => (
           <TemperamentBar
             key={temperament.name}
             name={temperament.name}
             percentage={temperament.percentage}
-            color={temperament.color}
+            color={temperament.color || "gray.400"}
+            index={index}
           />
         ))}
       </Box>

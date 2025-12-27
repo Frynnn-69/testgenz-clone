@@ -1,27 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Flex, Badge, Image, Portal, HStack } from "@chakra-ui/react";
+import { Box, Badge, Image, Portal, HStack } from "@chakra-ui/react";
 import { ShareButtons } from "./ShareButtons";
+import { COLORS } from "@/lib/constants/theme";
 
 export interface ResultCardProps {
   weatherType: string;
   traits: string[];
   imageSrc: string;
-  onShare?: () => void;
+  onShare?: (weatherType: string) => void;
   onDownloadPDF?: () => void;
 }
 
-/**
- * ResultCard component
- * Renders a visual card with the weather poster image and personality traits
- * - Shows poster image based on weather type
- * - Click on poster to view fullscreen modal
- * - Displays traits as badges/labels
- * - Styled according to weather type
- *
- * Requirements: 1.3
- */
+// Card dengan poster image + traits
 export const ResultCard = ({
   weatherType,
   traits,
@@ -30,20 +22,7 @@ export const ResultCard = ({
   onDownloadPDF,
 }: ResultCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const primaryColor = "#8F6E56"; // Coklat Utama
 
-  // Map weather type to color scheme
-  const getColorScheme = (type: string): string => {
-    const colorMap: Record<string, string> = {
-      sunny: "orange",
-      rainy: "blue",
-      stormy: "purple",
-      cloudy: "gray",
-    };
-    return colorMap[type.toLowerCase()] || "orange";
-  };
-
-  // Map weather type to background gradient
   const getBackgroundGradient = (type: string): string => {
     const gradientMap: Record<string, string> = {
       sunny: "linear(to-br, orange.100, yellow.50)",
@@ -55,8 +34,6 @@ export const ResultCard = ({
       gradientMap[type.toLowerCase()] || "linear(to-br, orange.100, yellow.50)"
     );
   };
-
-  const colorScheme = getColorScheme(weatherType);
 
   return (
     <>
@@ -107,18 +84,17 @@ export const ResultCard = ({
               py={1.5}
               rounded="full"
               bg="#FAFAFA"
-              color={primaryColor}
+              color={COLORS.primary}
               border="1px solid"
-              borderColor={primaryColor}
+              borderColor={COLORS.primary}
               fontSize="xs"
               fontWeight="bold"
               letterSpacing="wide"
               textTransform="uppercase"
               shadow="sm"
               transition="all 0.2s ease"
-              // Efek Hover: Warna Terbalik (Background Coklat)
               _hover={{
-                bg: primaryColor,
+                bg: COLORS.primary,
                 color: "white",
                 transform: "translateY(-2px)",
                 shadow: "md",
@@ -129,7 +105,6 @@ export const ResultCard = ({
           ))}
         </HStack>
 
-        {/* Action Buttons (moved inside card to keep spacing consistent) */}
         <Box
           p={4}
           bg="white"
@@ -139,13 +114,12 @@ export const ResultCard = ({
           justifyContent="center"
         >
           <ShareButtons
-            onShare={onShare ?? (() => {})}
+            onShare={() => onShare?.(weatherType)}
             onDownloadPDF={onDownloadPDF ?? (() => {})}
           />
         </Box>
       </Box>
 
-      {/* Fullscreen Modal */}
       {isModalOpen && (
         <Portal>
           <Box
@@ -163,7 +137,7 @@ export const ResultCard = ({
             cursor="pointer"
             p={4}
           >
-            {/* Close button */}
+            
             <Box
               position="absolute"
               top={4}
@@ -178,7 +152,6 @@ export const ResultCard = ({
               ✕
             </Box>
 
-            {/* Poster Image */}
             <Image
               src={imageSrc}
               alt={`${weatherType} personality type`}

@@ -6,26 +6,9 @@ export interface DevelopmentSectionProps {
   areas: string[];
 }
 
-// Default development areas as fallback
-const DEFAULT_DEVELOPMENT_AREAS = ["Fokus", "Konsistensi", "Detail"];
-
-/**
- * DevelopmentSection component
- * Renders the "Area Pengembangan" section with bullet points
- * - Header with seedling icon (🌱)
- * - Bullet points with orange color
- * - Ensures minimum 3 items with fallback to defaults
- *
- * Requirements: 3.1, 3.2, 3.3
- */
 export const DevelopmentSection = ({ areas }: DevelopmentSectionProps) => {
-  // Ensure minimum 3 items - use provided areas or fallback to defaults
-  const displayAreas =
-    areas && areas.length >= 3
-      ? areas
-      : areas && areas.length > 0
-        ? [...areas, ...DEFAULT_DEVELOPMENT_AREAS.slice(0, 3 - areas.length)]
-        : DEFAULT_DEVELOPMENT_AREAS;
+  // areas should always come with fallbacks from useResultData
+  const displayAreas = areas && areas.length > 0 ? areas : [];
 
   return (
     <Box bg="white" borderRadius="xl" boxShadow="lg" p={6} width="100%">
