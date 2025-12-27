@@ -3,8 +3,7 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
-
-  // Konfigurasi CORS (Cross-Origin Resource Sharing)
+  // Konfigurasi CORS 
   // Di production, '*' diganti domain (ex: 'https://testgenz.vercel.app')
   // Tapi untuk development dan fleksibilitas sekarang, '*' masih aman.
   response.headers.set("Access-Control-Allow-Origin", "*");

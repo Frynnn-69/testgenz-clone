@@ -128,9 +128,8 @@ export interface AnalysisResult {
   temperamentScores: TemperamentScores;
 }
 
-/**
- * Calculate raw scores for each weather type from answers
- */
+// Calculate raw scores for each weather type from answers
+
 function calculateRawScores(answers: Answer[]): { [key: string]: number } {
   const scores: { [key: string]: number } = {
     Sunny: 0,
@@ -157,9 +156,7 @@ function calculateRawScores(answers: Answer[]): { [key: string]: number } {
   return scores;
 }
 
-/**
- * Convert raw weather scores to weather percentages
- */
+// Convert raw weather scores to weather percentages
 function convertToWeatherPercentages(rawScores: { [key: string]: number }): TemperamentScores {
   const total = Object.values(rawScores).reduce((sum, score) => sum + score, 0);
   
@@ -197,9 +194,7 @@ export function determineWeatherType(answers: Answer[]): string {
   return determinedType;
 }
 
-/**
- * Analyze answers and return both weather type and temperament percentages
- */
+// Analyze answers and return both weather type and temperament percentages
 export function analyzePersonality(answers: Answer[]): AnalysisResult {
   const rawScores = calculateRawScores(answers);
   

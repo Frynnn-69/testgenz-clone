@@ -1,9 +1,21 @@
 import groq from "./groqClient";
 import { analyzePersonality, TemperamentScores } from "./temperamentLogic";
 import { getWeatherMetadata } from "@/components/result/weatherMetadata";
+import { FALLBACK_DATA } from "@/lib/constants/fallback";
 import type { Answer, UserData } from "@/types/index";
 
 const MODEL_NAME = "llama-3.1-8b-instant";
+
+// Configuration constants for AI processing
+const CONFIG = {
+  ANSWER_CONTEXT_LIMIT: 5,      // Number of answers to include in prompt
+  SUMMARY_MAX_TOKENS: 200,       // Max tokens for summary generation
+  SUMMARY_TEMPERATURE: 0.8,      // Creativity level for summary
+  EXTENDED_MAX_TOKENS: 300,      // Max tokens for extended analysis
+  EXTENDED_TEMPERATURE: 0.7,     // Creativity level for extended data
+  SHORT_TITLE_MAX_WORDS: 5,      // Max words in short title
+  AI_TIMEOUT_MS: 15000,          // Timeout for AI calls (15 seconds)
+};
 
 export interface ExtendedAnalysisResult {
   weatherType: string;
@@ -15,6 +27,23 @@ export interface ExtendedAnalysisResult {
   temperamentScores: TemperamentScores;
   developmentAreas: string[];
   careerRecommendations: string[];
+}
+
+/**
+ * Wraps an AI call with timeout protection.
+ * Rejects if the call takes longer than CONFIG.AI_TIMEOUT_MS.
+ */
+async function callWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number = CONFIG.AI_TIMEOUT_MS
+): Promise<T> {
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`AI call timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]);
 }
 
 function createSummaryPrompt(
@@ -61,71 +90,129 @@ RULES:
 Generate JSON now:`;
 }
 
-// Fallback data based on weather type
-const FALLBACK_DATA: {
-  [key: string]: {
-    developmentAreas: string[];
-    careerRecommendations: string[];
-  };
-} = {
-  Sunny: {
-    developmentAreas: [
-      "Fokus dan konsentrasi",
-      "Konsistensi dalam pekerjaan",
-      "Manajemen waktu",
-    ],
-    careerRecommendations: [
-      "Marketing",
-      "Sales",
-      "Public Relations",
-      "Entertainment",
-      "Event Organizer",
-    ],
-  },
-  Rainy: {
-    developmentAreas: [
-      "Mengurangi overthinking",
-      "Menerima ketidaksempurnaan",
-      "Mengelola sensitivitas",
-    ],
-    careerRecommendations: [
-      "Research",
-      "Accounting",
-      "Engineering",
-      "Writing",
-      "Data Analysis",
-    ],
-  },
-  Stormy: {
-    developmentAreas: [
-      "Kesabaran dengan orang lain",
-      "Empati dan mendengarkan",
-      "Fleksibilitas",
-    ],
-    careerRecommendations: [
-      "Management",
-      "Entrepreneurship",
-      "Law",
-      "Politics",
-      "Business Development",
-    ],
-  },
-  Cloudy: {
-    developmentAreas: [
-      "Mengambil inisiatif",
-      "Asertivitas dalam komunikasi",
-      "Motivasi diri",
-    ],
-    careerRecommendations: [
-      "Counseling",
-      "Human Resources",
-      "Teaching",
-      "Healthcare",
-      "Customer Service",
-    ],
-  },
-};
+/**
+ * Removes markdown code block markers from AI responses.
+ * Handles ```json, ```, and other variations.
+ */
+function cleanMarkdownResponse(text: string): string {
+  let cleaned = text.trim();
+  
+  // Remove opening code block markers
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.slice(7);
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.slice(3);
+  }
+  
+  // Remove closing code block markers
+  if (cleaned.endsWith("```")) {
+    cleaned = cleaned.slice(0, -3);
+  }
+  
+  return cleaned.trim();
+}
 
+/**
+ * Parses AI-generated summary into title and body components.
+ * Uses multiple fallback strategies for robustness.
+ */
+function parseAISummary(
+  rawSummary: string,
+  weatherType: string
+): { title: string; body: string } {
+  const cleanedSummary = rawSummary
+    .trim()
+    .replace(/^[\"""']+|[\"""']+$/g, "")
+    .trim();
+
+  let title = "";
+  let body = "";
+
+  // Split by sentence terminator (., !, ?)
+  const sentenceMatch = cleanedSummary.match(/^(.+?[.!?])\s*([\s\S]*)$/);
+  if (sentenceMatch) {
+    title = sentenceMatch[1].trim();
+    body = (sentenceMatch[2] || "").trim();
+    console.log("Parsed AI summary into title/body (sentence):", { title, body });
+    return { title, body };
+  }
+
+  // Split by newline
+  const parts = cleanedSummary
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.length >= 2) {
+    title = parts[0];
+    body = parts.slice(1).join(" ");
+    console.log("Parsed AI summary into title/body (newline):", { title, body });
+    return { title, body };
+  }
+
+  // Split by comma
+  if (cleanedSummary.includes(",")) {
+    const idx = cleanedSummary.indexOf(",");
+    title = cleanedSummary.slice(0, idx + 1).trim();
+    body = cleanedSummary.slice(idx + 1).trim();
+    console.log("Parsed AI summary into title/body (comma):", { title, body });
+    return { title, body };
+  }
+
+  // Use metadata fallback
+  const metadata = getWeatherMetadata(weatherType);
+  title =
+    metadata?.subtitle ||
+    metadata?.name ||
+    `Tipe Kepribadian: ${weatherType}`;
+  body = cleanedSummary;
+  console.warn("AI summary parsing fallback used (metadata):", { fallbackTitle: title });
+  
+  return { title, body };
+}
+
+/**
+ * Derives a shortened version of the full title for UI display.
+ * Removes common prefixes and limits to MAX_WORDS.
+ */
+function deriveShortTitle(fullTitle: string, weatherType: string): string {
+  if (!fullTitle || typeof fullTitle !== "string") {
+    const metadata = getWeatherMetadata(weatherType);
+    return metadata?.name || `Tipe ${weatherType}`;
+  }
+
+  const cleaned = fullTitle
+    .trim()
+    .replace(/^[\"""']+|[\"""']+$/g, "")
+    .trim();
+
+  // Remove common leading phrases like "You are" or "You're"
+  const withoutPrefix = cleaned
+    .replace(/^(You\s+are|You're|You\'re)\s+/i, "")
+    .trim();
+
+  // Take first up to MAX_WORDS
+  const words = withoutPrefix.split(/\s+/).filter(Boolean);
+  const short = words.slice(0, CONFIG.SHORT_TITLE_MAX_WORDS).join(" ");
+
+  // Append ellipsis if original is longer
+  return short.length < withoutPrefix.length ? `${short}…` : short;
+}
+
+
+/**
+ * Generates comprehensive personality analysis using Groq AI.
+ * 
+ * Flow:
+ * 1. Analyzes temperament scores from user answers
+ * 2. Calls AI for personalized narrative (2-sentence summary)
+ * 3. Calls AI for development areas + career recommendations
+ * 4. Falls back to static data if AI fails
+ * 
+ * @param answers - User's test responses (question ID + chosen value)
+ * @param userData - User profile information (name, etc.)
+ * @returns Complete analysis with weather type, parsed narrative, and recommendations
+ * @throws Error if both AI and fallback mechanisms fail
+ */
 export async function getPersonalityAnalysis(
   answers: Answer[],
   userData: UserData,
@@ -135,7 +222,7 @@ export async function getPersonalityAnalysis(
 
   const answerSummary = answers
     .map((a) => `- Q${a.questionId}: chose "${a.value}"`)
-    .slice(0, 5) // 5 jawaban pertama untuk konteks
+    .slice(0, CONFIG.ANSWER_CONTEXT_LIMIT)
     .join("\n");
 
   // Create prompts
@@ -161,168 +248,88 @@ export async function getPersonalityAnalysis(
   try {
     console.log(`Attempting to call Groq model: ${MODEL_NAME}...`);
 
-    // First call: Get the 2-sentence summary
-    const summaryCompletion = await groq.chat.completions.create({
-      messages: [{ role: "user", content: summaryPrompt }],
-      model: MODEL_NAME,
-      temperature: 0.8,
-      max_tokens: 200,
-      top_p: 1,
-    });
+    // Parallelize both AI calls for better performance
+    // Use allSettled to handle partial failures gracefully
+    const [summaryResult, extendedResult] = await Promise.allSettled([
+      // Call 1: Summary 
+      callWithTimeout(
+        groq.chat.completions.create({
+          messages: [{ role: "user", content: summaryPrompt }],
+          model: MODEL_NAME,
+          temperature: CONFIG.SUMMARY_TEMPERATURE,
+          max_tokens: CONFIG.SUMMARY_MAX_TOKENS,
+          top_p: 1,
+        })
+      ),
+      // Call 2: Extended analysis 
+      callWithTimeout(
+        groq.chat.completions.create({
+          messages: [{ role: "user", content: extendedPrompt }],
+          model: MODEL_NAME,
+          temperature: CONFIG.EXTENDED_TEMPERATURE,
+          max_tokens: CONFIG.EXTENDED_MAX_TOKENS,
+          top_p: 1,
+        })
+      ),
+    ]);
 
-    uniqueSummary =
-      summaryCompletion.choices[0]?.message?.content?.trim() || "";
+    // Process summary result
+    if (summaryResult.status === "fulfilled") {
+      uniqueSummary =
+        summaryResult.value.choices[0]?.message?.content?.trim() || "";
 
-    if (!uniqueSummary) {
-      console.warn("Groq returned an empty summary.");
-      throw new Error("AI did not return a summary.");
-    }
-
-    // Server-side parsing: extract first sentence as title, remainder as body.
-    const cleanedSummary = uniqueSummary
-      .replace(/^["“”']+|["“”']+$/g, "")
-      .trim();
-    let title = "";
-    let body = "";
-
-    // Try to split by first sentence terminator (., !, ?)
-    const sentenceMatch = cleanedSummary.match(/^(.+?[.!?])\s*([\s\S]*)$/);
-    if (sentenceMatch) {
-      title = sentenceMatch[1].trim();
-      body = (sentenceMatch[2] || "").trim();
-      console.log("Parsed AI summary into title/body (server):", {
-        title,
-        body,
-      });
-    } else {
-      // Fallbacks: newline, comma, or metadata
-      const parts = cleanedSummary
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      if (parts.length >= 2) {
-        title = parts[0];
-        body = parts.slice(1).join(" ");
-        console.log("Parsed AI summary by newline into title/body (server):", {
-          title,
-          body,
-        });
-      } else if (cleanedSummary.includes(",")) {
-        const idx = cleanedSummary.indexOf(",");
-        title = cleanedSummary.slice(0, idx + 1).trim();
-        body = cleanedSummary.slice(idx + 1).trim();
-        console.log("Parsed AI summary by comma into title/body (server):", {
-          title,
-          body,
-        });
+      if (uniqueSummary) {
+        const parsed = parseAISummary(uniqueSummary, weatherType);
+        analysisTitle = parsed.title;
+        analysisBody = parsed.body;
+        analysisShortTitle = deriveShortTitle(analysisTitle, weatherType);
+        console.log("Derived short title (server):", analysisShortTitle);
+        console.log("Groq call successful. Summary obtained.");
       } else {
-        const metadata = getWeatherMetadata(weatherType);
-        title =
-          metadata?.subtitle ||
-          metadata?.name ||
-          `Tipe Kepribadian: ${weatherType}`;
-        body = cleanedSummary;
-        console.warn(
-          "AI summary parsing fallback used (server): using metadata title",
-          { fallbackTitle: title },
-        );
+        console.warn("Groq returned an empty summary.");
+        throw new Error("AI did not return a summary.");
       }
+    } else {
+      console.warn("Summary AI call failed:", summaryResult.reason);
+      throw new Error("Failed to get AI summary");
     }
 
-    analysisTitle = title;
-    analysisBody = body;
-
-    // Derive a compact short title for UI (safety net)
-    try {
-      const derive = (fullTitle: string) => {
-        if (!fullTitle || typeof fullTitle !== "string") return "";
-        const cleaned = fullTitle
-          .trim()
-          .replace(/^["“”']+|["“”']+$/g, "")
-          .trim();
-        // Remove common leading phrases like "You are" or "You're"
-        const withoutPrefix = cleaned
-          .replace(/^(You\s+are|You're|You\'re)\s+/i, "")
-          .trim();
-        // Take first up to 5 words
-        const words = withoutPrefix.split(/\s+/).filter(Boolean);
-        const MAX_WORDS = 5;
-        const short = words.slice(0, MAX_WORDS).join(" ");
-        // Append ellipsis if original is longer than our short
-        return short.length < withoutPrefix.length ? `${short}…` : short;
-      };
-
-      analysisShortTitle = derive(analysisTitle);
-      if (!analysisShortTitle) {
-        // As final fallback, use a metadata name or the first few words of body
-        const metadata = getWeatherMetadata(weatherType);
-        analysisShortTitle =
-          metadata?.name ||
-          (analysisBody
-            ? analysisBody.split(/\s+/).slice(0, 4).join(" ") + "…"
-            : `Tipe ${weatherType}`);
-      }
-
-      console.log("Derived short title (server):", analysisShortTitle);
-    } catch (err) {
-      console.warn("Failed to derive short title, ignoring:", err);
-      analysisShortTitle =
-        analysisTitle ||
-        (getWeatherMetadata(weatherType)?.name ?? `Tipe ${weatherType}`);
-    }
-
-    console.log("Groq call successful. Summary obtained.");
-
-    // Second call: Get development areas and career recommendations
-    try {
-      const extendedCompletion = await groq.chat.completions.create({
-        messages: [{ role: "user", content: extendedPrompt }],
-        model: MODEL_NAME,
-        temperature: 0.7,
-        max_tokens: 300,
-        top_p: 1,
-      });
-
+    // Process extended analysis result (optional, uses fallback on failure)
+    if (extendedResult.status === "fulfilled") {
       const extendedResponse =
-        extendedCompletion.choices[0]?.message?.content?.trim() || "";
+        extendedResult.value.choices[0]?.message?.content?.trim() || "";
 
       if (extendedResponse) {
-        // Clean up response - remove markdown code blocks if present
-        let cleanedResponse = extendedResponse;
-        if (cleanedResponse.startsWith("```json")) {
-          cleanedResponse = cleanedResponse.slice(7);
-        }
-        if (cleanedResponse.startsWith("```")) {
-          cleanedResponse = cleanedResponse.slice(3);
-        }
-        if (cleanedResponse.endsWith("```")) {
-          cleanedResponse = cleanedResponse.slice(0, -3);
-        }
-        cleanedResponse = cleanedResponse.trim();
+        try {
+          const cleanedResponse = cleanMarkdownResponse(extendedResponse);
+          const parsed = JSON.parse(cleanedResponse);
 
-        const parsed = JSON.parse(cleanedResponse);
+          if (
+            Array.isArray(parsed.developmentAreas) &&
+            parsed.developmentAreas.length >= 3
+          ) {
+            developmentAreas = parsed.developmentAreas;
+          }
+          if (
+            Array.isArray(parsed.careerRecommendations) &&
+            parsed.careerRecommendations.length >= 4
+          ) {
+            careerRecommendations = parsed.careerRecommendations;
+          }
 
-        if (
-          Array.isArray(parsed.developmentAreas) &&
-          parsed.developmentAreas.length >= 3
-        ) {
-          developmentAreas = parsed.developmentAreas;
+          console.log("Extended analysis obtained.");
+        } catch (parseError) {
+          console.warn(
+            "Failed to parse extended analysis, using fallback data:",
+            parseError
+          );
         }
-        if (
-          Array.isArray(parsed.careerRecommendations) &&
-          parsed.careerRecommendations.length >= 4
-        ) {
-          careerRecommendations = parsed.careerRecommendations;
-        }
-
-        console.log("Extended analysis obtained.");
       }
-    } catch (extendedError) {
+    } else {
       console.warn(
-        "Failed to get extended analysis, using fallback data:",
-        extendedError,
+        "Extended analysis AI call failed, using fallback data:",
+        extendedResult.reason
       );
-      // Use fallback data (already set above)
     }
 
     return {
@@ -339,6 +346,8 @@ export async function getPersonalityAnalysis(
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     console.error(`Error calling Groq AI (${MODEL_NAME}):`, errorMessage);
-    throw new Error(`Failed to generate AI analysis using ${MODEL_NAME}.`);
+    throw new Error(
+      `Failed to generate AI analysis using ${MODEL_NAME}: ${errorMessage}`
+    );
   }
 }

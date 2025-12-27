@@ -6,6 +6,11 @@ const STORAGE_KEY = "testgenz_result";
 const HISTORY_KEY = "testgenz_history";
 const MAX_HISTORY_SIZE = 3;
 
+/**
+ * Persists the current test result to localStorage.
+ * Validates structure and ensures default values are present before saving.
+ * @throws Error if the result structure is invalid.
+ */
 export function saveTestResult(result: TestResult | ExtendedTestResult): void {
   try {
     if (!validateTestResult(result)) {
@@ -13,8 +18,8 @@ export function saveTestResult(result: TestResult | ExtendedTestResult): void {
     }
 
     const extendedResult = applyExtendedDefaults(result);
-    const jsonString = JSON.stringify(extendedResult);
-    localStorage.setItem(STORAGE_KEY, jsonString);
+    // Persist as simplified JSON string
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(extendedResult));
   } catch (error) {
     if (error instanceof Error && error.message === "Invalid test result structure") {
       throw error;
@@ -24,6 +29,10 @@ export function saveTestResult(result: TestResult | ExtendedTestResult): void {
   }
 }
 
+/**
+ * Retrieves the active test result from localStorage.
+ * Returns null if no data exists or validation fails.
+ */
 export function getTestResult(): ExtendedTestResult | null {
   try {
     const jsonString = localStorage.getItem(STORAGE_KEY);
@@ -31,7 +40,7 @@ export function getTestResult(): ExtendedTestResult | null {
 
     const data = JSON.parse(jsonString);
     if (!validateTestResult(data)) {
-      console.warn("Invalid test result data in localStorage");
+      console.warn("Invalid test result data in localStorage - clearing corrupted data");
       return null;
     }
 
@@ -42,6 +51,9 @@ export function getTestResult(): ExtendedTestResult | null {
   }
 }
 
+/**
+ * Clears the active test result. Used when restarting the test.
+ */
 export function clearTestResult(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -50,6 +62,10 @@ export function clearTestResult(): void {
   }
 }
 
+/**
+ * Adds a result to the history stack (LIFO).
+ * Limits history to MAX_HISTORY_SIZE (3) to conserve storage.
+ */
 export function saveTestResultToHistory(result: TestResult | ExtendedTestResult): void {
   try {
     if (!validateTestResult(result)) {
@@ -59,16 +75,20 @@ export function saveTestResultToHistory(result: TestResult | ExtendedTestResult)
     const extendedResult = applyExtendedDefaults(result);
     const history = getTestResultHistory();
     
+    // Add new result to the beginning and trim to max size
     history.unshift(extendedResult);
     const limitedHistory = history.slice(0, MAX_HISTORY_SIZE);
 
-    const jsonString = JSON.stringify(limitedHistory);
-    localStorage.setItem(HISTORY_KEY, jsonString);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(limitedHistory));
   } catch (error) {
     console.error("Failed to save test result to history:", error);
   }
 }
 
+/**
+ * Retrieves the full test history array.
+ * Filters out any invalid entries automatically.
+ */
 export function getTestResultHistory(): ExtendedTestResult[] {
   try {
     const jsonString = localStorage.getItem(HISTORY_KEY);
@@ -80,17 +100,18 @@ export function getTestResultHistory(): ExtendedTestResult[] {
       return [];
     }
 
-    const validResults = data
+    return data
       .filter((item) => validateTestResult(item))
       .map((item) => applyExtendedDefaults(item));
-
-    return validResults;
   } catch (error) {
     console.error("Failed to get test result history from localStorage:", error);
     return [];
   }
 }
 
+/**
+ * Clears all test history.
+ */
 export function clearTestResultHistory(): void {
   try {
     localStorage.removeItem(HISTORY_KEY);
@@ -99,12 +120,14 @@ export function clearTestResultHistory(): void {
   }
 }
 
+/**
+ * Removes a specific history entry by timestamp value.
+ */
 export function deleteTestResultFromHistory(timestamp: string): void {
   try {
     const history = getTestResultHistory();
     const filteredHistory = history.filter((result) => result.timestamp !== timestamp);
-    const jsonString = JSON.stringify(filteredHistory);
-    localStorage.setItem(HISTORY_KEY, jsonString);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(filteredHistory));
   } catch (error) {
     console.error("Failed to delete test result from history:", error);
   }
