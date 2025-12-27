@@ -1,4 +1,5 @@
 import { Box, Progress, Text } from "@chakra-ui/react";
+import { COLORS } from "@/lib/constants/theme";
 
 interface ProgressBarProps {
   currentQuestion: number;
@@ -13,7 +14,12 @@ export const ProgressBar = ({
 
   return (
     <Box width="100%" mb={8}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Text fontSize="sm" color="gray.600">
           Pertanyaan {currentQuestion} dari {totalQuestions}
         </Text>
@@ -21,12 +27,12 @@ export const ProgressBar = ({
           {Math.round(percentage)}%
         </Text>
       </Box>
-      <Progress.Root value={percentage} size="sm" colorPalette="blue">
+
+      <Progress.Root value={percentage} size="sm">
         <Progress.Track bg="gray.200" borderRadius="full">
-          <Progress.Range />
+          <Progress.Range bg={COLORS.primary} borderRadius="full" />
         </Progress.Track>
       </Progress.Root>
     </Box>
   );
 };
-

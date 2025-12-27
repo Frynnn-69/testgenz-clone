@@ -5,6 +5,7 @@ import type {
   UserData,
   AnalysisResponse,
   ErrorResponse,
+  TemperamentScore,
 } from "@/types/index";
 
 interface RequestBody {
@@ -19,7 +20,6 @@ export async function POST(
     const body: RequestBody = await request.json();
     const { answers, userData } = body;
 
-    // Validation
     if (
       !answers ||
       !Array.isArray(answers) ||
@@ -38,14 +38,39 @@ export async function POST(
       );
     }
 
-    const { weatherType, uniqueSummary } = await getPersonalityAnalysis(
-      answers,
-      userData,
-    );
+    const {
+      weatherType,
+      uniqueSummary,
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
+      temperamentScores,
+      developmentAreas,
+      careerRecommendations,
+    } = await getPersonalityAnalysis(answers, userData);
+
+    console.log("AI analysis parsed (server):", {
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
+    });
+
+    const temperaments: TemperamentScore[] = [
+      { name: "Sunny", percentage: temperamentScores.Sunny },
+      { name: "Stormy", percentage: temperamentScores.Stormy },
+      { name: "Rainy", percentage: temperamentScores.Rainy },
+      { name: "Cloudy", percentage: temperamentScores.Cloudy },
+    ];
 
     const responseData: AnalysisResponse = {
       result: weatherType,
       analysis: uniqueSummary,
+      analysisTitle,
+      analysisShortTitle,
+      analysisBody,
+      temperaments,
+      developmentAreas,
+      careerRecommendations,
     };
     return NextResponse.json(responseData);
   } catch (error) {

@@ -1,4 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
+import { COLORS } from "@/lib/constants/theme";
 
 interface ChoiceButtonProps {
   label: string;
@@ -23,13 +24,13 @@ export const ChoiceButton = ({
       p={4}
       borderRadius="lg"
       border="1px solid"
-      borderColor={isSelected ? "blue.400" : "gray.200"}
-      bg={isSelected ? "blue.50" : "white"}
+      borderColor={isSelected ? COLORS.primary : "gray.200"}
+      bg={isSelected ? "#EDE2D4" : "white"}
       textAlign="left"
       transition="all 0.2s"
       _hover={{
-        borderColor: "blue.300",
-        bg: "blue.50",
+        borderColor: COLORS.primary,
+        bg: "#EDE2D4",
         transform: "translateY(-2px)",
         shadow: "sm",
       }}
@@ -42,7 +43,7 @@ export const ChoiceButton = ({
       <Text
         fontSize="md"
         fontWeight="semibold"
-        color="blue.500"
+        color={COLORS.primary}
         flexShrink={0}
       >
         {label}.
@@ -53,4 +54,3 @@ export const ChoiceButton = ({
     </Box>
   );
 };
-
