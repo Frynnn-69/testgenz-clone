@@ -5,10 +5,12 @@ Dokumen ini menjelaskan struktur dan cara penggunaan dokumentasi API otomatis (S
 ## 🔗 Akses Dokumentasi
 
 ### Development (Lokal)
+
 Buka browser dan akses:
 `http://localhost:3000/api/docs`
 
 ### Production (Live)
+
 Nantinya akan tersedia di:
 `https://example-domain.vercel.app/api/docs`
 
@@ -39,6 +41,7 @@ src/
 ## 🛠️ Panduan Pengembangan
 
 ### 1. Cara Menambah Endpoint Baru
+
 Edit file: **`src/lib/swagger.ts`**
 
 Tambahkan definisi path baru di dalam objek `paths`:
@@ -56,12 +59,14 @@ paths: {
 ```
 
 ### 2. Cara Mengubah Skema Data (Request/Response)
+
 Edit file: **`src/lib/swagger.ts`**
 
 Update bagian `components -> schemas`. Pastikan struktur JSON-nya sesuai dengan tipe data di `src/types/index.ts`.
 
 ### 3. Cara Mengubah Tampilan (Warna/Header)
-* **Layout/Header:** Edit `src/components/swagger/SwaggerClient.tsx`.
-* **Warna/CSS:** Edit `src/components/swagger/swagger-custom.css`.
+
+- **Layout/Header:** Edit `src/components/swagger/SwaggerClient.tsx`.
+- **Warna/CSS:** Edit `src/components/swagger/swagger-custom.css`.
 
 ---

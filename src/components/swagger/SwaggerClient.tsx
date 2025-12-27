@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
 import "./swagger-custom.css";
 
-// Load Library Swagger (Berat) ->  diload belakangan/dynamic
 const SwaggerUI = dynamic(() => import("swagger-ui-react"), {
   ssr: false,
   loading: () => (
