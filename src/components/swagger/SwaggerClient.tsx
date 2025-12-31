@@ -17,7 +17,7 @@ const SwaggerUI = dynamic(() => import("swagger-ui-react"), {
 });
 
 interface Props {
-  spec: Record<string, unknown>; // OpenAPI spec object
+  spec: Record<string, any>; // Data JSON dari server
 }
 
 export default function SwaggerClient({ spec }: Props) {
