@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Progress, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 export interface TemperamentBarProps {
   name: string;

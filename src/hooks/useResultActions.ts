@@ -28,7 +28,7 @@ export function useResultActions(): UseResultActionsReturn {
 
   const handleDownloadPDF = useCallback((weatherType: string) => {
     const link = document.createElement("a");
-    link.href = `/weather/${weatherType.toLowerCase()}.png`;
+    link.href = `/${weatherType}.png`;
     link.download = `${weatherType}-personality-result.png`;
     document.body.appendChild(link);
     link.click();

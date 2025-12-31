@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button as TailwindButton } from "@/components/ui/tailwind-button";
 import { ArrowRight } from "lucide-react";
 
@@ -97,13 +98,16 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
 
             {/* Main Characters - Bottom Center (Smaller) */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] z-20">
-              <img
+              <Image
                 src="/gen-z-characters.png"
                 alt="Gen Z Characters"
+                width={380}
+                height={380}
                 className="w-full h-auto drop-shadow-2xl"
                 style={{
                   animation: "gentleBounce 3s ease-in-out infinite",
                 }}
+                priority
               />
             </div>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Button as TailwindButton } from "@/components/ui/tailwind-button";
 import { Menu } from "lucide-react";
@@ -39,10 +40,13 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 md:gap-3 group">
-            <img 
-              src="/growgenz-logo.png" 
-              alt="GrowGenZ Logo" 
-              className="h-8 w-8 md:h-10 md:w-10 object-contain transition-transform group-hover:scale-110" 
+            <Image
+              src="/growgenz-logo.png"
+              alt="GrowGenZ Logo"
+              width={40}
+              height={40}
+              className="h-8 w-8 md:h-10 md:w-10 object-contain transition-transform group-hover:scale-110"
+              priority
             />
             <span className="text-lg md:text-2xl font-bold text-earth-dark">GrowGenZ</span>
           </Link>

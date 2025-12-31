@@ -97,7 +97,7 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
                 traits={traits}
                 imageSrc={
                   metadata?.imageSrc ||
-                  `/weather/${testResult.weatherType.toLowerCase()}.png`
+                  `/${testResult.weatherType}.png`
                 }
                 onShare={() => handleShare(testResult.weatherType)}
                 onDownloadPDF={() => handleDownloadPDF(testResult.weatherType)}
