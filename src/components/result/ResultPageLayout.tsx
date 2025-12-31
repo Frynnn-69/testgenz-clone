@@ -11,7 +11,7 @@ import { TemperamentSection } from "./TemperamentSection";
 import { DevelopmentSection } from "./DevelopmentSection";
 import { CareerSection } from "./CareerSection";
 import { FooterNavigation } from "./FooterNavigation";
-import { getWeatherMetadata } from "./weatherMetadata";
+import { getTemperamentMetadata } from "@/lib/constants/temperamentMetadata";
 import { COLORS } from "@/lib/constants/theme";
 
 export interface ResultPageLayoutProps {
@@ -64,7 +64,7 @@ export const ResultPageLayout = ({ testResult }: ResultPageLayoutProps) => {
     };
   }, []);
 
-  const metadata = getWeatherMetadata(testResult.weatherType);
+  const metadata = getTemperamentMetadata(testResult.weatherType);
 
   return (
     <Box

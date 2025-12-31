@@ -1,6 +1,6 @@
 import groq from "./groqClient";
 import { analyzePersonality, TemperamentScores } from "./temperamentLogic";
-import { getWeatherMetadata } from "@/components/result/weatherMetadata";
+import { getTemperamentMetadata } from "@/lib/constants/temperamentMetadata";
 import { FALLBACK_DATA } from "@/lib/constants/fallback";
 import type { Answer, UserData } from "@/types/index";
 
@@ -159,7 +159,7 @@ function parseAISummary(
   }
 
   // Use metadata fallback
-  const metadata = getWeatherMetadata(weatherType);
+  const metadata = getTemperamentMetadata(weatherType);
   title =
     metadata?.subtitle ||
     metadata?.name ||
@@ -176,7 +176,7 @@ function parseAISummary(
  */
 function deriveShortTitle(fullTitle: string, weatherType: string): string {
   if (!fullTitle || typeof fullTitle !== "string") {
-    const metadata = getWeatherMetadata(weatherType);
+    const metadata = getTemperamentMetadata(weatherType);
     return metadata?.name || `Tipe ${weatherType}`;
   }
 

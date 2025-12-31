@@ -1,7 +1,7 @@
 // prepare & transform result data
 import { useMemo } from "react";
 import { ExtendedTestResult } from "@/types";
-import { getWeatherMetadata } from "@/components/result/weatherMetadata";
+import { getTemperamentMetadata } from "@/lib/constants/temperamentMetadata";
 import { applyTemperamentColors } from "@/lib/utils/resultHelpers";
 
 interface UseResultDataReturn {
@@ -19,7 +19,7 @@ interface UseResultDataReturn {
 
 export function useResultData(testResult: ExtendedTestResult): UseResultDataReturn {
   return useMemo(() => {
-    const metadata = getWeatherMetadata(testResult.weatherType);
+    const metadata = getTemperamentMetadata(testResult.weatherType);
     
     const subtitle = metadata?.subtitle || "Tipe Kepribadian";
     const traits = metadata?.traits || [];

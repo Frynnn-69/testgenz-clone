@@ -1,5 +1,5 @@
 import { TestResult, ExtendedTestResult, TemperamentScore } from "@/types";
-import { getWeatherMetadata } from "@/components/result/weatherMetadata";
+import { getTemperamentMetadata } from "@/lib/constants/temperamentMetadata";
 import { CHART_COLORS } from "@/lib/constants/theme";
 
 const PSYCHOLOGY_TO_WEATHER: { [key: string]: string } = {
@@ -27,7 +27,7 @@ function migrateTemperamentNames(temperaments: TemperamentScore[]): TemperamentS
 
 // defaults for missing data + migrate old temperament names
 export function applyExtendedDefaults(result: TestResult): ExtendedTestResult {
-  const metadata = getWeatherMetadata(result.weatherType);
+  const metadata = getTemperamentMetadata(result.weatherType);
   const existingResult = result as Partial<ExtendedTestResult>;
 
   let temperaments = existingResult.temperaments;

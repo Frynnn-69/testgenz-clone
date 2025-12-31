@@ -7,4 +7,3 @@ export { FooterNavigation } from "./FooterNavigation";
 export { ResultPageLayout } from "./ResultPageLayout";
 export { ResultClient } from "./ResultClient";
 export { TemperamentBar } from "./TemperamentBar";
-export { WEATHER_METADATA } from "./weatherMetadata";
