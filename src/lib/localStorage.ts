@@ -1,6 +1,6 @@
 import { TestResult, ExtendedTestResult } from "@/types";
 import { validateTestResult } from "@/lib/validation";
-import { applyExtendedDefaults } from "@/lib/utils";
+import { applyExtendedDefaults } from "@/lib/utils/resultHelpers";
 
 const STORAGE_KEY = "testgenz_result";
 const HISTORY_KEY = "testgenz_history";
