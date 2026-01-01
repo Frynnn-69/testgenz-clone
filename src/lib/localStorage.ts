@@ -6,11 +6,7 @@ const STORAGE_KEY = "testgenz_result";
 const HISTORY_KEY = "testgenz_history";
 const MAX_HISTORY_SIZE = 3;
 
-/**
- * Persists the current test result to localStorage.
- * Validates structure and ensures default values are present before saving.
- * @throws Error if the result structure is invalid.
- */
+// Save current test result
 export function saveTestResult(result: TestResult | ExtendedTestResult): void {
   try {
     if (!validateTestResult(result)) {
@@ -18,7 +14,6 @@ export function saveTestResult(result: TestResult | ExtendedTestResult): void {
     }
 
     const extendedResult = applyExtendedDefaults(result);
-    // Persist as simplified JSON string
     localStorage.setItem(STORAGE_KEY, JSON.stringify(extendedResult));
   } catch (error) {
     if (error instanceof Error && error.message === "Invalid test result structure") {
@@ -29,10 +24,7 @@ export function saveTestResult(result: TestResult | ExtendedTestResult): void {
   }
 }
 
-/**
- * Retrieves the active test result from localStorage.
- * Returns null if no data exists or validation fails.
- */
+// Get current test result
 export function getTestResult(): ExtendedTestResult | null {
   try {
     const jsonString = localStorage.getItem(STORAGE_KEY);
@@ -51,9 +43,7 @@ export function getTestResult(): ExtendedTestResult | null {
   }
 }
 
-/**
- * Clears the active test result. Used when restarting the test.
- */
+// Clear current result (for retaking test)
 export function clearTestResult(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -62,10 +52,7 @@ export function clearTestResult(): void {
   }
 }
 
-/**
- * Adds a result to the history stack (LIFO).
- * Limits history to MAX_HISTORY_SIZE (3) to conserve storage.
- */
+// Add result to history (keeps latest 3 - FIFO)
 export function saveTestResultToHistory(result: TestResult | ExtendedTestResult): void {
   try {
     if (!validateTestResult(result)) {
@@ -75,7 +62,6 @@ export function saveTestResultToHistory(result: TestResult | ExtendedTestResult)
     const extendedResult = applyExtendedDefaults(result);
     const history = getTestResultHistory();
     
-    // Add new result to the beginning and trim to max size
     history.unshift(extendedResult);
     const limitedHistory = history.slice(0, MAX_HISTORY_SIZE);
 
@@ -85,10 +71,7 @@ export function saveTestResultToHistory(result: TestResult | ExtendedTestResult)
   }
 }
 
-/**
- * Retrieves the full test history array.
- * Filters out any invalid entries automatically.
- */
+// Get all history entries
 export function getTestResultHistory(): ExtendedTestResult[] {
   try {
     const jsonString = localStorage.getItem(HISTORY_KEY);
@@ -109,9 +92,6 @@ export function getTestResultHistory(): ExtendedTestResult[] {
   }
 }
 
-/**
- * Clears all test history.
- */
 export function clearTestResultHistory(): void {
   try {
     localStorage.removeItem(HISTORY_KEY);
@@ -120,9 +100,6 @@ export function clearTestResultHistory(): void {
   }
 }
 
-/**
- * Removes a specific history entry by timestamp value.
- */
 export function deleteTestResultFromHistory(timestamp: string): void {
   try {
     const history = getTestResultHistory();
