@@ -1,0 +1,544 @@
+/* Design Inspired by one of Stefan Devai's Design on Dribble */
+
+.error_tv_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30em;
+  height: 24em;
+  transform: scale(1.2);
+}
+
+.error_tv_main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5em;
+}
+
+.error_antenna {
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  border: 2px solid black;
+  background-color: #8F6E56;
+  margin-bottom: -6em;
+  margin-left: 0em;
+  z-index: 5;
+  position: relative;
+}
+
+.error_antenna_shadow {
+  position: absolute;
+  background-color: transparent;
+  width: 50px;
+  height: 56px;
+  margin-left: 1.68em;
+  border-radius: 45%;
+  transform: rotate(140deg);
+  border: 4px solid transparent;
+  box-shadow:
+    inset 0px 16px #5d4536,
+    inset 0px 16px 1px 1px #5d4536;
+  -moz-box-shadow:
+    inset 0px 16px #5d4536,
+    inset 0px 16px 1px 1px #5d4536;
+}
+
+.error_antenna::after {
+  content: "";
+  position: absolute;
+  margin-top: -9.4em;
+  margin-left: 0.4em;
+  transform: rotate(-25deg);
+  width: 1em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: #5d4536;
+}
+
+.error_antenna::before {
+  content: "";
+  position: absolute;
+  margin-top: 0.2em;
+  margin-left: 1.25em;
+  transform: rotate(-20deg);
+  width: 1.5em;
+  height: 0.8em;
+  border-radius: 50%;
+  background-color: #5d4536;
+}
+
+.error_a1 {
+  position: relative;
+  top: -102%;
+  left: -130%;
+  width: 12em;
+  height: 5.5em;
+  border-radius: 50px;
+  background-image: linear-gradient(
+    #171717,
+    #171717,
+    #353535,
+    #353535,
+    #171717
+  );
+  transform: rotate(-29deg);
+  clip-path: polygon(50% 0%, 49% 100%, 52% 100%);
+}
+
+.error_a1d {
+  position: relative;
+  top: -211%;
+  left: -35%;
+  transform: rotate(45deg);
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  border: 2px solid black;
+  background-color: #979797;
+  z-index: 99;
+}
+
+.error_a2 {
+  position: relative;
+  top: -210%;
+  left: -10%;
+  width: 12em;
+  height: 4em;
+  border-radius: 50px;
+  background-color: #171717;
+  background-image: linear-gradient(
+    #171717,
+    #171717,
+    #353535,
+    #353535,
+    #171717
+  );
+  margin-right: 5em;
+  clip-path: polygon(
+    47% 0,
+    47% 0,
+    34% 34%,
+    54% 25%,
+    32% 100%,
+    29% 96%,
+    49% 32%,
+    30% 38%
+  );
+  transform: rotate(-8deg);
+}
+
+.error_a2d {
+  position: relative;
+  top: -294%;
+  left: 94%;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  border: 2px solid black;
+  background-color: #979797;
+  z-index: 99;
+}
+
+.error_notfound_text {
+  background-color: black;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  font-size: 0.75em;
+  color: white;
+  letter-spacing: 0;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.error_tv {
+  width: 17em;
+  height: 9em;
+  margin-top: 3em;
+  border-radius: 15px;
+  background-color: #8F6E56;
+  display: flex;
+  justify-content: center;
+  border: 2px solid #1d0e01;
+  box-shadow: inset 0.2em 0.2em #a0826d;
+  position: relative;
+  z-index: 10;
+}
+
+.error_tv::after {
+  content: "";
+  position: absolute;
+  width: 17em;
+  height: 9em;
+  border-radius: 15px;
+  background:
+    repeating-radial-gradient(#8F6E56 0 0.0001%, #00000070 0 0.0002%) 50% 0/2500px
+      2500px,
+    repeating-conic-gradient(#8F6E56 0 0.0001%, #00000070 0 0.0002%) 60% 60%/2500px
+      2500px;
+  background-blend-mode: difference;
+  opacity: 0.09;
+}
+
+.error_curve_svg {
+  position: absolute;
+  margin-top: 0.25em;
+  margin-left: -0.25em;
+  height: 12px;
+  width: 12px;
+}
+
+.error_display_div {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  border-radius: 15px;
+  box-shadow: 3.5px 3.5px 0px #a0826d;
+}
+
+.error_screen_out {
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+}
+
+.error_screen_out1 {
+  width: 11em;
+  height: 7.75em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.error_screen {
+  width: 13em;
+  height: 7.85em;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+  border: 2px solid #1d0e01;
+  background:
+    repeating-radial-gradient(#000 0 0.0001%, #ffffff 0 0.0002%) 50% 0/2500px
+      2500px,
+    repeating-conic-gradient(#000 0 0.0001%, #ffffff 0 0.0002%) 60% 60%/2500px
+      2500px;
+  background-blend-mode: difference;
+  animation: error_tv_static 0.2s infinite alternate;
+  border-radius: 10px;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #252525;
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+@keyframes error_tv_static {
+  100% {
+    background-position:
+      50% 0,
+      60% 50%;
+  }
+}
+
+.error_lines {
+  display: flex;
+  column-gap: 0.1em;
+  align-self: flex-end;
+}
+
+.error_line1,
+.error_line3 {
+  width: 2px;
+  height: 0.5em;
+  background-color: black;
+  border-radius: 25px 25px 0px 0px;
+  margin-top: 0.5em;
+}
+
+.error_line2 {
+  flex-grow: 1;
+  width: 2px;
+  height: 1em;
+  background-color: black;
+  border-radius: 25px 25px 0px 0px;
+}
+
+.error_buttons_div {
+  width: 4.25em;
+  align-self: center;
+  height: 8em;
+  background-color: #a0826d;
+  border: 2px solid #1d0e01;
+  padding: 0.6em;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 0.75em;
+  box-shadow: 3px 3px 0px #a0826d;
+}
+
+.error_b1 {
+  width: 1.65em;
+  height: 1.65em;
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 2px solid black;
+  box-shadow:
+    inset 2px 2px 1px #b49577,
+    -2px 0px #513721,
+    -2px 0px 0px 1px black;
+}
+
+.error_b1::before {
+  content: "";
+  position: absolute;
+  margin-top: 1em;
+  margin-left: 0.5em;
+  transform: rotate(47deg);
+  border-radius: 5px;
+  width: 0.1em;
+  height: 0.4em;
+  background-color: #000000;
+}
+
+.error_b1::after {
+  content: "";
+  position: absolute;
+  margin-top: 0.9em;
+  margin-left: 0.8em;
+  transform: rotate(47deg);
+  border-radius: 5px;
+  width: 0.1em;
+  height: 0.55em;
+  background-color: #000000;
+}
+
+.error_b1 div {
+  content: "";
+  position: absolute;
+  margin-top: -0.1em;
+  margin-left: 0.65em;
+  transform: rotate(45deg);
+  width: 0.15em;
+  height: 1.5em;
+  background-color: #000000;
+}
+
+.error_b2 {
+  width: 1.65em;
+  height: 1.65em;
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 2px solid black;
+  box-shadow:
+    inset 2px 2px 1px #b49577,
+    -2px 0px #513721,
+    -2px 0px 0px 1px black;
+}
+
+.error_b2::before {
+  content: "";
+  position: absolute;
+  margin-top: 1.05em;
+  margin-left: 0.8em;
+  transform: rotate(-45deg);
+  border-radius: 5px;
+  width: 0.15em;
+  height: 0.4em;
+  background-color: #000000;
+}
+
+.error_b2::after {
+  content: "";
+  position: absolute;
+  margin-top: -0.1em;
+  margin-left: 0.65em;
+  transform: rotate(-45deg);
+  width: 0.15em;
+  height: 1.5em;
+  background-color: #000000;
+}
+
+.error_speakers {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5em;
+}
+
+.error_speakers .error_g1 {
+  display: flex;
+  column-gap: 0.25em;
+}
+
+.error_speakers .error_g1 .error_g11,
+.error_g12,
+.error_g13 {
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 2px solid black;
+  box-shadow: inset 1.25px 1.25px 1px #b49577;
+}
+
+.error_speakers .error_g {
+  width: auto;
+  height: 2px;
+  background-color: #171717;
+}
+
+.error_bottom {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8.7em;
+}
+
+.error_base1 {
+  height: 1em;
+  width: 2em;
+  border: 2px solid #171717;
+  background-color: #4d4d4d;
+  margin-top: -0.15em;
+  z-index: 1;
+}
+
+.error_base2 {
+  height: 1em;
+  width: 2em;
+  border: 2px solid #171717;
+  background-color: #4d4d4d;
+  margin-top: -0.15em;
+  z-index: 1;
+}
+
+.error_base3 {
+  position: absolute;
+  height: 0.15em;
+  width: 17.5em;
+  background-color: #171717;
+  margin-top: 0.8em;
+}
+
+/* Remote Control Card */
+.error_remote_control {
+  display: flex;
+  flex-direction: row;
+  gap: 0.6em;
+  padding: 0.6em 0.8em;
+  background: linear-gradient(145deg, #8F6E56, #7a5d48);
+  border: 3px solid #2d2419;
+  border-radius: 12px;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.3),
+    inset 0 2px 3px rgba(160, 130, 109, 0.4);
+  width: fit-content;
+  position: relative;
+  margin-top: -2em;
+}
+
+.error_remote_control::before {
+  content: "";
+  position: absolute;
+  top: 0.5em;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 3px;
+  background: #5d4536;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* Remote Buttons */
+.error_remote_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  padding: 0.5em 0.8em;
+  background: linear-gradient(145deg, #5d4536, #4a3629);
+  border: 2px solid #2d2419;
+  border-radius: 8px;
+  color: #d9c1a6;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(160, 130, 109, 0.3);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.error_remote_button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent);
+  border-radius: 10px 10px 0 0;
+}
+
+.error_remote_button:hover {
+  background: linear-gradient(145deg, #6d5240, #5d4536);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 2px rgba(160, 130, 109, 0.4);
+}
+
+.error_remote_button:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.error_remote_button_primary {
+  background: linear-gradient(145deg, #8F6E56, #7a5d48);
+  border-color: #5d4536;
+}
+
+.error_remote_button_primary:hover {
+  background: linear-gradient(145deg, #9d7b61, #8F6E56);
+}
+
+.error_remote_icon {
+  font-size: 0.95rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .error_remote_control {
+    gap: 0.6em;
+    padding: 0.7em 0.8em;
+    margin-top: 1em;
+  }
+  
+  .error_remote_button {
+    font-size: 0.75rem;
+    padding: 0.5em 0.8em;
+    gap: 0.3em;
+  }
+  
+  .error_remote_icon {
+    font-size: 1rem;
+  }
+}

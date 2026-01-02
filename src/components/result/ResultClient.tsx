@@ -13,7 +13,7 @@ export const ResultClient = () => {
   }
 
   if (error || !testResult) {
-    return <ErrorState error={error} />;
+    return <ErrorState message={error || "We couldn't find your test result. Please complete the test to see your personality analysis."} />;
   }
   return <ResultPageLayout testResult={testResult} />;
 }

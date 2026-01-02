@@ -20,7 +20,7 @@ export const TestClient = () => {
   }
 
   if (questionsError || questions.length === 0) {
-    return <ErrorState error={questionsError || "Tidak ada pertanyaan tersedia"} />;
+    return <ErrorState message={questionsError || "Tidak ada pertanyaan tersedia"} />;
   }
 
   return (
