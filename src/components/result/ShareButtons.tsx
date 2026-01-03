@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, HStack, Box } from "@chakra-ui/react";
+import { Button, HStack, Box, Text } from "@chakra-ui/react";
+import { COLORS } from "@/lib/constants/theme";
 
 export interface ShareButtonsProps {
   onShare: () => void;
@@ -12,11 +13,17 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
     <HStack gap={4} width="100%" justify="center" flexWrap="wrap">
       <Button
         variant="outline"
-        colorPalette="orange"
         onClick={onShare}
         size="lg"
         fontWeight="medium"
         borderRadius="xl"
+        borderColor={COLORS.primary}
+        transition="all 0.2s"
+        _hover={{
+        bg: "#EDE2D4",
+        transform: "translateY(-2px)",
+        shadow: "sm",
+      }}
       >
         <Box as="span" mr={2}>
           <svg
@@ -28,6 +35,7 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            color={COLORS.primary}
           >
             <circle cx="18" cy="5" r="3" />
             <circle cx="6" cy="12" r="3" />
@@ -36,15 +44,26 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
         </Box>
-        Bagikan Hasil
+
+        <Text fontSize="md" color="gray.800" lineHeight="tall">
+          Bagikan Hasil
+        </Text>
+        
       </Button>
       <Button
         variant="outline"
-        colorPalette="orange"
+        // colorPalette="orange"
         onClick={onDownloadPDF}
         size="lg"
         fontWeight="medium"
         borderRadius="xl"
+        borderColor={COLORS.primary}
+        transition="all 0.2s"
+        _hover={{
+        bg: "#EDE2D4",
+        transform: "translateY(-2px)",
+        shadow: "sm",
+      }}
       >
         <Box as="span" mr={2}>
           <svg
@@ -56,13 +75,16 @@ export const ShareButtons = ({ onShare, onDownloadPDF }: ShareButtonsProps) => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            color={COLORS.primary}
           >
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
         </Box>
-        Unduh PDF
+        <Text fontSize="md" color="gray.800" lineHeight="tall">
+          Unduh PDF
+        </Text>
       </Button>
     </HStack>
   );
