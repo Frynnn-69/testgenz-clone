@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import HeroWithVisual from "@/components/landing/HeroWithVisual";
+import HistorySection from "@/components/history/HistorySection";
 import AboutSection from "@/components/landing/AboutSection";
+import CTASection from "@/components/landing/CTASection";
 import PreTestForm from "@/components/test/PreTestForm";
 import { toaster } from "@/components/ui/toaster";
 
@@ -39,7 +41,11 @@ function HomeContent() {
 
       <HeroWithVisual onStartTest={handleStartTest} />
 
+      <HistorySection />
+
       <AboutSection />
+
+      <CTASection />
 
       <Footer />
 
