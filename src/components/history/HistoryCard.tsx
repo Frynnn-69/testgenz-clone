@@ -19,15 +19,18 @@ interface HistoryClientProps {
   onView: (result: TestResult) => void;
   onDelete: (timestamp: string) => void;
   onRetake: () => void;
+  hideBackButton?: boolean;
+  customTitle?: React.ReactNode;
+  className?: string; 
 }
 
-export function HistoryContent({ history, onView, onDelete, onRetake }: HistoryClientProps) {
+export function HistoryContent({ history, onView, onDelete, onRetake, hideBackButton = false, customTitle, className }: HistoryClientProps) {
   const [selectedResult, setSelectedResult] = useState<TestResult | null>(null);
   const { visibleItems, itemRefs } = useScrollAnimation(history.length);
 
   if (history.length === 0) {
     return (
-      <section className="py-20 px-4 bg-muted/30">
+      <section className={className || "py-20 px-4 bg-muted/30"}>
         <div className="container mx-auto max-w-4xl text-center">
           <p className="text-xl text-muted-foreground mb-4">Belum ada riwayat tes</p>
           <p className="text-sm text-muted-foreground mb-6">
@@ -53,7 +56,7 @@ export function HistoryContent({ history, onView, onDelete, onRetake }: HistoryC
     : null;
 
   return (
-    <section className="py-20 px-4 bg-muted/30">
+    <section className={className || "py-20 px-4 bg-muted/30"}>
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-primary/10 rounded-full">
@@ -62,9 +65,11 @@ export function HistoryContent({ history, onView, onDelete, onRetake }: HistoryC
               Riwayat Tes
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-            Riwayat Tes Kepribadianmu
-          </h2>
+          {customTitle ? customTitle : (
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Riwayat Tes Kepribadianmu
+            </h2>
+          )}
           <p className="text-muted-foreground">
             Kamu sudah melakukan {history.length} kali tes. Klik untuk melihat detail.
           </p>
@@ -143,29 +148,26 @@ export function HistoryContent({ history, onView, onDelete, onRetake }: HistoryC
           })}
         </div>
 
-        {/* Footer Navigation Style Buttons */}
-
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            onClick={() => window.history.back()}
-            className="group relative px-6 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-300 flex items-center gap-2"
-          >
-            <ChevronRight className="w-5 h-5 rotate-180 text-gray-600 group-hover:text-gray-800 transition-colors" />
-            <span className="font-medium text-gray-700 group-hover:text-gray-900">Kembali</span>
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-              Ke halaman sebelumnya
-            </div>
-          </button>
+          {!hideBackButton && (
+            <button
+              onClick={() => window.history.back()}
+              className="group relative px-6 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-300 flex items-center gap-2"
+            >
+              <ChevronRight className="w-5 h-5 rotate-180 text-gray-600 group-hover:text-gray-800 transition-colors" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">Kembali</span>
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Ke halaman sebelumnya
+              </div>
+            </button>
+          )}
           
           <button
             onClick={onRetake}
-            className="group relative px-6 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-300 flex items-center gap-2"
+            className="group relative px-8 py-3.5 bg-white border border-gray-200 rounded-full hover:border-earth-mid/50 hover:shadow-lg hover:shadow-earth-light/20 transition-all duration-300 flex items-center gap-2"
           >
-            <RefreshCw className="w-5 h-5 text-gray-600 group-hover:text-gray-800 transition-colors" />
-            <span className="font-medium text-gray-700 group-hover:text-gray-900">Ulangi Tes</span>
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-              Mulai tes baru
-            </div>
+            <RefreshCw className="w-5 h-5 text-gray-400 group-hover:text-earth-dark transition-colors duration-300" />
+            <span className="font-medium text-gray-600 group-hover:text-earth-dark transition-colors duration-300">Ulangi Tes</span>
           </button>
         </div>
       </div>

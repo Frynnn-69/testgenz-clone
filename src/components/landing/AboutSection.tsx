@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sun, Cloud, CloudRain, CloudLightning } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
 import { NavigationControls } from "./NavigationControls";
 
@@ -17,10 +17,11 @@ const weatherTypes = [
     description: "Ceria, optimis, dan penuh energi! Kamu adalah jiwa dari setiap pesta. Mudah bergaul dan selalu bisa mencairkan suasana. Orang-orang suka berada di sekitarmu karena energi positifmu yang menular.",
     traits: ["Ekstrovert", "Antusias", "Kreatif", "Spontan", "Ekspresif", "Optimis"],
     strengths: ["Public speaking", "Networking", "Brainstorming", "Motivating others"],
-    bgGradient: "from-amber-100 via-yellow-50 to-orange-50",
-    accentColor: "text-amber-500",
-    cardBg: "bg-gradient-to-br from-amber-50 to-yellow-100",
-    iconBg: "bg-amber-100",
+    bgGradient: "from-temperament-sunny/20 via-earth-light/30 to-background",
+    accentColor: "text-temperament-sunny",
+    barColor: "bg-temperament-sunny",
+    cardBg: "bg-gradient-to-br from-temperament-sunny/10 to-earth-light/20",
+    iconBg: "bg-temperament-sunny/20",
   },
   {
     id: "cloudy",
@@ -32,9 +33,10 @@ const weatherTypes = [
     description: "Tenang, damai, dan konsisten. Kamu adalah pendengar yang baik dan selalu bisa diandalkan dalam situasi apapun. Kehadiranmu membawa ketenangan bagi orang-orang di sekitarmu.",
     traits: ["Sabar", "Diplomat", "Stabil", "Penengah", "Loyal", "Supportive"],
     strengths: ["Mediating conflicts", "Deep listening", "Consistent work", "Team harmony"],
-    bgGradient: "from-slate-100 via-gray-50 to-blue-50",
-    accentColor: "text-slate-500",
-    cardBg: "bg-gradient-to-br from-slate-50 to-gray-100",
+    bgGradient: "from-slate-200 via-earth-light/30 to-background",
+    accentColor: "text-slate-600",
+    barColor: "bg-slate-500",
+    cardBg: "bg-gradient-to-br from-slate-100 to-earth-light/20",
     iconBg: "bg-slate-100",
   },
   {
@@ -47,10 +49,11 @@ const weatherTypes = [
     description: "Dalam, analitis, dan detail-oriented. Kamu punya kepekaan tinggi dan selalu memikirkan segala sesuatu secara mendalam. Hasil kerjamu selalu berkualitas tinggi karena perhatianmu pada detail.",
     traits: ["Perfeksionis", "Sensitif", "Terorganisir", "Loyal", "Analitis", "Thoughtful"],
     strengths: ["Problem solving", "Quality control", "Research", "Creative arts"],
-    bgGradient: "from-blue-100 via-sky-50 to-indigo-50",
-    accentColor: "text-blue-500",
-    cardBg: "bg-gradient-to-br from-blue-50 to-sky-100",
-    iconBg: "bg-blue-100",
+    bgGradient: "from-temperament-rainy/20 via-earth-light/30 to-background",
+    accentColor: "text-temperament-rainy",
+    barColor: "bg-temperament-rainy",
+    cardBg: "bg-gradient-to-br from-temperament-rainy/10 to-earth-light/20",
+    iconBg: "bg-temperament-rainy/20",
   },
   {
     id: "stormy",
@@ -62,10 +65,11 @@ const weatherTypes = [
     description: "Tegas, ambisius, dan penuh determinasi. Kamu adalah pemimpin alami yang tidak takut mengambil keputusan besar. Visi dan drive-mu menginspirasi orang lain untuk mengikuti arahanmu.",
     traits: ["Pemimpin", "Tegas", "Goal-oriented", "Mandiri", "Decisive", "Visioner"],
     strengths: ["Leadership", "Decision making", "Strategic planning", "Crisis management"],
-    bgGradient: "from-purple-100 via-violet-50 to-fuchsia-50",
-    accentColor: "text-purple-500",
-    cardBg: "bg-gradient-to-br from-purple-50 to-violet-100",
-    iconBg: "bg-purple-100",
+    bgGradient: "from-stone-300 via-earth-light/30 to-background",
+    accentColor: "text-stone-700",
+    barColor: "bg-stone-600",
+    cardBg: "bg-gradient-to-br from-stone-200 to-earth-light/20",
+    iconBg: "bg-stone-200",
   },
 ];
 
@@ -73,17 +77,21 @@ const AboutSection = () => {
   const [activeWeather, setActiveWeather] = useState(weatherTypes[0]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleNext = () => {
-    const nextIndex = (activeIndex + 1) % weatherTypes.length;
-    setActiveIndex(nextIndex);
-    setActiveWeather(weatherTypes[nextIndex]);
-  };
+  const handleNext = useCallback(() => {
+    setActiveIndex((current) => {
+        const nextIndex = (current + 1) % weatherTypes.length;
+        setActiveWeather(weatherTypes[nextIndex]);
+        return nextIndex;
+    });
+  }, []);
 
-  const handlePrev = () => {
-    const prevIndex = (activeIndex - 1 + weatherTypes.length) % weatherTypes.length;
-    setActiveIndex(prevIndex);
-    setActiveWeather(weatherTypes[prevIndex]);
-  };
+  const handlePrev = useCallback(() => {
+    setActiveIndex((current) => {
+        const prevIndex = (current - 1 + weatherTypes.length) % weatherTypes.length;
+        setActiveWeather(weatherTypes[prevIndex]);
+        return prevIndex;
+    });
+  }, []);
 
   const handleDotClick = (index: number) => {
     setActiveIndex(index);
@@ -98,13 +106,13 @@ const AboutSection = () => {
     };
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [activeIndex]);
+  }, [handleNext, handlePrev]);
 
   // Calculate indices for 3-card stack
   const prevIndex = (activeIndex - 1 + weatherTypes.length) % weatherTypes.length;
   const nextIndex = (activeIndex + 1) % weatherTypes.length;
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     above: {
       scale: 0.85,
       opacity: 0.4,
@@ -128,6 +136,7 @@ const AboutSection = () => {
     }
   };
 
+
   const renderCard = (weather: typeof weatherTypes[0], variant: "above" | "center" | "below") => (
     <motion.div
       key={weather.id}
@@ -137,7 +146,7 @@ const AboutSection = () => {
       className={cn(
         "absolute inset-x-0 p-6 md:p-8 rounded-2xl border-2 transition-all",
         variant === "center" 
-          ? `${weather.cardBg} border-primary/30 shadow-xl` 
+          ? `${weather.cardBg} border-transparent shadow-xl` 
           : `${weather.cardBg} border-border/50 cursor-pointer hover:scale-95 hover:opacity-60`,
         variant === "center" && "cursor-grab active:cursor-grabbing"
       )}
@@ -160,7 +169,6 @@ const AboutSection = () => {
       }}
     >
       <div className="flex items-start gap-5">
-        {/* Icon */}
         <div 
           className={cn(
             "rounded-xl flex items-center justify-center shrink-0 transition-all duration-300",
@@ -186,11 +194,7 @@ const AboutSection = () => {
             )}>
               {weather.title} {weather.emoji}
             </h3>
-            {variant === "center" && (
-              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-primary text-primary-foreground">
-                Active
-              </span>
-            )}
+            {/* Active badge */}
           </div>
           <p className={cn(
             "text-muted-foreground",
@@ -201,146 +205,161 @@ const AboutSection = () => {
         </div>
       </div>
 
-      {/* Progress bar for active */}
       {variant === "center" && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-b-2xl" />
+        <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${weather.barColor} rounded-b-2xl opacity-80`} />
       )}
     </motion.div>
   );
 
   return (
-    <section className="py-12 md:py-20 px-4 md:px-8 bg-background overflow-hidden">
+    <section id="about" className="py-12 md:py-20 px-4 md:px-8 bg-background overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-2 rounded-full bg-accent text-muted-foreground text-sm font-medium mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <span className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-earth-light to-earth-accent text-earth-dark text-md font-semibold mb-4">
             🌤️ Kenapa Cuaca?
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Kepribadianmu, <span className="text-primary">Dimetaforakan</span>
+          <h2 className="text-7xl md:text-6xl lg:text-5xl font-bold text-foreground mb-4">
+            Kepribadianmu, <span className="bg-gradient-to-r from-earth-dark to-earth-accent bg-clip-text text-transparent">Dimetaforakan</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-2xl md:text-lg max-w-2xl mx-auto">
             Pilih tipe cuaca untuk melihat karakteristiknya ✨
           </p>
-        </div>
+        </motion.div>
 
-        {/* Split View Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
-          
-          {/* Left Side - Display Panel (Sticky on desktop) - FIXED HEIGHT */}
-          <div className="lg:sticky lg:top-8 order-2 lg:order-1">
-            <div 
-              className={cn(
-                "relative rounded-3xl p-8 md:p-10 transition-all duration-500 ease-out",
-                "h-[520px] md:h-[580px]",
-                "bg-gradient-to-br overflow-hidden",
-                activeWeather.bgGradient
-              )}
-            >
-              {/* Floating Icon */}
+        {/* Content Panel*/}
+        <motion.div
+           initial={{ opacity: 0, scale: 0.95, y: 40 }}
+           whileInView={{ opacity: 1, scale: 1, y: 0 }}
+           viewport={{ once: false, margin: "-100px" }}
+           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
+            
+            {/* Left Side - Display Panel */}
+            <div className="lg:sticky lg:top-8 order-2 lg:order-1">
               <div 
-                key={activeWeather.id + "-icon"}
-                className="absolute -top-6 -right-6 md:top-6 md:right-6 w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-background/80 backdrop-blur-sm shadow-xl flex items-center justify-center animate-fade-in"
+                className={cn(
+                  "relative rounded-3xl p-8 md:p-10 transition-all duration-500 ease-out",
+                  "h-[520px] md:h-[580px]",
+                  "bg-card border border-border/60 shadow-sm overflow-hidden"
+                )}
               >
-                <activeWeather.icon 
-                  className={cn(
-                    "w-12 h-12 md:w-16 md:h-16 transition-all duration-300",
-                    activeWeather.accentColor
-                  )} 
-                />
-              </div>
-
-              {/* Content - Scrollable if overflow */}
-              <div 
-                key={activeWeather.id + "-content"}
-                className="animate-fade-in h-full overflow-y-auto pr-2 scrollbar-thin"
-              >
-                {/* Title */}
-                <div className="mb-6">
-                  <span className="text-4xl md:text-5xl mb-2 block">{activeWeather.emoji}</span>
-                  <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-1">
-                    {activeWeather.title}
-                  </h3>
-                  <p className={cn("text-lg font-medium", activeWeather.accentColor)}>
-                    {activeWeather.tagline}
-                  </p>
-                  <span className="text-sm text-muted-foreground">
-                    ({activeWeather.temperament})
-                  </span>
+                <div 
+                  key={activeWeather.id + "-icon"}
+                  className="absolute top-6 right-6 w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-earth-light/50 backdrop-blur-sm flex items-center justify-center animate-fade-in border border-earth-mid/20 shadow-sm z-10"
+                >
+                  <activeWeather.icon 
+                    className={cn(
+                      "w-10 h-10 md:w-12 md:h-12 transition-all duration-300 opacity-90",
+                      activeWeather.accentColor
+                    )} 
+                  />
                 </div>
 
-                {/* Description */}
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {activeWeather.description}
-                </p>
-
-                {/* Traits */}
-                <div className="mb-6">
-                  <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">
-                    Karakteristik
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {activeWeather.traits.map((trait, idx) => (
-                      <span
-                        key={trait}
-                        className="px-3 py-1.5 text-sm font-medium rounded-full bg-background/70 text-foreground backdrop-blur-sm"
-                        style={{ animationDelay: `${idx * 50}ms` }}
-                      >
-                        {trait}
+                <div 
+                  key={activeWeather.id + "-content"}
+                  className="animate-fade-in h-full overflow-y-auto pr-4 -mr-4 pb-8 scrollbar-thin scrollbar-thumb-earth-mid/30 scrollbar-track-transparent hover:scrollbar-thumb-earth-mid/50"
+                >
+                  {/* Title */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-4xl md:text-5xl">{activeWeather.emoji}</span>
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-earth-mid/10 text-foreground/70 border border-earth-mid/20">
+                        {activeWeather.temperament}
                       </span>
-                    ))}
+                    </div>
+                    <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-2 tracking-tight">
+                      {activeWeather.title}
+                    </h3>
+                    <p className={cn("text-xl font-semibold italic mt-2", activeWeather.accentColor)}>
+                      <span className="opacity-50 text-2xl mr-1">&ldquo;</span>
+                      {activeWeather.tagline}
+                      <span className="opacity-50 text-2xl ml-1">&rdquo;</span>
+                    </p>
+                  </div>
+
+                  {/* Description (Quote Style) */}
+                  <div className={cn("relative pl-6 border-l-4 mb-8", activeWeather.accentColor.replace('text-', 'border-'))}>
+                    <p className="text-foreground/90 leading-relaxed text-lg font-medium italic">
+                      &quot;{activeWeather.description}&quot;
+                    </p>
+                  </div>
+
+                  {/* Traits */}
+                  <div className="mb-8">
+                    <h4 className="text-xs font-bold text-foreground/60 mb-4 uppercase tracking-widest">
+                      Karakteristik
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {activeWeather.traits.map((trait, idx) => (
+                        <span
+                          key={trait}
+                          className="px-4 py-2 text-sm font-semibold rounded-xl border-2 border-earth-mid/20 bg-earth-mid/5 text-foreground hover:bg-earth-mid/10 hover:border-earth-mid/40 transition-all cursor-default"
+                          style={{ animationDelay: `${idx * 50}ms` }}
+                        >
+                          {trait}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Strengths */}
+                  <div>
+                    <h4 className="text-xs font-bold text-foreground/60 mb-4 uppercase tracking-widest">
+                      Kelebihan
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {activeWeather.strengths.map((strength, idx) => (
+                        <div 
+                          key={strength}
+                          className="flex items-center gap-3 p-3 rounded-xl bg-earth-light/20 border border-earth-mid/10 hover:border-earth-mid/30 transition-colors group"
+                          style={{ animationDelay: `${idx * 50}ms` }}
+                        >
+                          <div className={cn("w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors group-hover:opacity-100 opacity-70", activeWeather.barColor)}>
+                             <span className="text-white text-[10px] font-bold">✓</span>
+                          </div>
+                          <span className="text-sm font-medium text-foreground/80">{strength}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Strengths */}
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">
-                    Kelebihan
-                  </h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {activeWeather.strengths.map((strength, idx) => (
-                      <div 
-                        key={strength}
-                        className="flex items-center gap-2 text-sm text-muted-foreground"
-                        style={{ animationDelay: `${idx * 50}ms` }}
-                      >
-                        <span className={activeWeather.accentColor}>✓</span>
-                        {strength}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 rounded-tr-full bg-earth-mid/5 blur-2xl" />
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FDFBF7] to-transparent pointer-events-none z-20" />
               </div>
-
-              {/* Decorative circles */}
-              <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full bg-background/20 blur-xl" />
-              <div className="absolute top-1/2 right-4 w-16 h-16 rounded-full bg-background/30 blur-lg" />
             </div>
-          </div>
 
-          {/* Right Side - Card Stack with Right Controls */}
-          <div className="order-1 lg:order-2 flex items-center justify-center w-full">
-            <div className="flex items-center gap-8 md:gap-12 pl-4">
-              
-              {/* 3-Card Stack Container - Sleek Fixed Dimensions */}
-              <div className="relative w-[340px] md:w-[480px] h-[300px] md:h-[340px] shrink-0 flex items-center justify-center">
-                {renderCard(weatherTypes[prevIndex], "above")}
-                {renderCard(weatherTypes[activeIndex], "center")}
-                {renderCard(weatherTypes[nextIndex], "below")}
-              </div>
+            {/* Right Side - Card Stack */}
+            <div className="order-1 lg:order-2 flex items-center justify-center w-full">
+              <div className="flex items-center gap-8 md:gap-12 pl-4">
+                
+                {/* 3-Card Stack Container */}
+                <div className="relative w-[340px] md:w-[480px] h-[300px] md:h-[340px] shrink-0 flex items-center justify-center">
+                  {renderCard(weatherTypes[prevIndex], "above")}
+                  {renderCard(weatherTypes[activeIndex], "center")}
+                  {renderCard(weatherTypes[nextIndex], "below")}
+                </div>
 
-              {/* Navigation Controls Component - Separate Column */}
-              <NavigationControls
-                totalItems={weatherTypes.length}
-                activeIndex={activeIndex}
-                onNext={handleNext}
-                onPrev={handlePrev}
-                onDotClick={handleDotClick}
-                itemLabels={weatherTypes.map(w => w.title)}
-              />
+                <NavigationControls
+                  totalItems={weatherTypes.length}
+                  activeIndex={activeIndex}
+                  onNext={handleNext}
+                  onPrev={handlePrev}
+                  onDotClick={handleDotClick}
+                  itemLabels={weatherTypes.map(w => w.title)}
+                />
             </div>
           </div>
         </div>
+        </motion.div>
       </div>
     </section>
   );
