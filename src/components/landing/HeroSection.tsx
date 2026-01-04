@@ -3,18 +3,25 @@
 import Image from "next/image";
 import { Button as TailwindButton } from "@/components/ui/tailwind-button";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface HeroProps {
   onStartTest: () => void;
 }
 
-const HeroWithVisual = ({ onStartTest }: HeroProps) => {
+const Hero = ({ onStartTest }: HeroProps) => {
   return (
-    <section className="min-h-screen flex items-center justify-center pt-20 md:pt-16 px-4 bg-gradient-to-b from-background via-earth-light/5 to-background">
+    <section id="home" className="min-h-screen flex items-center justify-center pt-20 md:pt-16 px-4 bg-gradient-to-b from-background via-earth-light/5 to-background overflow-hidden">
       <div className="container mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          {/* Left Column - Text Content */}
-          <div className="space-y-6 md:space-y-8 animate-fade-in">
+          {/* Left Column */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="space-y-6 md:space-y-8"
+          >
             <div className="inline-flex items-center justify-center">
               <span className="bg-gradient-to-r from-earth-light to-earth-accent px-3 py-1 sm:px-4 sm:py-2 rounded-full text-earth-dark font-semibold text-[10px] sm:text-xs md:text-sm text-center leading-snug max-w-xs sm:max-w-sm">
                 🎯 Tes Psikologi Gratis untuk Gen Z & Milenial
@@ -46,37 +53,34 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </TailwindButton>
             </div>
-            <div className="flex flex-wrap gap-4 md:gap-8 text-xs md:text-sm text-muted-foreground pt-2 md:pt-4">
-              <div className="flex items-center gap-2">
-                <span className="text-green-500">✓</span>
-                <span>100% Gratis</span>
+              <div className="flex flex-wrap gap-4 md:gap-8 text-xs md:text-sm text-muted-foreground pt-2 md:pt-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>100% Gratis</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Hasil Instant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Tanpa Registrasi</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-500">✓</span>
-                <span>Hasil Instant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-500">✓</span>
-                <span>Tanpa Registrasi</span>
-              </div>
-            </div>
-          </div>
+            </motion.div>
 
-          {/* Right Column - Visual Illustrations */}
+          {/* Right Column */}
           <div
             className="relative animate-fade-in h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] mt-8 lg:mt-0"
             style={{ animationDelay: "300ms" }}
           >
-            {/* Background Gradient Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-earth-light/30 via-earth-accent/20 to-primary/30 rounded-full blur-3xl animate-pulse" />
 
-            {/* Speech Bubble - Above middle character */}
             <div className="absolute top-4 sm:top-8 md:top-12 left-1/2 -translate-x-1/2 z-30 animate-float">
               <div className="relative bg-white rounded-xl md:rounded-2xl px-4 py-3 md:px-6 md:py-4 shadow-2xl border-2 border-earth-light max-w-[240px] sm:max-w-[280px] md:max-w-sm">
                 <p className="text-xs sm:text-sm md:text-base font-semibold text-earth-dark text-center">
                   Yuk, cari tahu kepribadianmu! Mulai tes sekarang! 🎯
                 </p>
-                {/* Triangle pointer */}
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[12px] border-t-white" />
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[14px] border-t-earth-light" />
               </div>
@@ -96,7 +100,6 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
               style={{ animationDelay: "0.5s", animationDuration: "2.5s" }}
             />
 
-            {/* Main Characters - Bottom Center (Smaller) */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] z-20">
               <Image
                 src="/gen-z-characters.png"
@@ -135,4 +138,4 @@ const HeroWithVisual = ({ onStartTest }: HeroProps) => {
   );
 };
 
-export default HeroWithVisual;
+export default Hero;

@@ -42,8 +42,8 @@ export function NavigationControls({
             className={cn(
               "w-2.5 h-2.5 rounded-full transition-all duration-300",
               idx === activeIndex
-                ? "bg-foreground scale-125 ring-4 ring-primary/20 shadow-sm"
-                : "bg-muted-foreground/30 hover:bg-primary/50 hover:scale-110"
+                ? "bg-foreground scale-125 ring-4 ring-foreground/10 shadow-sm"
+                : "bg-muted-foreground/30 hover:bg-earth-dark/50 hover:scale-110"
             )}
             aria-label={`Go to ${itemLabels[idx]}`}
           >

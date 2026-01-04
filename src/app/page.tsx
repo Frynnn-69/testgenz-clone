@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, startTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import HeroWithVisual from "@/components/landing/HeroWithVisual";
+import Hero from "@/components/landing/HeroSection";
 import HistorySection from "@/components/history/HistorySection";
 import AboutSection from "@/components/landing/AboutSection";
 import CTASection from "@/components/landing/CTASection";
@@ -39,7 +39,7 @@ function HomeContent() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <HeroWithVisual onStartTest={handleStartTest} />
+      <Hero onStartTest={handleStartTest} />
 
       <HistorySection />
 
