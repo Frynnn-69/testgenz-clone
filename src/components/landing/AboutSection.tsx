@@ -25,7 +25,7 @@ const weatherTypes = Object.keys(TEMPERAMENT_METADATA).map((key) => {
     temperament: data.temperament,
     tagline: data.tagline,
     description: data.description,
-    traits: data.traits,
+    traitsAbout: data.traitsAbout,
     strengths: data.strengths,
     bgGradient: data.bgGradient,
     accentColor: data.accentColor,
@@ -260,7 +260,7 @@ const AboutSection = () => {
                       Karakteristik
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {activeWeather.traits.map((trait, idx) => (
+                      {activeWeather.traitsAbout.map((trait, idx) => (
                         <span
                           key={trait}
                           className="px-4 py-2 text-sm font-semibold rounded-xl border-2 border-earth-mid/20 bg-earth-mid/5 text-foreground hover:bg-earth-mid/10 hover:border-earth-mid/40 transition-all cursor-default"

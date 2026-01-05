@@ -1,5 +1,7 @@
 "use client";
 
+import { CapybaraLoader } from "@/components/common/CapybaraLoader";
+
 import { useHistory } from "@/hooks/useHistory";
 import { HistoryContent } from "./HistoryCard";
 import Navbar from "@/components/common/Navbar";
@@ -15,11 +17,7 @@ export function HistoryClient() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-foreground font-bold text-xl">Memuat history...</p>
-      </div>
-    );
+    return <CapybaraLoader message="Memuat riwayat..." />;
   }
 
   return (
@@ -35,5 +33,15 @@ export function HistoryClient() {
       </main>
       <Footer />
     </div>
+
+    //   <div className="min-h-screen bg-background">
+    //   <Navbar />
+    //     <HistoryContent
+    //       history={history}
+    //       onView={handleView}
+    //       onDelete={handleDelete}
+    //       onRetake={handleRetake}
+    //     />
+    // </div>
   );
 }

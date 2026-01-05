@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, startTransition } from "react";
 import { useSearchParams } from "next/navigation";
+import { CapybaraLoader } from "@/components/common/CapybaraLoader";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import Hero from "@/components/landing/HeroSection";
@@ -73,11 +74,7 @@ function HomeContent() {
 export default function Home() {
   return (
     <Suspense
-      fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <p className="text-foreground font-bold">Loading...</p>
-        </div>
-      }
+      fallback={<CapybaraLoader/>}
     >
       <HomeContent />
     </Suspense>

@@ -37,9 +37,7 @@ const HistorySection = () => {
     }, []);
 
     const handleView = () => {
-       // Since HistoryContent usually opens a modal or similar, we might need to handle it or just route to results
-       // If the existing component supports modal viewing internal state, we pass a handler.
-       // However, HistoryContent usually takes props for handlers.
+       // HistoryContent handles modal viewing internally
     };
 
     const handleDelete = (timestamp: string) => {

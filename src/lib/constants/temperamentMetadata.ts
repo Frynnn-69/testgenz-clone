@@ -10,6 +10,7 @@ export interface TemperamentMetadata {
   
   emoji: string;
   tagline: string;
+  traitsAbout: string[];
   strengths: string[];
   bgGradient: string;
   accentColor: string;
@@ -28,7 +29,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Optimis yang Ceria",
     description: "Ceria, optimis, dan penuh energi! Kamu adalah jiwa dari setiap pesta. Mudah bergaul dan selalu bisa mencairkan suasana. Orang-orang suka berada di sekitarmu karena energi positifmu yang menular.",
     colorScheme: "orange",
-    traits: ["Ekstrovert", "Antusias", "Kreatif", "Spontan", "Ekspresif", "Optimis"],
+    traits: ["Ekstrovert", "Antusias", "Kreatif"],
     defaultDevelopmentAreas: ["Fokus", "Konsistensi", "Detail"],
     defaultCareers: ["Marketing", "Sales", "Entertainment", "Public Relations"],
     imageSrc: "/Sunny.png",
@@ -38,6 +39,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     emoji: "☀️",
     temperament: "Sanguinis",
     tagline: "The Life of the Party",
+    traitsAbout: ["Spontan", "Ekspresif", "Optimis"],
     strengths: ["Public speaking", "Networking", "Brainstorming", "Motivating others"],
     bgGradient: "from-temperament-sunny/20 via-earth-light/30 to-background",
     accentColor: "text-temperament-sunny",
@@ -51,7 +53,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pemikir yang Detail",
     description: "Dalam, analitis, dan detail-oriented. Kamu punya kepekaan tinggi dan selalu memikirkan segala sesuatu secara mendalam. Hasil kerjamu selalu berkualitas tinggi karena perhatianmu pada detail.",
     colorScheme: "blue",
-    traits: ["Perfeksionis", "Sensitif", "Terorganisir", "Loyal", "Analitis", "Thoughtful"],
+    traits: ["Perfeksionis", "Sensitif", "Terorganisir"],
     defaultDevelopmentAreas: ["Overthinking", "Perfeksionis", "Sensitif"],
     defaultCareers: ["Research", "Accounting", "Engineering", "Writing"],
     imageSrc: "/Rainy.png",
@@ -60,6 +62,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     emoji: "🌧️",
     temperament: "Melankolis",
     tagline: "The Deep Thinker",
+    traitsAbout: ["Loyal", "Analitis", "Thoughtful"],
     strengths: ["Problem solving", "Quality control", "Research", "Creative arts"],
     bgGradient: "from-temperament-rainy/20 via-earth-light/30 to-background",
     accentColor: "text-temperament-rainy",
@@ -73,7 +76,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pemimpin yang Tegas",
     description: "Tegas, ambisius, dan penuh determinasi. Kamu adalah pemimpin alami yang tidak takut mengambil keputusan besar. Visi dan drive-mu menginspirasi orang lain untuk mengikuti arahanmu.",
     colorScheme: "purple",
-    traits: ["Pemimpin", "Tegas", "Goal-oriented", "Mandiri", "Decisive", "Visioner"],
+    traits: ["Pemimpin", "Tegas", "Goal-oriented"],
     defaultDevelopmentAreas: ["Kesabaran", "Empati", "Fleksibilitas"],
     defaultCareers: ["Management", "Entrepreneurship", "Law", "Politics"],
     imageSrc: "/Stormy.png",
@@ -82,6 +85,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     emoji: "⛈️",
     temperament: "Koleris",
     tagline: "The Natural Leader",
+    traitsAbout: ["Mandiri", "Decisive", "Visioner"],
     strengths: ["Leadership", "Decision making", "Strategic planning", "Crisis management"],
     bgGradient: "from-stone-300 via-earth-light/30 to-background",
     accentColor: "text-stone-700",
@@ -95,7 +99,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pendamai yang Tenang",
     description: "Tenang, damai, dan konsisten. Kamu adalah pendengar yang baik dan selalu bisa diandalkan dalam situasi apapun. Kehadiranmu membawa ketenangan bagi orang-orang di sekitarmu.",
     colorScheme: "gray",
-    traits: ["Sabar", "Diplomat", "Stabil", "Penengah", "Loyal", "Supportive"],
+    traits: ["Sabar", "Diplomat", "Stabil"],
     defaultDevelopmentAreas: ["Inisiatif", "Asertivitas", "Motivasi"],
     defaultCareers: ["Counseling", "HR", "Teaching", "Healthcare"],
     imageSrc: "/Cloudy.png",
@@ -104,6 +108,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     emoji: "☁️",
     temperament: "Phlegmatis",
     tagline: "The Peacemaker",
+    traitsAbout: ["Penengah", "Loyal", "Supportive"],
     strengths: ["Mediating conflicts", "Deep listening", "Consistent work", "Team harmony"],
     bgGradient: "from-slate-200 via-earth-light/30 to-background",
     accentColor: "text-slate-600",
