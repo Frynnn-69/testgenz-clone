@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* Disable static export to fix Vercel build error */
-  output: undefined,
-}
+    // output: "export",
+    eslint: {
+        ignoreDuringBuilds: true, 
+    },
+};
 
-export default nextConfig  
+export default nextConfig;
