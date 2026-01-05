@@ -29,7 +29,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Optimis yang Ceria",
     description: "Ceria, optimis, dan penuh energi! Kamu adalah jiwa dari setiap pesta. Mudah bergaul dan selalu bisa mencairkan suasana. Orang-orang suka berada di sekitarmu karena energi positifmu yang menular.",
     colorScheme: "orange",
-    traits: ["Ekstrovert", "Antusias", "Kreatif"],
+    traits: ["Optimistic", "Adaptable", "Creative"],
     defaultDevelopmentAreas: ["Fokus", "Konsistensi", "Detail"],
     defaultCareers: ["Marketing", "Sales", "Entertainment", "Public Relations"],
     imageSrc: "/Sunny.png",
@@ -53,7 +53,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pemikir yang Detail",
     description: "Dalam, analitis, dan detail-oriented. Kamu punya kepekaan tinggi dan selalu memikirkan segala sesuatu secara mendalam. Hasil kerjamu selalu berkualitas tinggi karena perhatianmu pada detail.",
     colorScheme: "blue",
-    traits: ["Perfeksionis", "Sensitif", "Terorganisir"],
+    traits: ["Analytical", "Detail-oriented", "Thoughtful"],
     defaultDevelopmentAreas: ["Overthinking", "Perfeksionis", "Sensitif"],
     defaultCareers: ["Research", "Accounting", "Engineering", "Writing"],
     imageSrc: "/Rainy.png",
@@ -76,7 +76,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pemimpin yang Tegas",
     description: "Tegas, ambisius, dan penuh determinasi. Kamu adalah pemimpin alami yang tidak takut mengambil keputusan besar. Visi dan drive-mu menginspirasi orang lain untuk mengikuti arahanmu.",
     colorScheme: "purple",
-    traits: ["Pemimpin", "Tegas", "Goal-oriented"],
+    traits: ["Decisive", "Ambitious", "Goal-oriented"],
     defaultDevelopmentAreas: ["Kesabaran", "Empati", "Fleksibilitas"],
     defaultCareers: ["Management", "Entrepreneurship", "Law", "Politics"],
     imageSrc: "/Stormy.png",
@@ -99,7 +99,7 @@ export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
     subtitle: "Si Pendamai yang Tenang",
     description: "Tenang, damai, dan konsisten. Kamu adalah pendengar yang baik dan selalu bisa diandalkan dalam situasi apapun. Kehadiranmu membawa ketenangan bagi orang-orang di sekitarmu.",
     colorScheme: "gray",
-    traits: ["Sabar", "Diplomat", "Stabil"],
+    traits: ["Calm", "Patient", "Diplomatic"],
     defaultDevelopmentAreas: ["Inisiatif", "Asertivitas", "Motivasi"],
     defaultCareers: ["Counseling", "HR", "Teaching", "Healthcare"],
     imageSrc: "/Cloudy.png",
@@ -131,13 +131,14 @@ export function getTemperamentCardInfo(weatherType: string) {
   
   return {
     name: metadata.name,
-    icon: metadata.emoji, // Using emoji as icon
+    icon: metadata.emoji, 
     // Mapping new visual properties for older components:
-    color: metadata.iconBg, // Using iconBg for 'color' prop (often used for background circles)
-    textColor: metadata.accentColor, // New explicit text color property
-    cardBg: metadata.cardBg, // New explicit card background gradient
-    borderColor: metadata.borderColor, // Explicit border color
+    color: metadata.iconBg, 
+    textColor: metadata.accentColor, 
+    cardBg: metadata.cardBg, 
+    borderColor: metadata.borderColor, 
     description: metadata.description,
     traits: metadata.traits,
+    traitsAbout: metadata.traitsAbout,
   };
 }
