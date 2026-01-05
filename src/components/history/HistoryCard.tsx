@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { History, Clock, RefreshCw, ChevronRight, Trash2 } from "lucide-react";
+import { History, Clock, RefreshCw, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import type { TestResult } from "@/types";
 import { getTemperamentCardInfo } from "@/lib/constants/temperamentMetadata";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -91,14 +91,14 @@ export function HistoryContent({ history, onView, onDelete, onRetake, hideBackBu
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card className="p-4 md:p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border-2 hover:border-primary/30 group relative min-h-[120px]">
+                <Card className="p-4 md:p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 rounded-3xl border border-border/60 hover:border-border/80 group relative min-h-[120px]">
                   <div 
                     className="flex items-center justify-between gap-4 cursor-pointer h-full"
                     onClick={() => setSelectedResult(item)}
                   >
                     <div className="flex items-center gap-4 flex-1">
                       <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center ${itemInfo?.color || 'bg-gray-100'} border-2 text-2xl flex-shrink-0`}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center ${itemInfo?.color || 'bg-gray-100'} border-2 ${itemInfo?.borderColor || 'border-transparent'} text-2xl flex-shrink-0 transition-colors`}
                       >
                         {itemInfo?.icon || "❓"}
                       </div>
@@ -111,12 +111,12 @@ export function HistoryContent({ history, onView, onDelete, onRetake, hideBackBu
                         </p>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1 flex-wrap">
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${itemInfo?.color || 'bg-gray-100'} border`}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${itemInfo?.color || 'bg-gray-100'} ${itemInfo?.textColor} border ${itemInfo?.borderColor || 'border-gray-200'}`}
                           >
                             {itemInfo?.name || item.weatherType}
                           </span>
-                          <span className="hidden sm:inline">•</span>
-                          <div className="hidden sm:flex items-center gap-1">
+                          <span className="hidden sm:inline opacity-50">•</span>
+                          <div className="hidden sm:flex items-center gap-1 opacity-70">
                             <Clock className="w-3 h-3" />
                             <span>{formatDate(item.timestamp)}</span>
                           </div>
@@ -125,7 +125,7 @@ export function HistoryContent({ history, onView, onDelete, onRetake, hideBackBu
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span
-                        className={`hidden md:inline-flex px-3 py-1 rounded-full text-sm font-bold ${itemInfo?.color || 'bg-gray-100'} border`}
+                        className={`hidden md:inline-flex px-3 py-1 rounded-full text-sm font-bold ${itemInfo?.color || 'bg-gray-100'} ${itemInfo?.textColor} border ${itemInfo?.borderColor || 'border-gray-200'}`}
                       >
                         Tes #{history.length - index}
                       </span>
@@ -152,14 +152,11 @@ export function HistoryContent({ history, onView, onDelete, onRetake, hideBackBu
           {!hideBackButton && (
             <button
               onClick={() => window.history.back()}
-              className="group relative px-6 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-300 flex items-center gap-2"
-            >
-              <ChevronRight className="w-5 h-5 rotate-180 text-gray-600 group-hover:text-gray-800 transition-colors" />
-              <span className="font-medium text-gray-700 group-hover:text-gray-900">Kembali</span>
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                Ke halaman sebelumnya
-              </div>
-            </button>
+            className="group relative px-8 py-3.5 bg-white border border-gray-200 rounded-full hover:border-earth-mid/50 hover:shadow-lg hover:shadow-earth-light/20 transition-all duration-300 flex items-center gap-2"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-earth-dark transition-colors duration-300" />
+            <span className="font-medium text-gray-600 group-hover:text-earth-dark transition-colors duration-300">Kembali</span>
+          </button>
           )}
           
           <button
@@ -239,15 +236,6 @@ export function HistoryContent({ history, onView, onDelete, onRetake, hideBackBu
                   className="flex-1 px-6 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-300 font-medium text-gray-700 hover:text-gray-900"
                 >
                   Lihat Detail Lengkap
-                </button>
-                <button
-                  onClick={() => {
-                    onDelete(selectedResult.timestamp);
-                    setSelectedResult(null);
-                  }}
-                  className="px-6 py-3 bg-white border-2 border-red-200 rounded-xl hover:border-red-300 hover: hover:shadow-md transition-all duration-300 font-medium text-red-600 hover:text-red-700 flex items-center gap-2"
-                >
-                  <Trash2 size={18} />
                 </button>
               </div>
             </div>

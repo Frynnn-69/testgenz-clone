@@ -6,72 +6,34 @@ import { motion, Variants } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
 import { NavigationControls } from "./NavigationControls";
 
-const weatherTypes = [
-  {
-    id: "sunny",
-    icon: Sun,
-    title: "Sunny",
-    emoji: "☀️",
-    temperament: "Sanguinis",
-    tagline: "The Life of the Party",
-    description: "Ceria, optimis, dan penuh energi! Kamu adalah jiwa dari setiap pesta. Mudah bergaul dan selalu bisa mencairkan suasana. Orang-orang suka berada di sekitarmu karena energi positifmu yang menular.",
-    traits: ["Ekstrovert", "Antusias", "Kreatif", "Spontan", "Ekspresif", "Optimis"],
-    strengths: ["Public speaking", "Networking", "Brainstorming", "Motivating others"],
-    bgGradient: "from-temperament-sunny/20 via-earth-light/30 to-background",
-    accentColor: "text-temperament-sunny",
-    barColor: "bg-temperament-sunny",
-    cardBg: "bg-gradient-to-br from-temperament-sunny/10 to-earth-light/20",
-    iconBg: "bg-temperament-sunny/20",
-  },
-  {
-    id: "cloudy",
-    icon: Cloud,
-    title: "Cloudy",
-    emoji: "☁️",
-    temperament: "Phlegmatis",
-    tagline: "The Peacemaker",
-    description: "Tenang, damai, dan konsisten. Kamu adalah pendengar yang baik dan selalu bisa diandalkan dalam situasi apapun. Kehadiranmu membawa ketenangan bagi orang-orang di sekitarmu.",
-    traits: ["Sabar", "Diplomat", "Stabil", "Penengah", "Loyal", "Supportive"],
-    strengths: ["Mediating conflicts", "Deep listening", "Consistent work", "Team harmony"],
-    bgGradient: "from-slate-200 via-earth-light/30 to-background",
-    accentColor: "text-slate-600",
-    barColor: "bg-slate-500",
-    cardBg: "bg-gradient-to-br from-slate-100 to-earth-light/20",
-    iconBg: "bg-slate-100",
-  },
-  {
-    id: "rainy",
-    icon: CloudRain,
-    title: "Rainy",
-    emoji: "🌧️",
-    temperament: "Melankolis",
-    tagline: "The Deep Thinker",
-    description: "Dalam, analitis, dan detail-oriented. Kamu punya kepekaan tinggi dan selalu memikirkan segala sesuatu secara mendalam. Hasil kerjamu selalu berkualitas tinggi karena perhatianmu pada detail.",
-    traits: ["Perfeksionis", "Sensitif", "Terorganisir", "Loyal", "Analitis", "Thoughtful"],
-    strengths: ["Problem solving", "Quality control", "Research", "Creative arts"],
-    bgGradient: "from-temperament-rainy/20 via-earth-light/30 to-background",
-    accentColor: "text-temperament-rainy",
-    barColor: "bg-temperament-rainy",
-    cardBg: "bg-gradient-to-br from-temperament-rainy/10 to-earth-light/20",
-    iconBg: "bg-temperament-rainy/20",
-  },
-  {
-    id: "stormy",
-    icon: CloudLightning,
-    title: "Stormy",
-    emoji: "⛈️",
-    temperament: "Koleris",
-    tagline: "The Natural Leader",
-    description: "Tegas, ambisius, dan penuh determinasi. Kamu adalah pemimpin alami yang tidak takut mengambil keputusan besar. Visi dan drive-mu menginspirasi orang lain untuk mengikuti arahanmu.",
-    traits: ["Pemimpin", "Tegas", "Goal-oriented", "Mandiri", "Decisive", "Visioner"],
-    strengths: ["Leadership", "Decision making", "Strategic planning", "Crisis management"],
-    bgGradient: "from-stone-300 via-earth-light/30 to-background",
-    accentColor: "text-stone-700",
-    barColor: "bg-stone-600",
-    cardBg: "bg-gradient-to-br from-stone-200 to-earth-light/20",
-    iconBg: "bg-stone-200",
-  },
-];
+import { TEMPERAMENT_METADATA } from "@/lib/constants/temperamentMetadata";
+
+const weatherIcons = {
+  sunny: Sun,
+  cloudy: Cloud,
+  rainy: CloudRain,
+  stormy: CloudLightning,
+};
+
+const weatherTypes = Object.keys(TEMPERAMENT_METADATA).map((key) => {
+  const data = TEMPERAMENT_METADATA[key];
+  return {
+    id: key,
+    icon: weatherIcons[key as keyof typeof weatherIcons],
+    title: data.name,
+    emoji: data.emoji,
+    temperament: data.temperament,
+    tagline: data.tagline,
+    description: data.description,
+    traits: data.traits,
+    strengths: data.strengths,
+    bgGradient: data.bgGradient,
+    accentColor: data.accentColor,
+    barColor: data.barColor,
+    cardBg: data.cardBg,
+    iconBg: data.iconBg,
+  };
+});
 
 const AboutSection = () => {
   const [activeWeather, setActiveWeather] = useState(weatherTypes[0]);
@@ -242,7 +204,7 @@ const AboutSection = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
             
-            {/* Left Side - Display Panel */}
+            {/* Left Side */}
             <div className="lg:sticky lg:top-8 order-2 lg:order-1">
               <div 
                 className={cn(
@@ -337,11 +299,10 @@ const AboutSection = () => {
               </div>
             </div>
 
-            {/* Right Side - Card Stack */}
+            {/* Right Side */}
             <div className="order-1 lg:order-2 flex items-center justify-center w-full">
               <div className="flex items-center gap-8 md:gap-12 pl-4">
                 
-                {/* 3-Card Stack Container */}
                 <div className="relative w-[340px] md:w-[480px] h-[300px] md:h-[340px] shrink-0 flex items-center justify-center">
                   {renderCard(weatherTypes[prevIndex], "above")}
                   {renderCard(weatherTypes[activeIndex], "center")}

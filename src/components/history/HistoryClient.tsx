@@ -11,7 +11,7 @@ export function HistoryClient() {
   const { history, isLoading, handleDelete, handleView } = useHistory();
 
   const handleRetake = () => {
-    router.push("/");
+    router.push("/test");
   };
 
   if (isLoading) {
@@ -23,14 +23,16 @@ export function HistoryClient() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <HistoryContent
-        history={history}
-        onView={handleView}
-        onDelete={handleDelete}
-        onRetake={handleRetake}
-      />
+      <main className="flex-1">
+        <HistoryContent
+          history={history}
+          onView={handleView}
+          onDelete={handleDelete}
+          onRetake={handleRetake}
+        />
+      </main>
       <Footer />
     </div>
   );

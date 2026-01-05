@@ -7,59 +7,110 @@ export interface TemperamentMetadata {
   defaultDevelopmentAreas: string[];
   defaultCareers: string[];
   imageSrc: string;
-  // For history card display
-  icon: string;
-  cardColor: string;
+  
+  emoji: string;
+  tagline: string;
+  strengths: string[];
+  bgGradient: string;
+  accentColor: string;
+  barColor: string;
+  borderColor: string;
+  cardBg: string;
+  iconBg: string; 
+  temperament: string; 
+  icon: string; 
 }
 
 export const TEMPERAMENT_METADATA: Record<string, TemperamentMetadata> = {
   sunny: {
+    // Legacy Data
     name: "Sunny",
     subtitle: "Si Optimis yang Ceria",
-    description: "Sunny adalah pribadi yang ceria, optimis, dan mudah bergaul. Mereka memiliki energi yang tinggi dan mampu membawa suasana positif ke lingkungan sekitar.",
+    description: "Ceria, optimis, dan penuh energi! Kamu adalah jiwa dari setiap pesta. Mudah bergaul dan selalu bisa mencairkan suasana. Orang-orang suka berada di sekitarmu karena energi positifmu yang menular.",
     colorScheme: "orange",
-    traits: ["Optimistic", "Adaptable", "Creative"],
+    traits: ["Ekstrovert", "Antusias", "Kreatif", "Spontan", "Ekspresif", "Optimis"],
     defaultDevelopmentAreas: ["Fokus", "Konsistensi", "Detail"],
     defaultCareers: ["Marketing", "Sales", "Entertainment", "Public Relations"],
     imageSrc: "/Sunny.png",
     icon: "☀️",
-    cardColor: "bg-amber-100 text-amber-800 border-amber-300",
+    
+    // New Visual Data (From AboutSection)
+    emoji: "☀️",
+    temperament: "Sanguinis",
+    tagline: "The Life of the Party",
+    strengths: ["Public speaking", "Networking", "Brainstorming", "Motivating others"],
+    bgGradient: "from-temperament-sunny/20 via-earth-light/30 to-background",
+    accentColor: "text-temperament-sunny",
+    barColor: "bg-temperament-sunny",
+    borderColor: "border-temperament-sunny",
+    cardBg: "bg-gradient-to-br from-temperament-sunny/10 to-earth-light/20",
+    iconBg: "bg-temperament-sunny/20",
   },
   rainy: {
     name: "Rainy",
     subtitle: "Si Pemikir yang Detail",
-    description: "Rainy adalah pribadi analitis yang menghargai detail dan ketelitian. Mereka cenderung perfeksionis dan memiliki standar tinggi dalam pekerjaan.",
+    description: "Dalam, analitis, dan detail-oriented. Kamu punya kepekaan tinggi dan selalu memikirkan segala sesuatu secara mendalam. Hasil kerjamu selalu berkualitas tinggi karena perhatianmu pada detail.",
     colorScheme: "blue",
-    traits: ["Analytical", "Detail-oriented", "Thoughtful"],
+    traits: ["Perfeksionis", "Sensitif", "Terorganisir", "Loyal", "Analitis", "Thoughtful"],
     defaultDevelopmentAreas: ["Overthinking", "Perfeksionis", "Sensitif"],
     defaultCareers: ["Research", "Accounting", "Engineering", "Writing"],
     imageSrc: "/Rainy.png",
     icon: "🌧️",
-    cardColor: "bg-blue-100 text-blue-800 border-blue-300",
+    
+    emoji: "🌧️",
+    temperament: "Melankolis",
+    tagline: "The Deep Thinker",
+    strengths: ["Problem solving", "Quality control", "Research", "Creative arts"],
+    bgGradient: "from-temperament-rainy/20 via-earth-light/30 to-background",
+    accentColor: "text-temperament-rainy",
+    barColor: "bg-temperament-rainy",
+    borderColor: "border-temperament-rainy",
+    cardBg: "bg-gradient-to-br from-temperament-rainy/10 to-earth-light/20",
+    iconBg: "bg-temperament-rainy/20",
   },
   stormy: {
     name: "Stormy",
     subtitle: "Si Pemimpin yang Tegas",
-    description: "Stormy adalah pribadi yang tegas, ambisius, dan berorientasi hasil. Mereka memiliki kemampuan kepemimpinan alami dan tidak takut mengambil keputusan.",
+    description: "Tegas, ambisius, dan penuh determinasi. Kamu adalah pemimpin alami yang tidak takut mengambil keputusan besar. Visi dan drive-mu menginspirasi orang lain untuk mengikuti arahanmu.",
     colorScheme: "purple",
-    traits: ["Decisive", "Ambitious", "Goal-oriented"],
+    traits: ["Pemimpin", "Tegas", "Goal-oriented", "Mandiri", "Decisive", "Visioner"],
     defaultDevelopmentAreas: ["Kesabaran", "Empati", "Fleksibilitas"],
     defaultCareers: ["Management", "Entrepreneurship", "Law", "Politics"],
     imageSrc: "/Stormy.png",
     icon: "⛈️",
-    cardColor: "bg-red-100 text-red-800 border-red-300",
+    
+    emoji: "⛈️",
+    temperament: "Koleris",
+    tagline: "The Natural Leader",
+    strengths: ["Leadership", "Decision making", "Strategic planning", "Crisis management"],
+    bgGradient: "from-stone-300 via-earth-light/30 to-background",
+    accentColor: "text-stone-700",
+    barColor: "bg-stone-600",
+    borderColor: "border-stone-600",
+    cardBg: "bg-gradient-to-br from-stone-200 to-earth-light/20",
+    iconBg: "bg-stone-200",
   },
   cloudy: {
     name: "Cloudy",
     subtitle: "Si Pendamai yang Tenang",
-    description: "Cloudy adalah pribadi yang tenang, sabar, dan mudah beradaptasi. Mereka adalah pendengar yang baik dan mampu menjadi mediator dalam konflik.",
+    description: "Tenang, damai, dan konsisten. Kamu adalah pendengar yang baik dan selalu bisa diandalkan dalam situasi apapun. Kehadiranmu membawa ketenangan bagi orang-orang di sekitarmu.",
     colorScheme: "gray",
-    traits: ["Calm", "Patient", "Diplomatic"],
+    traits: ["Sabar", "Diplomat", "Stabil", "Penengah", "Loyal", "Supportive"],
     defaultDevelopmentAreas: ["Inisiatif", "Asertivitas", "Motivasi"],
     defaultCareers: ["Counseling", "HR", "Teaching", "Healthcare"],
     imageSrc: "/Cloudy.png",
     icon: "☁️",
-    cardColor: "bg-green-100 text-green-800 border-green-300",
+    
+    emoji: "☁️",
+    temperament: "Phlegmatis",
+    tagline: "The Peacemaker",
+    strengths: ["Mediating conflicts", "Deep listening", "Consistent work", "Team harmony"],
+    bgGradient: "from-slate-200 via-earth-light/30 to-background",
+    accentColor: "text-slate-600",
+    barColor: "bg-slate-500",
+    borderColor: "border-slate-500",
+    cardBg: "bg-gradient-to-br from-slate-100 to-earth-light/20",
+    iconBg: "bg-slate-100",
   },
 };
 
@@ -75,8 +126,12 @@ export function getTemperamentCardInfo(weatherType: string) {
   
   return {
     name: metadata.name,
-    icon: metadata.icon,
-    color: metadata.cardColor,
+    icon: metadata.emoji, // Using emoji as icon
+    // Mapping new visual properties for older components:
+    color: metadata.iconBg, // Using iconBg for 'color' prop (often used for background circles)
+    textColor: metadata.accentColor, // New explicit text color property
+    cardBg: metadata.cardBg, // New explicit card background gradient
+    borderColor: metadata.borderColor, // Explicit border color
     description: metadata.description,
     traits: metadata.traits,
   };
