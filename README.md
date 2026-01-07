@@ -55,7 +55,7 @@ Rather than providing a clinical diagnosis, the system offers a metaphorical per
 * [![Next.js][Next.js]][Next.js-url]
 * [![Node.js][Node.js]][Node.js-url]
 * [![Groq_SDK][Groq_SDK]][Groq_SDK-url]
-* [![TailwindCSS][TailwindCSS]][TailwindCSS]
+* [![TailwindCSS][TailwindCSS]][TailwindCSS-url]
 * [![Chakra UI][Chakra UI]][Chakra UI-url]
 * [![Framer][Framer]][Framer-url]
 
