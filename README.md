@@ -3,7 +3,7 @@
 <br />
 <div align="center">
   <a href="https://test4temp.vercel.app">
-    <img src="#" alt="Logo-Preview" width="357" height="162">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Four_temperaments.svg" alt="Logo-Preview" width="357" height="162">
   </a>
 
 <h3 align="center">An AI-Powered Personality Assessment Framework</h3>
