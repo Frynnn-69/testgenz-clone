@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getTestResultHistory } from "@/lib/localStorage";
-import { ExtendedTestResult } from "@/types";
+import { ExtendedTestResult, TestResult } from "@/types";
 import { HistoryContent } from "./HistoryCard";
 import { useRouter } from "next/navigation";
 import { deleteTestResultFromHistory } from "@/lib/localStorage";
@@ -36,8 +36,9 @@ const HistorySection = () => {
         };
     }, []);
 
-    const handleView = () => {
-       // HistoryContent handles modal viewing internally
+    const handleView = (result: TestResult) => {
+        // Navigate to result page with the selected test result
+        router.push(`/result?timestamp=${result.timestamp}`);
     };
 
     const handleDelete = (timestamp: string) => {

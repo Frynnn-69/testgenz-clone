@@ -1,7 +1,7 @@
 // fetch test result dari localStorage
 import { useState, useEffect } from "react";
 import { ExtendedTestResult } from "@/types";
-import { getTestResult } from "@/lib/localStorage";
+import { getTestResult, getTestResultByTimestamp } from "@/lib/localStorage";
 import { applyExtendedDefaults } from "@/lib/utils/resultHelpers";
 
 interface UseTestResultReturn {
@@ -10,14 +10,17 @@ interface UseTestResultReturn {
   error: string | null;
 }
 
-export function useTestResult(): UseTestResultReturn {
+export function useTestResult(timestamp?: string): UseTestResultReturn {
   const [testResult, setTestResult] = useState<ExtendedTestResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
-      const result = getTestResult();
+      // If timestamp provided, get specific result from history
+      const result = timestamp 
+        ? getTestResultByTimestamp(timestamp)
+        : getTestResult();
 
       if (!result) {
         setError("No test result found. Please complete the test first.");
@@ -31,7 +34,7 @@ export function useTestResult(): UseTestResultReturn {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [timestamp]);
 
   return { testResult, isLoading, error };
 }

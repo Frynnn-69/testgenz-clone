@@ -109,3 +109,15 @@ export function deleteTestResultFromHistory(timestamp: string): void {
     console.error("Failed to delete test result from history:", error);
   }
 }
+
+// Get specific test result by timestamp from history
+export function getTestResultByTimestamp(timestamp: string): ExtendedTestResult | null {
+  try {
+    const history = getTestResultHistory();
+    const result = history.find((item) => item.timestamp === timestamp);
+    return result || null;
+  } catch (error) {
+    console.error("Failed to get test result by timestamp:", error);
+    return null;
+  }
+}
