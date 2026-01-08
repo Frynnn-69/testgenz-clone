@@ -103,9 +103,7 @@ The key functionalities are as follows:
 * Historical Tracking: Access and compare your last 3 assessment results instantly via the History tab.
 * Dynamic Metaphorical Mapping: Receive a unique analysis that translates psychological data into evocative weather metaphors for easier self-reflection.
 
-<a href="#">
-  <img src="#" alt="Demo-Video" width="576" height="324">
-</a>
+[▶️ Watch Demo Video](https://github.com/user-attachments/assets/2a6a4bf1-5ae8-42ec-a9f2-e01c472c9e24)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
