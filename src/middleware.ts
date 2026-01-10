@@ -4,9 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
   // Konfigurasi CORS 
-  // Di production, '*' diganti domain (ex: 'https://testgenz.vercel.app')
-  // Tapi untuk development dan fleksibilitas sekarang, '*' masih aman.
-  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Origin", "https://test4temp.vercel.app");
   response.headers.set(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS",
