@@ -27,7 +27,7 @@ Pastikan kamu sudah menginstal:
 2.  **Clone Repositori**: Buka terminal, masuk ke folder tempat kamu biasa menyimpan proyek (misal: `Documents/Projects`), lalu jalankan perintah ini:
 
     ```bash
-    git clone [https://github.com/Fyrnn-69/testgenz-clone.git](https://github.com/Fyrnn-69/testgenz-clone.git)
+    git clone https://github.com/Frynnn-69/test4temp.git
     ```
 
 3.  **Masuk ke Folder Proyek**:
