@@ -14,9 +14,9 @@
     <br />
     <a href="https://test4temp.vercel.app/">View Demo</a>
     ·
-    <a href="https://github.com/Frynnn-69/testgenz-clone/issues">Report Bug</a>
+    <a href="https://github.com/Frynnn-69/test4temp/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Frynnn-69/testgenz-clone/issues">Request Feature</a>
+    <a href="https://github.com/Frynnn-69/test4temp/issues">Request Feature</a>
   </p>
 </div>
 
@@ -77,8 +77,8 @@ To get a local copy up and running, follow these simple steps.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Frynnn-69/testgenz-clone.git
-   cd testgenz-clone
+   git clone https://github.com/Frynnn-69/test4temp.git
+   cd test4temp
 2. **Install dependencies:**
    ```bash
    npm install
